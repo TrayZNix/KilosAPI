@@ -2,10 +2,9 @@ package com.grupocinco.kilosapi.model;
 
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -23,12 +22,12 @@ public class Destinatario {
 
     private String nombre, direccion, personaContacto, telefono;
     
-    /*
     @ToString.Exclude
     @OneToMany(mappedBy = "destinatario", fetch = FetchType.EAGER)
     @Builder.Default
-    private Lista<Caja> cajas = new ArrayList<>();
+    private List<Caja> cajas = new ArrayList<Caja>();
 
+    /*
 
     @PreRemove
     public void setNullDestinatario() {
