@@ -18,11 +18,21 @@ public class Caja {
     @Column(name = "QR")
     private String qr;
     @Column(name = "NUMERO_CAJA")
-    private Long numeroCaja;
+    private Integer numeroCaja;
     @Column(name = "TOTAL_KILOS")
     private Double totalKilos;
     @ManyToOne
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     private Destinatario destinatario;
+
+    public void addDestinatario(Destinatario d){
+        this.destinatario = d;
+        d.getCajas().add(this);
+    }
+
+    public void removeDestinatario(Destinatario d){
+        this.destinatario = null;
+        d.getCajas().remove(this);
+    }
 
 }
