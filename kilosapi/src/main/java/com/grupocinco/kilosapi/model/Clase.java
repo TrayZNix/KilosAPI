@@ -1,8 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
 
 @Entity
@@ -13,7 +11,6 @@ import javax.persistence.*;
 @Setter
 @ToString
 public class Clase {
-
 
     @Id
     @GeneratedValue
