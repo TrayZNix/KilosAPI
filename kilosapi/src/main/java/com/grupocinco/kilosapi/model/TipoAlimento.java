@@ -3,6 +3,8 @@ package com.grupocinco.kilosapi.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -20,7 +22,6 @@ public class TipoAlimento {
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @Builder.Default
     @OneToMany(mappedBy = "tipoAlimento", cascade = CascadeType.ALL)
-    private KilosDisponible kilosDisponible = new KilosDisponibles();
+    private List<KilosDisponibles> kilosDisponible = new ArrayList<>();
 }
