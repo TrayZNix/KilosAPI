@@ -67,7 +67,7 @@ public class DestinatarioController {
         return ResponseEntity.ok(listaDest);
     }
 
-    @Operation(description = "Devuelve un destinatario segun su id guardados")
+    @Operation(description = "Devuelve un destinatario según su id guardados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se encontró el destinatario",
@@ -101,7 +101,7 @@ public class DestinatarioController {
     public ResponseEntity<Destinatario> getDestinatarioConcreto(@PathVariable Long id){
         return ResponseEntity.of(repoDestinatarios.findById(id));
     }
-    @Operation(description = "Devuelve los detalles de un destinatario según su id guardados")
+    @Operation(description = "Devuelve los detalles de un destinatario según su id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se encontró el destinatario",
@@ -127,7 +127,7 @@ public class DestinatarioController {
         return ResponseEntity.of(repoDestinatarios.findById(id));
     }
 
-    @Operation(description = "Crea un destinatario seguú el cuerpo que le mandamos")
+    @Operation(description = "Crea un destinatario según el cuerpo que le mandamos")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Destinatario.class),
