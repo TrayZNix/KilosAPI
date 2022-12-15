@@ -23,7 +23,10 @@ public class Destinatario {
 
     @Id
     @GeneratedValue
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.DestinatarioList.class, CajaViews.CajasList.class})
+    @JsonView({DestinatarioViews.DestinatarioConcreto.class,
+            DestinatarioViews.DestinatarioList.class,
+            CajaViews.CajasList.class,
+            DestinatarioViews.ModeloPostDestinatario.class})
     private Long id;
 
     @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.ModeloPostDestinatario.class, CajaViews.CajasList.class})
