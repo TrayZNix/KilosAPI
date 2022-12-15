@@ -12,4 +12,7 @@ public class DestinatarioViews {
     }
     public static class ModeloPostDestinatario{
     }
+    public static class DestinatarioConcretoDetalles extends  DestinatarioConcreto{
+
+    }
 }

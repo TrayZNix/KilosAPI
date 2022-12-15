@@ -26,7 +26,6 @@ public class DestinatarioController {
     @JsonView(DestinatarioViews.DestinatarioList.class)
     public ResponseEntity<List<Destinatario>> getListaDestinatarios(){
         List<Destinatario> listaDest = repoDestinatarios.findAll();
-        System.out.println(listaDest);
         if(listaDest.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(listaDest);
     }
@@ -34,6 +33,11 @@ public class DestinatarioController {
     @GetMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     public ResponseEntity<Destinatario> getDestinatarioConcreto(@PathVariable Long id){
+        return ResponseEntity.of(repoDestinatarios.findById(id));
+    }
+    @GetMapping("/{id}/detalle")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<Destinatario> getDestinatarioConcretoDetallado(@PathVariable Long id){
         return ResponseEntity.of(repoDestinatarios.findById(id));
     }
 
