@@ -3,6 +3,8 @@ package com.grupocinco.kilosapi.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -12,11 +14,8 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @Builder
 public class DetalleAportacion {
-    @Id
-    private Aportacion aportacion;
-
-    @Id
-    private Integer numLinea;
+    @EmbeddedId
+    private DetalleAportacionId detalleAportacionId;
 
     @ManyToOne()
     private TipoAlimento tipoAlimento;
@@ -25,7 +24,15 @@ public class DetalleAportacion {
 
     @PreRemove //TODO comprobar que se guarda la cantidad restada
     public void restarKilos() {
-        KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
-        kilos.setCantidadDisponible(kilos.getCantidadDisponible - cantidad_en_kgs);
+        List<KilosDisponibles> kilos = tipoAlimento.getKilosDisponible();
+        kilos.forEach(k -> k.setCantidadDisponible(k.getCantidadDisponible() - cantidad_en_kgs));
+    }
+
+    @Embeddable
+    public static class DetalleAportacionId implements Serializable {
+        @ManyToOne()
+        private Aportacion aportacion;
+
+        private Integer numLinea;
     }
 }
