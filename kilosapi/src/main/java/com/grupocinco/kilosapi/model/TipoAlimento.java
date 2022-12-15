@@ -20,8 +20,8 @@ public class TipoAlimento {
 
     private String nombre;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(mappedBy = "tipoAlimento", cascade = CascadeType.ALL)
-    private List<KilosDisponibles> kilosDisponible = new ArrayList<>();
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "tipoAlimento", cascade = CascadeType.ALL)
+//    private List<KilosDisponibles> kilosDisponible = new ArrayList<>();
 }

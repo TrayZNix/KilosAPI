@@ -59,8 +59,6 @@ public class MainDePruebas {
         repoDestinatario.saveAll(List.of(des1, des2));
         repoCaja.saveAll(List.of(c1, c2, c3));
 
-        repoDestinatario.saveAll(List.of(destServ.calculosDestinatario(des1), destServ.calculosDestinatario(des2)));
-
 
     }
 
