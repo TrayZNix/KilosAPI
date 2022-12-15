@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ClasesService {
+public class ClaseService {
     private ClaseRepository repository;
 
     public List<Clase> findAll() {

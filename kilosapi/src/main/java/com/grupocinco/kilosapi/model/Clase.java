@@ -1,5 +1,7 @@
 package com.grupocinco.kilosapi.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.clase.ClaseViews;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
@@ -19,8 +21,10 @@ public class Clase {
 
     @Id
     @GeneratedValue
+    @JsonView(ClaseViews.AllClases.class)
     private Long id;
 
+    @JsonView(ClaseViews.AllClases.class)
     private String nombre, tutor;
 
     @ToString.Exclude
@@ -33,6 +37,4 @@ public class Clase {
     public void setNullClase() {
         aportaciones.forEach(a -> a.setClase(null));
     }
-
-
 }
