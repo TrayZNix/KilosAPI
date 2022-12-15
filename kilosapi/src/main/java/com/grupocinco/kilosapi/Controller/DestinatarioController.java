@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
+import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,8 @@ public class DestinatarioController {
     private DestinatarioRepository repoDestinatarios;
     @Autowired
     private CajaRepository repoCaja;
+    @Autowired
+    private DestinatarioService servDest;
     @Operation(description = "Devuelve una lista de todos los destinatarios guardados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -62,9 +66,11 @@ public class DestinatarioController {
     @GetMapping()
     @JsonView(DestinatarioViews.DestinatarioList.class)
     public ResponseEntity<List<Destinatario>> getListaDestinatarios(){
-        List<Destinatario> listaDest = repoDestinatarios.findAll();
-        if(listaDest.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(listaDest);
+        List<Destinatario> lista = repoDestinatarios.findAll();
+        lista.forEach(destinatario -> servDest.calculosDestinatario(destinatario));
+
+        if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.ok(lista);
     }
 
     @Operation(description = "Devuelve un destinatario según su id guardados")
@@ -99,7 +105,15 @@ public class DestinatarioController {
     @GetMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     public ResponseEntity<Destinatario> getDestinatarioConcreto(@PathVariable Long id){
-        return ResponseEntity.of(repoDestinatarios.findById(id));
+        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        if (optDest.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        else{
+            Destinatario d = optDest.get();
+            return ResponseEntity.ok(servDest.calculosDestinatario(d));
+        }
+
     }
     @Operation(description = "Devuelve los detalles de un destinatario según su id")
     @ApiResponses(value = {
@@ -124,7 +138,14 @@ public class DestinatarioController {
     @GetMapping("/{id}/detalle")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<Destinatario> getDestinatarioConcretoDetallado(@PathVariable Long id){
-        return ResponseEntity.of(repoDestinatarios.findById(id));
+        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        if (optDest.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        else{
+            Destinatario d = optDest.get();
+            return ResponseEntity.ok(servDest.calculosDestinatario(d));
+        }
     }
 
     @Operation(description = "Crea un destinatario según el cuerpo que le mandamos")

@@ -48,16 +48,20 @@ public class Destinatario {
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private List<Caja> cajas = new ArrayList<Caja>();
 
+    //Atributos DTOs
     @JsonView({DestinatarioViews.DestinatarioList.class, DestinatarioViews.DestinatarioConcreto.class})
+    @Transient
     private Double totalKilos;
 
     @JsonView(DestinatarioViews.DestinatarioList.class)
+    @Transient
     private int[] numerosCaja;
 
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
+    @Transient
     private Integer cantidadCajas;
 
-
+    //Atributos DTOs
 
     @PreRemove
     public void setNullDestinatario() {
