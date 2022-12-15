@@ -19,6 +19,7 @@ public class DestinatarioService {
         d = calcularKgTotales(d);
         d = getNumerosCajas(d);
         d.setCantidadCajas(d.getNumerosCaja().length); //Actualizar numeros de cajas
+        System.out.println(d);
         return d;
     }
 
