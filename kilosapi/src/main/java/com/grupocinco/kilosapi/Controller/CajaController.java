@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
@@ -14,9 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -66,4 +65,37 @@ public class CajaController {
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(listaCajas);
     }
+
+
+
+    @Operation(description = "Crea una caja mediante un cuerpo de petición.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Caja creada",
+                    content = {@Content(mediaType = "application/json",
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "qr": "qrqr",
+                                                "numeroCaja": 1 
+                                            }
+                                            """
+                            )})}),
+            @ApiResponse(responseCode = "400",
+                    description = "Caja no creada",
+                    content = {@Content})
+    })
+    @PostMapping("/caja/")
+    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
+
+        Caja ca = Caja.builder()
+                .qr(dto.getQr())
+                .numeroCaja(dto.getNumeroCaja())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(repoCaja.save(ca));
+    }
+
+
+
+
 }
