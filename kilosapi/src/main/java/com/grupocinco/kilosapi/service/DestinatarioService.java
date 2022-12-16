@@ -1,5 +1,6 @@
 package com.grupocinco.kilosapi.service;
 
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
@@ -15,14 +16,15 @@ public class DestinatarioService {
     @Autowired
     private DestinatarioRepository repo;
 
-    public Destinatario calculosDestinatario(Destinatario d){
+    public DestinatarioDto calculosDestinatario(DestinatarioDto d){
         d = calcularKgTotales(d);
         d = getNumerosCajas(d);
         d.setCantidadCajas(d.getNumerosCaja().length); //Actualizar numeros de cajas
+        System.out.println(d);
         return d;
     }
 
-    public Destinatario calcularKgTotales(Destinatario d){
+    public DestinatarioDto calcularKgTotales(DestinatarioDto d){
             List<Caja> cajas = d.getCajas();
             double total = 0;
             for(Caja caja: cajas){
@@ -33,7 +35,7 @@ public class DestinatarioService {
 
     }
 
-    public Destinatario getNumerosCajas(Destinatario d){
+    public DestinatarioDto getNumerosCajas(DestinatarioDto d){
         List<Caja> cajas = d.getCajas();
         List<Integer> numeros = new ArrayList<Integer>();
         for(Caja caja: cajas){

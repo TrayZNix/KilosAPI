@@ -2,9 +2,11 @@ package com.grupocinco.kilosapi.Controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
+import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -19,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +33,8 @@ public class DestinatarioController {
     private DestinatarioRepository repoDestinatarios;
     @Autowired
     private CajaRepository repoCaja;
+    @Autowired
+    private DestinatarioService servDest;
     @Operation(description = "Devuelve una lista de todos los destinatarios guardados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -61,10 +66,16 @@ public class DestinatarioController {
     })
     @GetMapping()
     @JsonView(DestinatarioViews.DestinatarioList.class)
-    public ResponseEntity<List<Destinatario>> getListaDestinatarios(){
-        List<Destinatario> listaDest = repoDestinatarios.findAll();
-        if(listaDest.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(listaDest);
+    public ResponseEntity<List<DestinatarioDto>> getListaDestinatarios(){
+        List<Destinatario> lista = repoDestinatarios.findAll();
+        List<DestinatarioDto> listaDto = new ArrayList<DestinatarioDto>();
+        lista.forEach(destinatario -> {
+            listaDto.add(DestinatarioDto.of(destinatario));
+        });
+        listaDto.forEach(destinatario -> servDest.calculosDestinatario(destinatario));
+
+        if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.ok(listaDto);
     }
 
     @Operation(description = "Devuelve un destinatario según su id guardados")
@@ -98,8 +109,15 @@ public class DestinatarioController {
     })
     @GetMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
-    public ResponseEntity<Destinatario> getDestinatarioConcreto(@PathVariable Long id){
-        return ResponseEntity.of(repoDestinatarios.findById(id));
+    public ResponseEntity<DestinatarioDto> getDestinatarioConcreto(@PathVariable Long id){
+        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        if (optDest.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        else{
+            return ResponseEntity.ok(servDest.calculosDestinatario(DestinatarioDto.of(optDest.get())));
+        }
+
     }
     @Operation(description = "Devuelve los detalles de un destinatario según su id")
     @ApiResponses(value = {
@@ -123,14 +141,20 @@ public class DestinatarioController {
     })
     @GetMapping("/{id}/detalle")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<Destinatario> getDestinatarioConcretoDetallado(@PathVariable Long id){
-        return ResponseEntity.of(repoDestinatarios.findById(id));
+    public ResponseEntity<DestinatarioDto> getDestinatarioConcretoDetallado(@PathVariable Long id){
+        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        if (optDest.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        else{
+            return ResponseEntity.ok(servDest.calculosDestinatario(DestinatarioDto.of(optDest.get())));
+        }
     }
 
     @Operation(description = "Crea un destinatario según el cuerpo que le mandamos")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Destinatario.class),
+                    schema = @Schema(implementation = DestinatarioDto.class),
                     examples = @ExampleObject(value = """
                             {
                                                 "nombre": "Comedor Don Bosco",
@@ -160,19 +184,20 @@ public class DestinatarioController {
     })
     @PostMapping("")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
-    public ResponseEntity<Destinatario> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) Destinatario d){
-        Destinatario dest = Destinatario.builder()
+    public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d){
+        DestinatarioDto dest = DestinatarioDto.builder()
                 .nombre(d.getNombre())
                 .telefono(d.getTelefono())
                 .direccion(d.getDireccion())
                 .personaContacto(d.getPersonaContacto())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(repoDestinatarios.save(dest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(DestinatarioDto.of(repoDestinatarios.save(DestinatarioDto.to(dest))));
     }
+
     @Operation(description = "Modifica un destinatario según el id introducido en la url y el cuerpo que le mandamos")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Destinatario.class),
+                    schema = @Schema(implementation = DestinatarioDto.class),
                     examples = @ExampleObject(value = """
                             {
                                                 "nombre": "Comedor Salesianos Triana",
@@ -203,7 +228,7 @@ public class DestinatarioController {
     })
     @PutMapping("/{id}")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
-    public ResponseEntity<Destinatario> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) Destinatario d, @PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d, @PathVariable Long id){
         Optional<Destinatario> optD = repoDestinatarios.findById(id);
         if(optD.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -218,7 +243,7 @@ public class DestinatarioController {
                 dest.setNombre(d.getNombre());
                 dest.setDireccion(d.getDireccion());
                 dest.setPersonaContacto(d.getPersonaContacto());
-        return ResponseEntity.status(HttpStatus.OK).body(repoDestinatarios.save(dest));
+        return ResponseEntity.status(HttpStatus.OK).body(DestinatarioDto.of(repoDestinatarios.save(dest)));
             }
         }
     }
