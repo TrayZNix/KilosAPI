@@ -14,5 +14,4 @@ public class NewCajaDto {
 
     private Integer numeroCaja;
 
-
 }

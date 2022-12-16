@@ -1,23 +1,29 @@
-//package com.grupocinco.kilosapi.model;
-//
-//import lombok.AllArgsConstructor;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-//
-//import javax.persistence.*;
-//
-//@Entity
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Getter
-//@Setter
-//public class KilosDisponibles {
-//
-//    @Id
-//    @ManyToOne
-//    @JoinColumn(name="tipoAlimento", foreignKey = @ForeignKey(name = "FK_KILOSDISPONIBLES_TIPOALIMENTO"))
-//    private TipoAlimento tipoAlimento;
-//    private Double cantidadDisponible;
-//
-//}
+package com.grupocinco.kilosapi.model;
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity @ToString
+@AllArgsConstructor @NoArgsConstructor
+@Getter @Setter
+public class KilosDisponibles implements Serializable{
+    @Id
+    private Long id;
+    @OneToOne
+    @JoinColumn(name = "id")
+    @MapsId
+    private TipoAlimento tipoAlimento;
+    private Double cantidadDisponible;
+
+    public void addToTipoAlimento(TipoAlimento a){
+        this.tipoAlimento = a;
+        a.setKilosDisponible(this);
+    }
+    public void removeFromTipoAlimento(TipoAlimento a){
+        this.tipoAlimento = null;
+        a.setKilosDisponible(null);
+    }
+}
+

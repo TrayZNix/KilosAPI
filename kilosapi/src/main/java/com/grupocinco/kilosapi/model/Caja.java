@@ -35,6 +35,8 @@ public class Caja {
     @Transient
     private String destinatarioString;
 
+
+
     public void addDestinatario(Destinatario d){
         this.destinatario = d;
         d.getCajas().add(this);

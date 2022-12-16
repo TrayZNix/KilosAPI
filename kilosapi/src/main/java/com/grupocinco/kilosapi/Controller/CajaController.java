@@ -6,6 +6,7 @@ import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.view.CajaViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,12 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController()
 @RequestMapping("/caja")
 public class CajaController {
     @Autowired
     private CajaRepository repoCaja;
+    private TipoAlimentoRepository repoTipoAli;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -93,6 +96,23 @@ public class CajaController {
                 .numeroCaja(dto.getNumeroCaja())
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(repoCaja.save(ca));
+    }
+
+    @Operation(description = "Borra una caja y la lista de alimentos que contiene")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Caja borrada satisfactoriamente",
+                    content = {@Content})
+    })
+    @DeleteMapping("/caja/{id}/tipo/{idTipoAlim}")
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id){
+        Optional<Caja> caja = repoCaja.findById(id);
+        if(caja.isPresent()){
+            Caja c = caja.get();
+            repoCaja.deleteRelacionesCajasDestinatarioBorrado(d);
+            repoDestinatarios.deleteById(id);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
