@@ -21,7 +21,7 @@ public class Aportacion {
    private Clase clase;
 
    @ToString.Exclude
-   @OneToMany(mappedBy = "detalleAportacionId", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
    private List<DetalleAportacion> detalles = new ArrayList<>();
 
