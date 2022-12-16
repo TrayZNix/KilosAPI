@@ -1,6 +1,8 @@
 package com.grupocinco.kilosapi.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaDto;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TienePK;
@@ -28,6 +30,8 @@ import java.util.Optional;
 public class CajaController {
     @Autowired
     private CajaRepository repoCaja;
+    @Autowired
+    private TieneRepository repoTiene;
     @Autowired
     private TieneService servicetiene;
     @Autowired
@@ -75,7 +79,8 @@ public class CajaController {
     }
 
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
-    public ResponseEntity<?> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
         Optional<Caja> optCaja = repoCaja.findById(id);
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
@@ -86,8 +91,10 @@ public class CajaController {
                 TipoAlimento t = optTipo.get();
                 TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
-                repo
-                return ResponseEntity.status(HttpStatus.CREATED).build();
+                servicetiene.saveLinea(ti);
+                CajaDto cdto = CajaDto.of(c);
+                cdto.setLineas(repoTiene.getLineasCajas(c));
+                return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
             }
         }
     }
