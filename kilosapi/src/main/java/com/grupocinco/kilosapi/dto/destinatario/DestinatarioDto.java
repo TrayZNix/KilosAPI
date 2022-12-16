@@ -3,8 +3,8 @@ package com.grupocinco.kilosapi.dto.destinatario;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
-import com.grupocinco.kilosapi.view.CajaViews;
-import com.grupocinco.kilosapi.view.DestinatarioViews;
+import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import lombok.*;
 
 import java.util.List;

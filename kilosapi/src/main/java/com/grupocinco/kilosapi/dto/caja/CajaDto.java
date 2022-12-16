@@ -1,46 +1,27 @@
-package com.grupocinco.kilosapi.model;
+package com.grupocinco.kilosapi.dto.caja;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import lombok.*;
 
-import javax.persistence.*;
-
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
 @ToString
-@Entity
-public class Caja {
+public class CajaDto {
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
-    @Id
-    @GeneratedValue
     private Long id;
     @JsonView({CajaViews.CajasList.class})
-    @Column(name = "QR")
     private String qr;
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
-    @Column(name = "NUMERO_CAJA")
     private Integer numeroCaja;
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class})
-    @Column(name = "TOTAL_KILOS")
     private Double totalKilos;
-    @ManyToOne
-    @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     @JsonView({CajaViews.CajasList.class})
     private Destinatario destinatario;
-
-    public void addDestinatario(Destinatario d){
-        this.destinatario = d;
-        d.getCajas().add(this);
-    }
-
-    public void removeDestinatario(Destinatario d){
-        this.destinatario = null;
-        d.getCajas().remove(this);
-    }
-
+    private String destinatarioString;
 }

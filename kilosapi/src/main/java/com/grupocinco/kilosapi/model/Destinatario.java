@@ -1,12 +1,8 @@
 package com.grupocinco.kilosapi.model;
 
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.grupocinco.kilosapi.view.CajaViews;
-import com.grupocinco.kilosapi.view.DestinatarioViews;
 import lombok.*;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

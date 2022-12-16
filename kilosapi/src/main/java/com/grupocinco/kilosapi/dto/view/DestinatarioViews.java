@@ -1,4 +1,4 @@
-package com.grupocinco.kilosapi.view;
+package com.grupocinco.kilosapi.dto.view;
 
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import org.springframework.beans.factory.annotation.Autowired;
