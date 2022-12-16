@@ -25,14 +25,12 @@ public class Aportacion {
    @Builder.Default
    private List<DetalleAportacion> detalles = new ArrayList<>();
 
-
-//   public void addToClase(Clase c) {
-//       this.clase = c;
-//       c.getAportacion().add(this);
-//   }
-//
-//   public void removeFromClase(Clase c) {
-//       this.clase = null;
-//       c.getAportacion().remove(this);
-//   }
+   public void addToClase(Clase c) {
+       this.clase = c;
+       c.getAportaciones().add(this);
+   }
+   public void removeFromClase(Clase c) {
+       this.clase = null;
+       c.getAportaciones().remove(this);
+   }
 }

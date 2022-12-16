@@ -25,4 +25,12 @@ public class KilosDisponibles implements Serializable{
         this.tipoAlimento = null;
         a.setKilosDisponible(null);
     }
+
+    public void addCantidad(Double c){
+        this.cantidadDisponible += c;
+
+        if(cantidadDisponible<0.0)
+            this.cantidadDisponible=0.0;
+
+    }
 }
