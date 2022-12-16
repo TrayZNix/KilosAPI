@@ -27,6 +27,4 @@ public class Tiene {
     @Column(name = "CANTIDAD_KILOS")
     private Double cantidadKgs;
 
-
-
 }

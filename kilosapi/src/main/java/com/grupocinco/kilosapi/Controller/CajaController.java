@@ -104,18 +104,15 @@ public class CajaController {
                     description = "Caja borrada satisfactoriamente",
                     content = {@Content})
     })
-    @DeleteMapping("/caja/{id}/tipo/{idTipoAlim}")
-    public ResponseEntity<?> deleteCaja(@PathVariable Long id){
-        Optional<Caja> caja = repoCaja.findById(id);
+    @DeleteMapping("/caja/{id1}/tipo/{idTipoAlim}")
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idtipoAlim){
+        Optional<Caja> caja = repoCaja.findById(id1);
         if(caja.isPresent()){
             Caja c = caja.get();
-            repoCaja.deleteRelacionesCajasDestinatarioBorrado(d);
-            repoDestinatarios.deleteById(id);
+
+            repoCaja.deleteById(id1);
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
-
 
 }
