@@ -3,8 +3,6 @@ package com.grupocinco.kilosapi.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.clase.ClaseViews;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.List;
 @Setter
 @ToString
 public class Clase {
-
 
     @Id
     @GeneratedValue
