@@ -1,6 +1,5 @@
-package com.grupocinco.kilosapi.Controller;
+package com.grupocinco.kilosapi.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
@@ -8,7 +7,6 @@ import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

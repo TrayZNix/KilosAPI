@@ -1,6 +1,6 @@
 package com.grupocinco.kilosapi.dto.clase;
 
 public class ClaseViews {
-    public static class AllClases {
+    public static class NewClase{
     }
 }
