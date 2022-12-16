@@ -33,4 +33,14 @@ public class Aportacion {
        this.clase = null;
        c.getAportaciones().remove(this);
    }
+
+   //TODO poner el ser de los detalles para que añada y ponga en null la aportacion
+   public void addDetalleAportacion(DetalleAportacion d){
+       this.getDetalles().add(d);
+//       d.set(this);
+   }
+   public void removeDetalleAportacion(DetalleAportacion d){
+       this.getDetalles().remove(d);
+//       d.set(null)
+   }
 }
