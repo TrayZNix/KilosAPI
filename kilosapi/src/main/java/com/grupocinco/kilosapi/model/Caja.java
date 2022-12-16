@@ -32,6 +32,7 @@ public class Caja {
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     @JsonView({CajaViews.CajasList.class})
     private Destinatario destinatario;
+    @Transient
     private String destinatarioString;
 
     public void addDestinatario(Destinatario d){
