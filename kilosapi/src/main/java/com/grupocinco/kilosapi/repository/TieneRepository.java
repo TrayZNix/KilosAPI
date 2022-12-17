@@ -1,8 +1,15 @@
 package com.grupocinco.kilosapi.repository;
 
+import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TienePK;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface TieneRepository extends JpaRepository<Tiene, TienePK> {
+    @Query("SELECT t FROM Tiene t WHERE t.caja = :id")
+    public List<Tiene> getLineasCajas(@Param("id") Caja id);
 }
