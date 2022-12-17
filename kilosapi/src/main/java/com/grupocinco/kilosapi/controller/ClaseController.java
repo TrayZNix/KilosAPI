@@ -79,10 +79,11 @@ public class ClaseController {
                     description = "La clase existe",
                     content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClaseDetalleDto.class)), examples = @ExampleObject("""
                             {
-                                "id": 12,
+                                "id": 11,
                                 "nombre": "2º DAM",
                                 "tutor": "Luismi",
-                                "aportaciones": []
+                                "numAportaciones": 0,
+                                "numKilos": 0.0
                             }
                             """))}
             ),
@@ -93,7 +94,7 @@ public class ClaseController {
             )
     })
     @GetMapping("{id}")
-    public ResponseEntity<ClaseDetalleDto> getClaseById(@Parameter(name = "Id de clase", description = "Id de la clase a buscar") @PathVariable Long id) {
+    public ResponseEntity<ClaseDetalleDto> getClaseById(@Parameter(name = "Id de la clase", description = "Id de la clase a buscar") @PathVariable Long id) {
         Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id);
         if (clase.isPresent())
             return ResponseEntity.ok().body(clase.get());
@@ -108,37 +109,101 @@ public class ClaseController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Se creo el artista",
+                    description = "Se creó la clase",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClaseViews.NewClase.class), examples = @ExampleObject("""
                             {
-                                "id": 13,
-                                "name": "Blind Guardian"
+                                "id": 11,
+                                "nombre": "2º DAM",
+                                "tutor": "Luismi"
                             }
                             """))}
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Datos inválidos para crear un nuevo artista",
+                    description = "Datos inválidos para crear una nueva clase",
                     content = {@Content()}
             )
     })
     @JsonView(ClaseViews.NewClase.class)
     @PostMapping("")
+    //TODO comprobar que la consulta funciona cuando se puedan hacer cosas con aportaciones y detalles de aportaciones
     public ResponseEntity<Clase> newClase(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos necesarios para la creación de una nueva clase", content = @Content(examples = @ExampleObject("""
             {
-                "id": 12,
                 "nombre": "2º DAM",
-                "tutor": "Luismi",
-                "aportaciones": []
+                "tutor": "Luismi"
             }
             """))) @JsonView(ClaseViews.NewClase.class) @RequestBody Clase clase) {
-        Clase claseEntera =  Clase.builder().nombre(clase.getNombre()).tutor(clase.getTutor()).build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(claseService.save(claseEntera));
+        if (clase.getNombre()  == null|| clase.getTutor() == null)
+            return ResponseEntity.badRequest().build();
+        else {
+            Clase claseEntera = Clase.builder().nombre(clase.getNombre()).tutor(clase.getTutor()).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(claseService.save(claseEntera));
+        }
     }
 
+    @Operation(
+            summary = "Edita una clase",
+            description = "Esta petición edita una clase con los datos proporcionados"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se editó la clase",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClaseViews.NewClase.class), examples = @ExampleObject("""
+                            {
+                                "id": 11,
+                                "nombre": "2º DAM",
+                                "tutor": "Luismi"
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos para editar una clase",
+                    content = {@Content()}
+            )
+    })
+    @JsonView(ClaseViews.NewClase.class)
+    @PutMapping("{id}")
+    public ResponseEntity<Clase> editClase(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos necesarios para la edición de una clase", content = @Content(examples = @ExampleObject("""
+            {
+                "nombre": "2º DAM",
+                "tutor": "Luismi"
+            }
+            """))) @JsonView(ClaseViews.NewClase.class) @RequestBody Clase clase, @Parameter(name = "Id de la clase", description = "id de la clase a editar") @PathVariable Long id) {
+        Optional<Clase> claseEdit = claseService.findById(id);
+        Clase claseObt;
+
+        if (claseEdit.isPresent()) {
+            claseObt = claseEdit.get();
+            if (clase.getNombre() == null && clase.getTutor() == null) {
+                return ResponseEntity.badRequest().build();
+            } else {
+                if (clase.getNombre() != null)
+                    claseObt.setNombre(clase.getNombre());
+                if (clase.getTutor() != null)
+                    claseObt.setTutor(clase.getTutor());
+                return ResponseEntity.ok().body(claseService.save(claseObt));
+            }
+        } else
+            return ResponseEntity.notFound().build();
+    }
+
+    @Operation(
+            summary = "Elimina una clase",
+            description = "Esta petición elimina la clase que contenga el id indicado, si no existe no hace nada"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "No existe la clase",
+                    content = {@Content()}
+            )
+    })
     @DeleteMapping("{id}")
     public ResponseEntity<Clase> deleteClase(@Parameter(name = "Id de clase", description = "Id de la clase a eliminar") @PathVariable Long id) {
-        claseService.deleteById(id);//TODO comprobar que se pueda hacer sin comprobación
-        return ResponseEntity.notFound().build();
+        if (claseService.existsById(id))
+            claseService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

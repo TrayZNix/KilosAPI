@@ -33,4 +33,12 @@ public class ClaseService {
     public Optional<ClaseDetalleDto> claseDetalleById(Long id) {
         return repository.claseDetalleById(id);
     }
+
+    public boolean existsById(long id) {
+        return repository.existsById(id);
+    }
+
+    public Clase edit(Clase clase){
+        return repository.save(clase);
+    }
 }

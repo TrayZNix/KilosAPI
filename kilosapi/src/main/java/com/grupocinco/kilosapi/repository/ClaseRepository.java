@@ -14,8 +14,8 @@ public interface ClaseRepository extends JpaRepository<Clase, Long> {
             c.id,
             c.nombre,
             c.tutor,
-            count(c.aportaciones),
-            (select sum(d.cantidad_en_kgs) from DetalleAportacion d where d.detalleAportacionId.aportacion.id = :id))
+            c.aportaciones.size,
+            (select coalesce(sum(d.cantidad_en_kgs), 0.0) from DetalleAportacion d where d.detalleAportacionId.aportacion.clase.id = :id))
             from Clase c
             where c.id = :id
             """)

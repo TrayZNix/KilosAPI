@@ -12,7 +12,7 @@ public class ClaseDetalleDto {
 
     private String nombre, tutor;
 
-    private long numAportaciones;
+    private int numAportaciones;
 
     private double numKilos;
 }
