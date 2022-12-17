@@ -30,8 +30,9 @@ public class Caja {
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     private Destinatario destinatario;
 
-    @OneToMany
+    @OneToMany(mappedBy = "caja")
     @Builder.Default
+    @ToString.Exclude
     private List<Tiene> lineas = new ArrayList<Tiene>();
     public void addDestinatario(Destinatario d){
         this.destinatario = d;

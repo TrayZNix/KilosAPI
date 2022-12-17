@@ -24,12 +24,11 @@ public class CajaDto {
     private String qr;
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
     private Integer numeroCaja;
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class})
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Double totalKilos;
-    @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private Destinatario destinatario;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
-    private List<Tiene> lineas;
+    private List<Tiene> contenido;
     private String destinatarioString;
 
     public static CajaDto of(Caja c){
@@ -39,7 +38,18 @@ public class CajaDto {
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
                 .totalKilos(c.getTotalKilos())
-                .lineas(c.getLineas())
+                .contenido(c.getLineas())
+                .build();
+
+    }
+    public static Caja to(CajaDto c){
+        return Caja.builder()
+                .id(c.getId())
+                .qr(c.getQr())
+                .numeroCaja(c.getNumeroCaja())
+                .destinatario(c.getDestinatario())
+                .totalKilos(c.getTotalKilos())
+                .lineas(c.getContenido())
                 .build();
 
     }

@@ -93,7 +93,7 @@ public class CajaController {
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
                 servicetiene.saveLinea(ti);
                 CajaDto cdto = CajaDto.of(c);
-                cdto.setLineas(repoTiene.getLineasCajas(c));
+                cdto.setContenido(repoTiene.getLineasCajas(c));
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
             }
         }

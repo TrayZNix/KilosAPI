@@ -2,6 +2,7 @@ package com.grupocinco.kilosapi.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
@@ -33,6 +34,9 @@ public class DestinatarioController {
     private CajaRepository repoCaja;
     @Autowired
     private DestinatarioService servDest;
+    @Autowired
+    private DestinatarioMapper mapperDest;
+
     @Operation(description = "Devuelve una lista de todos los destinatarios guardados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -67,11 +71,7 @@ public class DestinatarioController {
     public ResponseEntity<List<DestinatarioDto>> getListaDestinatarios(){
         List<Destinatario> lista = repoDestinatarios.findAll();
         List<DestinatarioDto> listaDto = new ArrayList<DestinatarioDto>();
-        lista.forEach(destinatario -> {
-            listaDto.add(DestinatarioDto.of(destinatario));
-        });
-        listaDto.forEach(destinatario -> servDest.calculosDestinatario(destinatario));
-
+        lista.forEach(destinatario -> listaDto.add(servDest.calculosDestinatario(destinatario)));
         if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(listaDto);
     }
@@ -113,7 +113,7 @@ public class DestinatarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return ResponseEntity.ok(servDest.calculosDestinatario(DestinatarioDto.of(optDest.get())));
+            return ResponseEntity.ok(servDest.calculosDestinatario(optDest.get()));
         }
 
     }
@@ -145,7 +145,7 @@ public class DestinatarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return ResponseEntity.ok(servDest.calculosDestinatario(DestinatarioDto.of(optDest.get())));
+            return ResponseEntity.ok(servDest.calculosDestinatario(optDest.get()));
         }
     }
 
