@@ -6,9 +6,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @ToString
+@Entity
 @AllArgsConstructor @NoArgsConstructor
-@Setter @Getter
+@Setter @Getter @ToString
 @Builder
 public class Aportacion {
     @Id @GeneratedValue

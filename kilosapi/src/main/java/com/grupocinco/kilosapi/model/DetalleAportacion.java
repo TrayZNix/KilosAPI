@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -23,11 +22,11 @@ public class DetalleAportacion {
 
     private Double cantidad_en_kgs;
 
-//    @PreRemove //TODO comprobar que se guarda la cantidad restada
-//    public void restarKilos() {
-//        List<KilosDisponibles> kilos = tipoAlimento.getKilosDisponible();
-//        kilos.forEach(k -> k.setCantidadDisponible(k.getCantidadDisponible() - cantidad_en_kgs));
-//    }
+    @PreRemove //TODO comprobar que se guarda la cantidad restada
+    public void restarKilos() {
+        KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
+        kilos.setCantidadDisponible(kilos.getCantidadDisponible() - cantidad_en_kgs);
+    }
 
     @Embeddable
     public static class DetalleAportacionId implements Serializable {

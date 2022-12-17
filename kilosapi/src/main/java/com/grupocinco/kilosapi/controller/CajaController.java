@@ -1,11 +1,17 @@
-package com.grupocinco.kilosapi.Controller;
+package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaDto;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.model.Caja;
-import com.grupocinco.kilosapi.model.Destinatario;
+import com.grupocinco.kilosapi.model.Tiene;
+import com.grupocinco.kilosapi.model.TienePK;
+import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.repository.CajaRepository;
-import com.grupocinco.kilosapi.repository.DestinatarioRepository;
-import com.grupocinco.kilosapi.view.CajaViews;
+import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.repository.TieneRepository;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.TieneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,17 +20,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController()
 @RequestMapping("/caja")
 public class CajaController {
     @Autowired
     private CajaRepository repoCaja;
+    @Autowired
+    private TieneRepository repoTiene;
+    @Autowired
+    private TieneService servicetiene;
+    @Autowired
+    private TipoAlimentoRepository repoTipoAl;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -34,7 +45,7 @@ public class CajaController {
                             examples = {@ExampleObject(
                                     value = """
                                             [
-                                                {
+                                                    {
                                                         "id": 3,
                                                         "qr": "qrqrqr",
                                                         "numeroCaja": 1,
@@ -65,5 +76,26 @@ public class CajaController {
         List<Caja> listaCajas = repoCaja.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(listaCajas);
+    }
+
+    @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
+        Optional<Caja> optCaja = repoCaja.findById(id);
+        if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else{
+            Caja c = optCaja.get();
+            Optional<TipoAlimento> optTipo = repoTipoAl.findById(idTipoAlim);
+            if (optTipo.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            else{
+                TipoAlimento t = optTipo.get();
+                TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
+                Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
+                servicetiene.saveLinea(ti);
+                CajaDto cdto = CajaDto.of(c);
+                cdto.setContenido(repoTiene.getLineasCajas(c));
+                return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
+            }
+        }
     }
 }

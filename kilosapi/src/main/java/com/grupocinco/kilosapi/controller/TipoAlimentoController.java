@@ -1,9 +1,8 @@
-package com.grupocinco.kilosapi.Controller;
+package com.grupocinco.kilosapi.controller;
 
 import com.grupocinco.kilosapi.dto.tipoAlimento.TipoAlimentoDto;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
 import com.grupocinco.kilosapi.model.TipoAlimento;
-import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.service.KilosDisponiblesService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tipoAlimento/")

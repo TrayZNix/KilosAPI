@@ -1,11 +1,13 @@
 package com.grupocinco.kilosapi.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.grupocinco.kilosapi.view.CajaViews;
-import com.grupocinco.kilosapi.view.DestinatarioViews;
+import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,26 +17,23 @@ import javax.persistence.*;
 @ToString
 @Entity
 public class Caja {
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
     @Id
     @GeneratedValue
     private Long id;
-    @JsonView({CajaViews.CajasList.class})
     @Column(name = "QR")
     private String qr;
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
     @Column(name = "NUMERO_CAJA")
     private Integer numeroCaja;
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class})
     @Column(name = "TOTAL_KILOS")
     private Double totalKilos;
     @ManyToOne
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
-    @JsonView({CajaViews.CajasList.class})
     private Destinatario destinatario;
-    @Transient
-    private String destinatarioString;
 
+    @OneToMany(mappedBy = "caja")
+    @Builder.Default
+    @ToString.Exclude
+    private List<Tiene> lineas = new ArrayList<Tiene>();
     public void addDestinatario(Destinatario d){
         this.destinatario = d;
         d.getCajas().add(this);

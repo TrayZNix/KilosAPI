@@ -1,10 +1,11 @@
 package com.grupocinco.kilosapi.dto.destinatario;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
-import com.grupocinco.kilosapi.view.CajaViews;
-import com.grupocinco.kilosapi.view.DestinatarioViews;
+import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import lombok.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class DestinatarioDto {
     @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.ModeloPostDestinatario.class})
     private String telefono;
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    private List<Caja> cajas;
+    private List<CajaDto> cajas;
     @JsonView({DestinatarioViews.DestinatarioList.class, DestinatarioViews.DestinatarioConcreto.class})
     private Double totalKilos;
     @JsonView(DestinatarioViews.DestinatarioList.class)
@@ -45,15 +46,14 @@ public class DestinatarioDto {
                 .nombre(d.getNombre())
                 .personaContacto(d.getPersonaContacto())
                 .telefono(d.getTelefono())
-                .cajas(d.getCajas()).build();
+                .build();
     }
     public static Destinatario to(DestinatarioDto d){
         return Destinatario.builder()
                 .direccion(d.getDireccion())
                 .nombre(d.getNombre())
                 .personaContacto(d.getPersonaContacto())
-                .telefono(d.getTelefono())
-                .cajas(d.getCajas()).build();
+                .telefono(d.getTelefono()).build();
     }
 
 
