@@ -1,4 +1,4 @@
-package com.grupocinco.kilosapi.Controller;
+package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

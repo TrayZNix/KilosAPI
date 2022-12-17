@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -14,26 +13,28 @@ import java.util.List;
 @EqualsAndHashCode
 @Builder
 public class DetalleAportacion {
-//    @EmbeddedId
-//    private DetalleAportacionId detalleAportacionId;
-    @Id @GeneratedValue
-    private Long id;
-//    @ManyToOne
-//    private TipoAlimento tipoAlimento;
+    @EmbeddedId
+    private DetalleAportacionId detalleAportacionId;
+
+    @ManyToOne()
+    @JoinColumn(name = "id")
+    private TipoAlimento tipoAlimento;
 
     private Double cantidad_en_kgs;
 
-//    @PreRemove //TODO comprobar que se guarda la cantidad restada
-//    public void restarKilos() {
-//        List<KilosDisponibles> kilos = tipoAlimento.getKilosDisponible();
-//        kilos.forEach(k -> k.setCantidadDisponible(k.getCantidadDisponible() - cantidad_en_kgs));
-//    }
+    @PreRemove //TODO comprobar que se guarda la cantidad restada
+    public void restarKilos() {
+        KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
+        kilos.setCantidadDisponible(kilos.getCantidadDisponible() - cantidad_en_kgs);
+    }
 
-//    @Embeddable
-//    public static class DetalleAportacionId implements Serializable {
-//        @ManyToOne()
-//        private Aportacion aportacion;
-//
-//        private Integer numLinea;
-//    }
+    @Getter
+    @Setter
+    @Embeddable
+    public static class DetalleAportacionId implements Serializable {
+        @ManyToOne()
+        private Aportacion aportacion;
+
+        private Integer numLinea;
+    }
 }
