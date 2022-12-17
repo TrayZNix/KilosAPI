@@ -1,6 +1,8 @@
 package com.grupocinco.kilosapi.service;
 
+import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
@@ -16,33 +18,23 @@ public class DestinatarioService {
     @Autowired
     private DestinatarioRepository repo;
 
-    public DestinatarioDto calculosDestinatario(DestinatarioDto d){
-        d = calcularKgTotales(d);
-        d = getNumerosCajas(d);
-        d.setCantidadCajas(d.getNumerosCaja().length); //Actualizar numeros de cajas
-        System.out.println(d);
-        return d;
-    }
+    @Autowired
+    private DestinatarioMapper mapperDest;
 
-    public DestinatarioDto calcularKgTotales(DestinatarioDto d){
-            List<Caja> cajas = d.getCajas();
-            double total = 0;
-            for(Caja caja: cajas){
-                total = total + caja.getTotalKilos();
-            }
-            d.setTotalKilos(total);
-        return d;
-
-    }
-
-    public DestinatarioDto getNumerosCajas(DestinatarioDto d){
-        List<Caja> cajas = d.getCajas();
+    public DestinatarioDto calculosDestinatario(Destinatario d){
+        DestinatarioDto dto = mapperDest.toDestinatarioDto(d);
+        List<CajaDto> cajas = dto.getCajas();
         List<Integer> numeros = new ArrayList<Integer>();
-        for(Caja caja: cajas){
+        double total = 0;
+        for(CajaDto caja: cajas){
+            total = total + caja.getTotalKilos();
             numeros.add(caja.getNumeroCaja());
         }
         int[] arr = numeros.stream().filter(i -> i != null).mapToInt(i -> i).toArray();
-        d.setNumerosCaja(arr);
-        return d;
+        dto.setNumerosCaja(arr);
+        dto.setTotalKilos(total);
+        dto.setCantidadCajas(arr.length); //Actualizar numeros de cajas
+        System.out.println(d);
+        return dto;
     }
 }
