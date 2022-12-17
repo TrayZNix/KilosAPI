@@ -69,7 +69,7 @@ public class TipoAlimentoController {
     public ResponseEntity<List<TipoAlimentoDto>> getListaTipoAlimentos(){
         List<TipoAlimento> data = serviceTA.findAll();
 
-        if(serviceTA.findAll().isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if(data.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             List<TipoAlimentoDto> result = new ArrayList<TipoAlimentoDto>();
             data.forEach(ta ->{

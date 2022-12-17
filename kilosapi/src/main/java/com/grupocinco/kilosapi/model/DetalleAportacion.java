@@ -14,12 +14,12 @@ import java.util.List;
 @EqualsAndHashCode
 @Builder
 public class DetalleAportacion {
-//    @EmbeddedId
-//    private DetalleAportacionId detalleAportacionId;
+    @EmbeddedId
+    private DetalleAportacionId detalleAportacionId;
     @Id @GeneratedValue
     private Long id;
-//    @ManyToOne
-//    private TipoAlimento tipoAlimento;
+    @ManyToOne
+    private TipoAlimento tipoAlimento;
 
     private Double cantidad_en_kgs;
 
@@ -29,11 +29,11 @@ public class DetalleAportacion {
 //        kilos.forEach(k -> k.setCantidadDisponible(k.getCantidadDisponible() - cantidad_en_kgs));
 //    }
 
-//    @Embeddable
-//    public static class DetalleAportacionId implements Serializable {
-//        @ManyToOne()
-//        private Aportacion aportacion;
-//
-//        private Integer numLinea;
-//    }
+    @Embeddable
+    public static class DetalleAportacionId implements Serializable {
+        @ManyToOne()
+        private Aportacion aportacion;
+
+        private Integer numLinea;
+    }
 }

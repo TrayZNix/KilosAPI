@@ -1,7 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -15,7 +14,7 @@ public class KilosDisponibles implements Serializable{
     @OneToOne
     @JoinColumn(name = "id")
     @MapsId
-    private TipoAlimento tipoAlimento;
+    private TipoAlimento  tipoAlimento;
     private Double cantidadDisponible;
 
     public void addToTipoAlimento(TipoAlimento a){
