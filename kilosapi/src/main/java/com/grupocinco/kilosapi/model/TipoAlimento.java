@@ -27,4 +27,9 @@ public class TipoAlimento implements  Serializable{
     @JoinColumn(name="tipoAlimento_id", foreignKey = @ForeignKey(name = "FK_KILOSDISPONIBLES_TIPOALIMENTO"))
     private KilosDisponibles kilosDisponible;
 
+
+    public void addToKilosDisponibles(KilosDisponibles k){
+        this.kilosDisponible = k;
+        k.setTipoAlimento(this);
+    }
 }

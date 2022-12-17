@@ -8,8 +8,9 @@ import java.io.Serializable;
 @Entity @ToString
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
+@Builder
 public class KilosDisponibles implements Serializable{
-    @Id
+    @Id @GeneratedValue
     private Long id;
     @OneToOne
     @JoinColumn(name = "id")

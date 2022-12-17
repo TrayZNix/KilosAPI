@@ -64,6 +64,11 @@ public class MainDePruebas {
         c2.addDestinatario(des1);
         c3.addDestinatario(des2);
 
+        KilosDisponibles k1 = KilosDisponibles.builder().cantidadDisponible(20.3).build();
+        KilosDisponibles k2 = KilosDisponibles.builder().cantidadDisponible(10.0).build();
+        KilosDisponibles k3 = KilosDisponibles.builder().cantidadDisponible(12.5).build();
+        KilosDisponibles k4 = KilosDisponibles.builder().cantidadDisponible(26.0).build();
+        KilosDisponibles k5 = KilosDisponibles.builder().cantidadDisponible(29.99).build();
 
         TipoAlimento t1 = TipoAlimento.builder().nombre("Arroz").build();
         TipoAlimento t2 = TipoAlimento.builder().nombre("Azúcar").build();
@@ -71,7 +76,11 @@ public class MainDePruebas {
         TipoAlimento t4 = TipoAlimento.builder().nombre("Huevo").build();
         TipoAlimento t5 = TipoAlimento.builder().nombre("Zanahoria").build();
 
-
+        t1.addToKilosDisponibles(k1);
+        t2.addToKilosDisponibles(k2);
+        t3.addToKilosDisponibles(k3);
+        t4.addToKilosDisponibles(k4);
+        t5.addToKilosDisponibles(k5);
 
         repoDestinatario.saveAll(List.of(des1, des2));
         repoCaja.saveAll(List.of(c1, c2, c3));
