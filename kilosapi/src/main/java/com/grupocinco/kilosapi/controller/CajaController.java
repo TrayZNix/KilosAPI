@@ -13,6 +13,7 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,6 +43,9 @@ public class CajaController {
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
+
+    @Autowired
+    private CajaService cajaService;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -98,6 +102,7 @@ public class CajaController {
                 TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
                 servicetiene.saveLinea(ti);
+                c = cajaService.actualizarDatosCajaById(c);
                 CajaDto cdto = CajaDto.of(c);
                 cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);

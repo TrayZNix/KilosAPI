@@ -1,2 +1,16 @@
 En /destinatario/{id}/detalle, tengo que mostrar el array de numeros de cajas, cantidad de cajas, y total de kilos, o solo las cajas?
+
 Es correcta la representación del tipo de alimento, o debo escribir solo el string del nombre del tipo de alimento?
+
+Al crear linea en tiene, sumamos o sustituimos? (Planeado sumar)
+
+//No prior.
+
+REL MANY TO MANY Destinatario unidirec?
+
+Mover contenido de endpoints a servicios?
+
+Algo para evitar errores de coma flotante (excesivos decimales) en la respuesta.
+
+Por que en los ejemplos de ManyToMany usa list en vez de set? Al tener que usar list
+y recoger la lista de cajas de un destinatario me devuelve la caja mas de una vez (Una vez por cada fila en tiene)
