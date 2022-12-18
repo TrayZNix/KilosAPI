@@ -3,7 +3,7 @@ package com.grupocinco.kilosapi.dto.aportacion;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
-import com.grupocinco.kilosapi.view.AportacionViews;
+import com.grupocinco.kilosapi.dto.view.AportacionViews;
 import lombok.*;
 
 import java.util.List;
@@ -12,14 +12,16 @@ import java.util.List;
 @AllArgsConstructor@NoArgsConstructor
 @Getter @Setter @ToString
 public class AportacionDto {
+    @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class} )
     private Long id;
-    @JsonView({AportacionViews.ListaAportacion.class})
+    @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class})
     private String fecha;
-    @JsonView({AportacionViews.ListaAportacion.class})
+    @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class})
     private String nombreClase;
-    @JsonView({AportacionViews.ListaAportacion.class})
+    @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class})
     private Double kilosTotales;
 
+    @JsonView({AportacionViews.AportacionById.class})
     List<DetalleAportacion> detalleAportaciones;
 
 

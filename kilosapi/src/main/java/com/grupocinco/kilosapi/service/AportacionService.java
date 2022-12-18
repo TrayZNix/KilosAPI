@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.service;
 
 import com.grupocinco.kilosapi.model.Aportacion;
+import com.grupocinco.kilosapi.model.Clase;
 import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.repository.AportacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,8 @@ public class AportacionService {
     }
     public Optional<Aportacion> findById(Long id) {
         return repo.findById(id);
+    }
+    public Aportacion add(Aportacion a) {
+        return repo.save(a);
     }
 }

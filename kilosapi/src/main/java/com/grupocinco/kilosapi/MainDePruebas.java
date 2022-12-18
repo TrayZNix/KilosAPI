@@ -5,8 +5,7 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.DestinatarioService;
-import com.grupocinco.kilosapi.service.TieneService;
+import com.grupocinco.kilosapi.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,13 @@ public class MainDePruebas {
     private DestinatarioService destServ;
     @Autowired
     private TieneService tieneService;
+    @Autowired
+    private AportacionService aportacionService;
+    @Autowired
+    private ClaseService claseService;
 
+    @Autowired
+    private DetalleAportacionService detalleAportacionService;
     @PostConstruct
     public void datos(){
         Destinatario des1 = Destinatario.builder()
@@ -112,10 +117,31 @@ public class MainDePruebas {
                 .tipoAlimento(t5)
                 .cantidadKgs(2.4)
                 .build();
-
-
         tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5));
 
-    }
+        Clase cl1 = Clase.builder()
+                .tutor("Luismi")
+                .nombre("Clase tal")
+                .build();
+        Clase cl2 = Clase.builder()
+                .tutor("Miguel")
+                .nombre("Clase tal 2")
+                .build();
 
+        Aportacion a1 = Aportacion.builder()
+                .fecha("17/12/2022")
+                .clase(cl1)
+                .build();
+
+        Aportacion a2 = Aportacion.builder()
+                .fecha("21/12/2022")
+                .clase(cl2)
+                .build();
+
+        claseService.save(cl1);
+        claseService.save(cl2);
+
+        aportacionService.add(a1);
+        aportacionService.add(a2);
+    }
 }

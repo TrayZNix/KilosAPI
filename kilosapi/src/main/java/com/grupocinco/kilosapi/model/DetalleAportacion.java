@@ -15,9 +15,8 @@ import java.io.Serializable;
 public class DetalleAportacion {
     @EmbeddedId
     private DetalleAportacionId detalleAportacionId;
-    @Id @GeneratedValue
-    private Long id;
     @ManyToOne
+    @JoinColumn(name = "id")
     private TipoAlimento tipoAlimento;
 
     private Double cantidad_en_kgs;
@@ -28,10 +27,13 @@ public class DetalleAportacion {
         kilos.setCantidadDisponible(kilos.getCantidadDisponible() - cantidad_en_kgs);
     }
 
+    @Getter
+    @Setter
     @Embeddable
     public static class DetalleAportacionId implements Serializable {
         @ManyToOne()
         private Aportacion aportacion;
+
 
         private Integer numLinea;
     }

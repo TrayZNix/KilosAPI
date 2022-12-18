@@ -3,17 +3,18 @@ package com.grupocinco.kilosapi.model;
 import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity @ToString
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
 @Builder
 public class KilosDisponibles implements Serializable{
-    @Id @GeneratedValue
+    @Id
     private Long id;
     @OneToOne
     @JoinColumn(name = "id")
-    @MapsId
+    @MapsId()
     private TipoAlimento  tipoAlimento;
     private Double cantidadDisponible;
 

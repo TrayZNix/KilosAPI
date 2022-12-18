@@ -13,13 +13,11 @@ import java.util.List;
 public class Aportacion {
     @Id @GeneratedValue
     private Long id;
-
     private String fecha;
 
    @ManyToOne
    @JoinColumn(name="clase_id", foreignKey = @ForeignKey(name = "FK_APORTACION_CLASE"))
    private Clase clase;
-
    @ToString.Exclude
    @OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
@@ -37,10 +35,10 @@ public class Aportacion {
    //TODO poner el ser de los detalles para que añada y ponga en null la aportacion
    public void addDetalleAportacion(DetalleAportacion d){
        this.getDetalles().add(d);
-//       d.set(this);
+       d.getDetalleAportacionId().setAportacion(this);
    }
    public void removeDetalleAportacion(DetalleAportacion d){
        this.getDetalles().remove(d);
-//       d.set(null)
+       d.getDetalleAportacionId().setAportacion(this);
    }
 }

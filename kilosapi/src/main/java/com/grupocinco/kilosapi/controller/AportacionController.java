@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.aportacion.AportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.service.AportacionService;
-import com.grupocinco.kilosapi.view.AportacionViews;
+import com.grupocinco.kilosapi.dto.view.AportacionViews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class AportacionController {
     }
 
     @GetMapping("/{id}")
-    @JsonView(AportacionViews.ListaAportacion.class)
+    @JsonView(AportacionViews.AportacionById.class)
     public ResponseEntity<AportacionDto> getAportacionById(@PathVariable Long id){
         Optional<Aportacion> a = serviceA.findById(id);
         if(a.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -46,5 +46,4 @@ public class AportacionController {
             return ResponseEntity.ok(result);
         }
     }
-
 }
