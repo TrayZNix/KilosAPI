@@ -6,9 +6,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @ToString
+@Entity
 @AllArgsConstructor @NoArgsConstructor
-@Setter @Getter
+@Setter @Getter @ToString
 @Builder
 public class Aportacion {
     @Id @GeneratedValue
@@ -26,13 +26,13 @@ public class Aportacion {
    private List<DetalleAportacion> detalles = new ArrayList<>();
 
 
-//   public void addToClase(Clase c) {
-//       this.clase = c;
-//       c.getAportacion().add(this);
-//   }
-//
-//   public void removeFromClase(Clase c) {
-//       this.clase = null;
-//       c.getAportacion().remove(this);
-//   }
+   public void addToClase(Clase c) {
+       this.clase = c;
+       c.getAportaciones().add(this);
+   }
+
+   public void removeFromClase(Clase c) {
+       this.clase = null;
+       c.getAportaciones().remove(this);
+   }
 }
