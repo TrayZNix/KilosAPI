@@ -42,14 +42,14 @@ public class CajaDto {
                 .build();
 
     }
-    public static Caja to(CajaDto c){
-        return Caja.builder()
-                .id(c.getId())
-                .qr(c.getQr())
-                .numeroCaja(c.getNumeroCaja())
-                .destinatario(c.getDestinatario())
-                .totalKilos(c.getTotalKilos())
-                .build();
-
-    }
+//    public static Caja to(CajaDto c){
+//        return Caja.builder()
+//                .id(c.getId())
+//                .qr(c.getQr())
+//                .numeroCaja(c.getNumeroCaja())
+//                .destinatario(c.getDestinatario())
+//                .totalKilos(c.getTotalKilos())
+//                .build();
+//
+//    }
 }
