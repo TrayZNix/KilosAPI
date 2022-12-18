@@ -2,6 +2,8 @@ package com.grupocinco.kilosapi.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
+import com.grupocinco.kilosapi.dto.caja.CajaMapper;
+import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
@@ -36,6 +38,10 @@ public class CajaController {
     private TieneService servicetiene;
     @Autowired
     private TipoAlimentoRepository repoTipoAl;
+    @Autowired
+    private TieneMapper mapperTiene;
+    @Autowired
+    private CajaMapper mapperCaja;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -72,10 +78,10 @@ public class CajaController {
     })
     @GetMapping()
     @JsonView(CajaViews.CajasList.class)
-    public ResponseEntity<List<Caja>> getCajas(){
+    public ResponseEntity<List<CajaDto>> getCajas(){
         List<Caja> listaCajas = repoCaja.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(listaCajas);
+        return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
@@ -93,7 +99,7 @@ public class CajaController {
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
                 servicetiene.saveLinea(ti);
                 CajaDto cdto = CajaDto.of(c);
-                cdto.setContenido(repoTiene.getLineasCajas(c));
+                cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
             }
         }
