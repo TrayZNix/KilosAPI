@@ -11,8 +11,10 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +32,8 @@ import java.util.Optional;
 public class CajaController {
     @Autowired
     private CajaRepository repoCaja;
+    @Autowired
+    private CajaService cajaService;
     @Autowired
     private TieneRepository repoTiene;
     @Autowired
@@ -97,5 +101,17 @@ public class CajaController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
             }
         }
+    }
+
+    @PutMapping("caja/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la aportación", description = "id de la aportación a editar") @PathVariable Long id,
+                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
+                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Double cantidad) {
+        Optional<Caja> caja = cajaService.getCajaByIdAndIdTipo(id, idTipoAlim);
+        if (caja.isPresent()) {
+
+        } else
+            return ResponseEntity.badRequest().build();
     }
 }
