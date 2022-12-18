@@ -1,4 +1,4 @@
-package com.grupocinco.kilosapi.Controller;
+package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
