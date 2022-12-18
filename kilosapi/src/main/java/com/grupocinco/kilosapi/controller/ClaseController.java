@@ -2,7 +2,7 @@ package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.clase.ClaseDetalleDto;
-import com.grupocinco.kilosapi.dto.clase.ClaseViews;
+import com.grupocinco.kilosapi.dto.view.ClaseViews;
 import com.grupocinco.kilosapi.model.Clase;
 import com.grupocinco.kilosapi.service.ClaseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/clase/")
+@RequestMapping("/clase")
 @Tag(name = "Clase", description = "Controlador con las peticiones relacionadas con la clase: obtención, creación, edición y eliminación de clases")
 public class ClaseController {
     private final ClaseService claseService;
