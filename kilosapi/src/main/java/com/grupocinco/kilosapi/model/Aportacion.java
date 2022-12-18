@@ -3,6 +3,7 @@ package com.grupocinco.kilosapi.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class Aportacion {
     @Id @GeneratedValue
     private Long id;
 
-    private String fecha;
+    private LocalDate fecha;
 
    @ManyToOne
    @JoinColumn(name="clase_id", foreignKey = @ForeignKey(name = "FK_APORTACION_CLASE"))
