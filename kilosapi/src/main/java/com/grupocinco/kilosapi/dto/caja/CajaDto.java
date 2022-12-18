@@ -2,6 +2,7 @@ package com.grupocinco.kilosapi.dto.caja;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
+import com.grupocinco.kilosapi.dto.tiene.TieneDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
@@ -28,7 +29,7 @@ public class CajaDto {
     private Double totalKilos;
     private Destinatario destinatario;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
-    private List<Tiene> contenido;
+    private List<TieneDto> contenido;
     private String destinatarioString;
 
     public static CajaDto of(Caja c){
@@ -38,19 +39,17 @@ public class CajaDto {
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
                 .totalKilos(c.getTotalKilos())
-                .contenido(c.getLineas())
                 .build();
 
     }
-    public static Caja to(CajaDto c){
-        return Caja.builder()
-                .id(c.getId())
-                .qr(c.getQr())
-                .numeroCaja(c.getNumeroCaja())
-                .destinatario(c.getDestinatario())
-                .totalKilos(c.getTotalKilos())
-                .lineas(c.getContenido())
-                .build();
-
-    }
+//    public static Caja to(CajaDto c){
+//        return Caja.builder()
+//                .id(c.getId())
+//                .qr(c.getQr())
+//                .numeroCaja(c.getNumeroCaja())
+//                .destinatario(c.getDestinatario())
+//                .totalKilos(c.getTotalKilos())
+//                .build();
+//
+//    }
 }
