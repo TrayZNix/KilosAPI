@@ -34,7 +34,6 @@ public class DestinatarioService {
         dto.setNumerosCaja(arr);
         dto.setTotalKilos(total);
         dto.setCantidadCajas(arr.length); //Actualizar numeros de cajas
-        System.out.println(d);
         return dto;
     }
 }

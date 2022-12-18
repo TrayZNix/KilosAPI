@@ -30,15 +30,15 @@ public class Destinatario {
     @Column(name = "TELEFONO")
     private String telefono;
     
-    @ToString.Exclude
-    @OneToMany(mappedBy = "destinatario", fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<Caja> cajas = new ArrayList<Caja>();
+//    @OneToMany(mappedBy = "destinatario", fetch = FetchType.EAGER)
+//    @Builder.Default
+//    @ToString.Exclude
+//    private List<Caja> cajas = new ArrayList<Caja>();
 
     @PreRemove
     public void setNullDestinatario() {
-        cajas.forEach(a -> a.setDestinatario(null));
-        cajas = null;
+//        cajas.forEach(a -> a.setDestinatario(null));
+//        cajas = null;
     }
 
 

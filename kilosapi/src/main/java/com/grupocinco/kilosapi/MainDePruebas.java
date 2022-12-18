@@ -5,6 +5,7 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.service.TieneService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,9 @@ public class MainDePruebas {
     @Autowired
     private TieneService tieneService;
 
+    @Autowired
+    private CajaService cajaService;
+
     @PostConstruct
     public void datos(){
         Destinatario des1 = Destinatario.builder()
@@ -48,17 +52,14 @@ public class MainDePruebas {
         Caja c1 = Caja.builder()
                 .qr("qrqrqr")
                 .numeroCaja(1)
-                .totalKilos(37.67)
                 .build();
         Caja c2 = Caja.builder()
                 .qr("tetete")
                 .numeroCaja(2)
-                .totalKilos(13.26)
                 .build();
         Caja c3 = Caja.builder()
                 .qr("rwrwrww")
                 .numeroCaja(3)
-                .totalKilos(17.57)
                 .build();
         c1.addDestinatario(des1);
         c2.addDestinatario(des1);
@@ -103,9 +104,21 @@ public class MainDePruebas {
                 .tipoAlimento(t5)
                 .cantidadKgs(2.4)
                 .build();
+        Tiene tiene6 = Tiene.builder()
+                .caja(c2)
+                .tipoAlimento(t4)
+                .cantidadKgs(2.4)
+                .build();
 
 
-        tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5));
+        tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5, tiene6));
+
+        //Caculamos y guardamos los pesos de cada caja
+        cajaService.actualizarDatosCajaById(c1);
+        cajaService.actualizarDatosCajaById(c2);
+        cajaService.actualizarDatosCajaById(c3);
+
+
 
     }
 
