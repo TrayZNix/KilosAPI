@@ -9,7 +9,7 @@ import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.*;
-import com.grupocinco.kilosapi.service.TieneService;
+import com.grupocinco.kilosapi.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -26,21 +26,23 @@ import java.util.Optional;
 @RestController()
 @RequestMapping("/caja")
 public class CajaController {
+
     @Autowired
-    private CajaRepository repoCaja;
+    private CajaService servCaja;
     @Autowired
-    private TieneRepository repoTiene;
+    private TieneService servTiene;
     @Autowired
     private TieneService servicetiene;
     @Autowired
-    private TipoAlimentoRepository repoTipoAl;
+    private DestinatarioService servDest;
+    @Autowired
+    private KilosDisponiblesService servKilos;
+    @Autowired
+    private TipoAlimentoService servTipoAlim;
     @Autowired
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
-
-    @Autowired
-    private KilosDisponiblesRepository repoKilos;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -78,7 +80,7 @@ public class CajaController {
     @GetMapping()
     @JsonView(CajaViews.CajasList.class)
     public ResponseEntity<List<CajaDto>> getCajas(){
-        List<Caja> listaCajas = repoCaja.findAll();
+        List<Caja> listaCajas = servCaja.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
@@ -86,20 +88,20 @@ public class CajaController {
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
-        Optional<Caja> optCaja = repoCaja.findById(id);
+        Optional<Caja> optCaja = servCaja.findById(id);
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             Caja c = optCaja.get();
-            Optional<TipoAlimento> optTipo = repoTipoAl.findById(idTipoAlim);
+            Optional<TipoAlimento> optTipo = servTipoAlim.findById(idTipoAlim);
             if (optTipo.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             else{
                 TipoAlimento t = optTipo.get();
-                Double cantidadDisponible = repoKilos.getKilosByTipoRelacionado(t);
+                Double cantidadDisponible = servKilos.getKilosByTipoRelacionado(t);
                 if(cantidad > cantidadDisponible) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 else{
-                    repoKilos.setKilosDisponiblesToTipoRelacionado(t, -cantidad);
+                    servKilos.setKilosDisponiblesToTipoRelacionado(t, -cantidad);
                     TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
-                    Optional<Double> optCantidadExist = repoTiene.findIfAlreadySavedTipoAlimentoInCaja(t, c);
+                    Optional<Double> optCantidadExist = servTiene.findIfAlreadySavedTipoAlimentoInCaja(t, c);
                     if(optCantidadExist.isEmpty()){
                         Tiene ti = Tiene.builder()
                                 .id(tPk)
@@ -119,7 +121,7 @@ public class CajaController {
                         servicetiene.saveLinea(ti);
                     }
                     CajaDto cdto = CajaDto.of(c);
-                    cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
+                    cdto.setContenido(mapperTiene.ofList(servTiene.getLineasCajas(c)));
                     return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
                 }
             }
@@ -150,7 +152,7 @@ public class CajaController {
                 .qr(dto.getQr())
                 .numeroCaja(dto.getNumeroCaja())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(repoCaja.save(ca));
+        return ResponseEntity.status(HttpStatus.CREATED).body(servCaja.save(ca));
     }
 
     @Operation(description = "Borra una caja y la lista de alimentos que contiene")
@@ -161,13 +163,31 @@ public class CajaController {
     })
     @DeleteMapping("/caja/{id1}/tipo/{idTipoAlim}")
     public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idtipoAlim){
-        Optional<Caja> caja = repoCaja.findById(id1);
+        Optional<Caja> caja = servCaja.findById(id1);
         if(caja.isPresent()){
             Caja c = caja.get();
 
-            repoCaja.deleteById(id1);
+            servCaja.deleteById(id1);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @PostMapping("/{id}/destinatario/{idDestinataro}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
+        Optional<Caja> optC = servCaja.findById(id);
+        Optional<Destinatario> optD = servDest.findById(idDestinataro);
+        if(optC.isPresent()){
+            if (optD.isPresent()){
+                Caja c = optC.get();
+                Destinatario d = optD.get();
+                c.setDestinatario(d);
+
+                return ResponseEntity.ok(mapperCaja.toCajaDto(c));
+            }
+            else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+        }
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }
