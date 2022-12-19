@@ -71,7 +71,7 @@ public class DestinatarioController {
     public ResponseEntity<List<DestinatarioDto>> getListaDestinatarios(){
         List<Destinatario> lista = repoDestinatarios.findAll();
         List<DestinatarioDto> listaDto = new ArrayList<DestinatarioDto>();
-        lista.forEach(destinatario -> listaDto.add(servDest.calculosDestinatario(destinatario)));
+        lista.forEach(destinatario -> listaDto.add(servDest.setDatosDestinatarioDto(destinatario)));
         if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(listaDto);
     }
@@ -113,7 +113,7 @@ public class DestinatarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return ResponseEntity.ok(servDest.calculosDestinatario(optDest.get()));
+            return ResponseEntity.ok(servDest.setDatosDestinatarioDto(optDest.get()));
         }
 
     }
@@ -145,7 +145,7 @@ public class DestinatarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return ResponseEntity.ok(servDest.calculosDestinatario(optDest.get()));
+            return ResponseEntity.ok(servDest.setDatosDestinatarioDto(optDest.get()));
         }
     }
 
