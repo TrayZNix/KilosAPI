@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/clase/")
+@RequestMapping("/clase")
 @Tag(name = "Clase", description = "Controlador con las peticiones relacionadas con la clase: obtención, creación, edición y eliminación de clases")
 public class ClaseController {
     private final ClaseService claseService;
