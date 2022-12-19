@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaDetalleDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
@@ -10,16 +11,15 @@ import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.CajaRepository;
-import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.repository.*;
-import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
 import com.grupocinco.kilosapi.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,6 +57,10 @@ public class CajaController {
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
+    @Autowired
+    private CajaService servCaja;
+    @Autowired
+    private KilosDisponiblesRepository repoKilos;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -99,6 +103,55 @@ public class CajaController {
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
+    @Operation(
+            summary = "Obtener una caja",
+            description = "Esta petición devuelve la caja con el id indicado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "La caja existe",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CajaDetalleDto.class)), examples = @ExampleObject("""
+                            {
+                                "id": 1,
+                                "qr": "qrqrqr",
+                                "numeroCaja": 1,
+                                "kilosTotales": null,
+                                "destinatario": {
+                                    "id": 4,
+                                    "nombre": "Comedor Pagés del Corro"
+                                },
+                                "tiposAlimento": [
+                                    {
+                                        "id": 6,
+                                        "nombre": "Arroz",
+                                        "cantidad": 2.5
+                                    },
+                                    {
+                                        "id": 7,
+                                        "nombre": "Azúcar",
+                                        "cantidad": 2.6
+                                    }
+                                ]
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "La caja no existe",
+                    content = {@Content()}
+            )
+    })
+    @GetMapping("{id}")
+    public ResponseEntity<CajaDetalleDto> getCajaById(@Parameter(name = "Id de una caja", description = "id de la caja a editar") @PathVariable Long id) {
+        Optional<Caja> cajaOptional = repoCaja.findById(id); //
+
+        if (cajaOptional.isPresent()) {
+            return ResponseEntity.ok().body(CajaDetalleDto.of(cajaOptional.get()));
+        } else
+            return ResponseEntity.notFound().build();
+    }
+
     @Operation(description = "Añade la cantidad deseada del tipo de alimento indicado, a la caja de id proporcionado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
@@ -139,7 +192,7 @@ public class CajaController {
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             Caja c = optCaja.get();
-            Optional<TipoAlimento> optTipo = servTipoAlim.findById(idTipoAlim);
+            Optional<TipoAlimento> optTipo = tipoAlimentoService.findById(idTipoAlim);
             if (optTipo.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             else{
                 TipoAlimento t = optTipo.get();
@@ -235,7 +288,7 @@ public class CajaController {
     })
     @PutMapping("{id}/tipo/{idTipoAlim}/kg/{cantidad}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la aportación", description = "id de la aportación a editar") @PathVariable Long id,
+    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la caja", description = "id de la caja a editar") @PathVariable Long id,
                                               @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
                                               @Parameter(name = "Cantidad kg", description = "Cantidad de kg a tener en una caja si la cantidad disponible del tipo indicado lo permite.") @PathVariable Double cantidad) {
         Optional<Caja> cajaOpt = cajaService.getCajaByIdAndIdTipo(id, idTipoAlim); //FIXME solo devuelve el tipo de alimento con el id que se pasa, si tiene más tipos no se muestran

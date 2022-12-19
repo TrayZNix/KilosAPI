@@ -6,9 +6,6 @@ import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.service.AportacionService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.aportacion.AportacionDto;
-import com.grupocinco.kilosapi.dto.tipoAlimento.TipoAlimentoDto;
-import com.grupocinco.kilosapi.model.Aportacion;
-import com.grupocinco.kilosapi.service.AportacionService;
 import com.grupocinco.kilosapi.dto.view.AportacionViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import java.util.Optional;
 
 @RestController
@@ -70,7 +64,7 @@ public class AportacionController {
                     content = {@Content()}
             )
     })
-    @GetMapping("{id}")
+    @GetMapping("/clase/{id}")
     //TODO comprobar que esto funciona cuando se puedan hacer cosas con las aportaciones y los detalles de aportación
     public ResponseEntity<ClaseInfoAportacionDto> getAportacionByClaseId(@Parameter(name = "Id de la aportación", description = "Id de la aportación a buscar") @PathVariable Long id) {
         Optional<ClaseInfoAportacionDto> clase = aportacionService.aportacionDetalleByClaseId(id);

@@ -6,6 +6,7 @@ import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.dto.view.AportacionViews;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -15,7 +16,7 @@ public class AportacionDto {
     @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class} )
     private Long id;
     @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class})
-    private String fecha;
+    private LocalDate fecha;
     @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class})
     private String nombreClase;
     @JsonView({AportacionViews.ListaAportacion.class,AportacionViews.AportacionById.class})

@@ -1,7 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -38,12 +37,13 @@ public class Aportacion {
        c.getAportaciones().remove(this);
    }
 
+   //TODO comprueba esto ale que me huele regular el remove
    public void addDetalleAportacion(DetalleAportacion d){
        this.getDetalles().add(d);
-       d.getDetalleAportacionId().setAportacion(this);
+       d.getDetalleAportacionId().setAportacionId(this.id);
    }
    public void removeDetalleAportacion(DetalleAportacion d){
        this.getDetalles().remove(d);
-       d.getDetalleAportacionId().setAportacion(this);
+       d.getDetalleAportacionId().setAportacionId(this.id);
    }
 }

@@ -1,7 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,6 +36,8 @@ public class DetalleAportacion {
     @Embeddable
     @EqualsAndHashCode
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class DetalleAportacionId implements Serializable {
         private Long aportacionId;
 

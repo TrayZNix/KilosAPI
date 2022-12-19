@@ -6,11 +6,11 @@ import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -62,6 +62,7 @@ public class MainDePruebas {
                 .qr("rwrwrww")
                 .numeroCaja(3)
                 .build();
+        repoCaja.saveAll(List.of(c1, c2, c3));
         c1.addDestinatario(des1);
         c2.addDestinatario(des1);
         c3.addDestinatario(des2);
@@ -78,10 +79,10 @@ public class MainDePruebas {
         TipoAlimento t4 = TipoAlimento.builder().nombre("Huevo").build();
         TipoAlimento t5 = TipoAlimento.builder().nombre("Zanahoria").build();
 
-        KilosDisponibles k1 = KilosDisponibles.builder().tipoAlimento(t1).cantidadDisponible(10.0).build();
-        KilosDisponibles k2 = KilosDisponibles.builder().tipoAlimento(t2).cantidadDisponible(10.0).build();
-        t1.setKilosDisponible(k1);
-        t2.setKilosDisponible(k2);
+        KilosDisponibles k6 = KilosDisponibles.builder().tipoAlimento(t1).cantidadDisponible(10.0).build();
+        KilosDisponibles k7 = KilosDisponibles.builder().tipoAlimento(t2).cantidadDisponible(10.0).build();
+        t1.setKilosDisponible(k6);
+        t2.setKilosDisponible(k7);
 
 
         t1.addToKilosDisponibles(k1);
@@ -134,12 +135,12 @@ public class MainDePruebas {
                 .build();
 
         Aportacion a1 = Aportacion.builder()
-                .fecha("17/12/2022")
+                .fecha(LocalDate.now())
                 .clase(cl1)
                 .build();
 
         Aportacion a2 = Aportacion.builder()
-                .fecha("21/12/2022")
+                .fecha(LocalDate.now())
                 .clase(cl2)
                 .build();
 
