@@ -1,5 +1,6 @@
 package com.grupocinco.kilosapi.service;
 
+import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TienePK;
 import com.grupocinco.kilosapi.model.TipoAlimento;
@@ -36,5 +37,8 @@ public class TieneService {
 
     public void deleteTipoAlimento(TipoAlimento id){
         tieneRepo.deleteTipoAlimento(id);
+    }
+    public void deleteCaja(Caja id){
+        tieneRepo.deleteCaja(id);
     }
 }

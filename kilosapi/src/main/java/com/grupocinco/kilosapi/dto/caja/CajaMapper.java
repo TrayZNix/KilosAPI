@@ -2,6 +2,7 @@ package com.grupocinco.kilosapi.dto.caja;
 
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.model.Caja;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class CajaMapper {
     @Autowired
     private TieneMapper mapperTiene;

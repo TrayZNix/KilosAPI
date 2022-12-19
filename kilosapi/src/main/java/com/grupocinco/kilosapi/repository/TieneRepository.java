@@ -23,4 +23,9 @@ public interface TieneRepository extends JpaRepository<Tiene, TienePK> {
     @Transactional
     @Query("delete from Tiene t where t.tipoAlimento = :id")
     public void deleteTipoAlimento(@Param("id")TipoAlimento id);
+
+    @Modifying
+    @Transactional
+    @Query("delete from Tiene t where t.caja = :id")
+    public void deleteCaja(@Param("id")Caja id);
 }
