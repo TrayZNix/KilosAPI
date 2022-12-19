@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
@@ -89,9 +90,39 @@ public class CajaController {
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
+
+    @Operation(description = "Añade un tipo de alimento a la caja determinada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se encontró el destinatario",
+                    content = {@Content(mediaType = "application/json",
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "id": 2,
+                                                "nombre": "Hermanitas de los Pobres",
+                                                "direccion": "C/ Luis Montoto 43",
+                                                "personaContacto": "José",
+                                                "telefono": "954543092",
+                                                "cajas": [
+                                                    {
+                                                        "id": 5,
+                                                        "numeroCaja": 3,
+                                                        "totalKilos": 17.57
+                                                    }
+                                                ],
+                                                "totalKilos": 17.57,
+                                                "cantidadCajas": 1
+                                            }
+                                            """
+                            )})}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontraro el destinatario",
+                    content = {@Content})
+    })
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
+    public ResponseEntity<CajaContenidoDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
         Optional<Caja> optCaja = servCaja.findById(id);
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
@@ -124,9 +155,10 @@ public class CajaController {
                                 .build();
                         servicetiene.saveLinea(ti);
                     }
-                    CajaDto cdto = CajaDto.of(c);
-                    cdto.setContenido(mapperTiene.ofList(servTiene.getLineasCajas(c)));
-                    return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
+                    c = servCaja.actualizarDatosCajas(c);
+                    CajaContenidoDto cajaDto = mapperCaja.toCajaContenidoDto(c);
+                    cajaDto.setContenido(mapperTiene.fromListtoLineaCajaCont(servTiene.getLineasCajas(c)));
+                    return ResponseEntity.status(HttpStatus.CREATED).body(cajaDto);
                 }
             }
         }
@@ -176,7 +208,7 @@ public class CajaController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @PostMapping("/{id}/destinatario/{idDestinataro}")
-    @JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
     public ResponseEntity<DestinatarioCajaActualizadaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
         Optional<Caja> optC = servCaja.findById(id);
         Optional<Destinatario> optD = servDest.findById(idDestinataro);

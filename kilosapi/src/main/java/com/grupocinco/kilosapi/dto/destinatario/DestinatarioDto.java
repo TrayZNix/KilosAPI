@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.dto.destinatario;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
@@ -34,7 +35,7 @@ public class DestinatarioDto {
     @JsonView(DestinatarioViews.DestinatarioList.class)
     private int[] numerosCaja;
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    private List<CajaDto> cajas;
+    private List<CajaContenidoDto> cajas;
 
     public static DestinatarioDto of(Destinatario d){
         return DestinatarioDto.builder()

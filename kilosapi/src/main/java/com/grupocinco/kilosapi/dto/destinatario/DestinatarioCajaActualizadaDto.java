@@ -13,10 +13,10 @@ import lombok.*;
 @Setter
 @ToString
 public class DestinatarioCajaActualizadaDto {
-    @JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Long id;
-    @JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private String nombreDestinatario;
-    @JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private CajaContenidoDto caja;
 }

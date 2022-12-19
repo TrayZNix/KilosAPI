@@ -1,5 +1,6 @@
 package com.grupocinco.kilosapi.dto.destinatario;
 
+import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.model.Caja;
@@ -20,10 +21,7 @@ public class DestinatarioMapper {
 
     public DestinatarioDto toDestinatarioDto(Destinatario d){
         List<Caja> cajas = d.getCajas();
-        List<CajaDto> cajasDto = new ArrayList<CajaDto>();
-        cajas.forEach(caja -> {
-            cajasDto.add(mapperCaja.toCajaDto(caja));
-        });
+        List<CajaContenidoDto> cajasDto = mapperCaja.toCajaContenidoDto(cajas);
         return DestinatarioDto.builder()
                 .id(d.getId())
                 .direccion(d.getDireccion())

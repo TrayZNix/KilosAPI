@@ -16,12 +16,15 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
 public class CajaContenidoDto {
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Long id;
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
     private String qr;
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Integer numeroCaja;
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Double totalKilos;
-    private Destinatario destinatario;
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private List<LineaCajaContenidoDto> contenido;
 }

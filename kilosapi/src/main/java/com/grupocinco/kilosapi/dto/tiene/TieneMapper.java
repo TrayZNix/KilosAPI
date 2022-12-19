@@ -15,4 +15,12 @@ public class TieneMapper {
         }
         return listaDto;
     }
+
+    public List<LineaCajaContenidoDto> fromListtoLineaCajaCont(List<Tiene> lista){
+        List<LineaCajaContenidoDto> listaDto = new ArrayList<LineaCajaContenidoDto>();
+        lista.forEach(linea -> {
+            listaDto.add(LineaCajaContenidoDto.of(linea));
+        });
+        return listaDto;
+    }
 }

@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
+@JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
 public class LineaCajaContenidoDto {
     private Long id;
     private String nombre;

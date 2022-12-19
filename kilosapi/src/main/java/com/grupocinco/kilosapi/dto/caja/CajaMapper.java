@@ -52,5 +52,12 @@ public class CajaMapper {
                 .contenido(lineasDto)
                 .build();
     }
+    public List<CajaContenidoDto> toCajaContenidoDto(List<Caja> lista) {
+        List<CajaContenidoDto> listaDto = new ArrayList<CajaContenidoDto>();
+        lista.forEach(caja -> {
+            listaDto.add(toCajaContenidoDto(caja));
+        });
+        return listaDto;
+    }
 
 }
