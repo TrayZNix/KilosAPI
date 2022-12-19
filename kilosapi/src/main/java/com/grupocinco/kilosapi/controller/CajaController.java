@@ -2,13 +2,14 @@ package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
-import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
-import com.grupocinco.kilosapi.model.Caja;
-import com.grupocinco.kilosapi.model.Tiene;
-import com.grupocinco.kilosapi.model.TienePK;
-import com.grupocinco.kilosapi.model.TipoAlimento;
-import com.grupocinco.kilosapi.repository.CajaRepository;
+import com.grupocinco.kilosapi.dto.caja.CajaMapper;
+import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
+import com.grupocinco.kilosapi.dtos.NewCajaDto;
+import com.grupocinco.kilosapi.model.*;
+import com.grupocinco.kilosapi.repository.CajaRepository;
+import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.TieneService;
@@ -36,6 +37,10 @@ public class CajaController {
     private TieneService servicetiene;
     @Autowired
     private TipoAlimentoRepository repoTipoAl;
+    @Autowired
+    private TieneMapper mapperTiene;
+    @Autowired
+    private CajaMapper mapperCaja;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -45,7 +50,7 @@ public class CajaController {
                             examples = {@ExampleObject(
                                     value = """
                                             [
-                                                    {
+                                                {
                                                         "id": 3,
                                                         "qr": "qrqrqr",
                                                         "numeroCaja": 1,
@@ -72,10 +77,10 @@ public class CajaController {
     })
     @GetMapping()
     @JsonView(CajaViews.CajasList.class)
-    public ResponseEntity<List<Caja>> getCajas(){
+    public ResponseEntity<List<CajaDto>> getCajas(){
         List<Caja> listaCajas = repoCaja.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(listaCajas);
+        return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
@@ -93,9 +98,56 @@ public class CajaController {
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
                 servicetiene.saveLinea(ti);
                 CajaDto cdto = CajaDto.of(c);
-                cdto.setContenido(repoTiene.getLineasCajas(c));
+                cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
             }
         }
     }
+
+
+
+    @Operation(description = "Crea una caja mediante un cuerpo de petición.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Caja creada",
+                    content = {@Content(mediaType = "application/json",
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "qr": "qrqr",
+                                                "numeroCaja": 1 
+                                            }
+                                            """
+                            )})}),
+            @ApiResponse(responseCode = "400",
+                    description = "Caja no creada",
+                    content = {@Content})
+    })
+    @PostMapping("/caja/")
+    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
+
+        Caja ca = Caja.builder()
+                .qr(dto.getQr())
+                .numeroCaja(dto.getNumeroCaja())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(repoCaja.save(ca));
+    }
+
+    @Operation(description = "Borra una caja y la lista de alimentos que contiene")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Caja borrada satisfactoriamente",
+                    content = {@Content})
+    })
+    @DeleteMapping("/caja/{id1}/tipo/{idTipoAlim}")
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idtipoAlim){
+        Optional<Caja> caja = repoCaja.findById(id1);
+        if(caja.isPresent()){
+            Caja c = caja.get();
+
+            repoCaja.deleteById(id1);
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

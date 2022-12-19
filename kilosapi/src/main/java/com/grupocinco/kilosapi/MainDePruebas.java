@@ -54,17 +54,14 @@ public class MainDePruebas {
         Caja c1 = Caja.builder()
                 .qr("qrqrqr")
                 .numeroCaja(1)
-                .totalKilos(37.67)
                 .build();
         Caja c2 = Caja.builder()
                 .qr("tetete")
                 .numeroCaja(2)
-                .totalKilos(13.26)
                 .build();
         Caja c3 = Caja.builder()
                 .qr("rwrwrww")
                 .numeroCaja(3)
-                .totalKilos(17.57)
                 .build();
         c1.addDestinatario(des1);
         c2.addDestinatario(des1);

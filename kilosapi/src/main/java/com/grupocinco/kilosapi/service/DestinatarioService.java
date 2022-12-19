@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.service;
 
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
+import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.model.Caja;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DestinatarioService {
@@ -21,20 +21,43 @@ public class DestinatarioService {
     @Autowired
     private DestinatarioMapper mapperDest;
 
-    public DestinatarioDto calculosDestinatario(Destinatario d){
+    @Autowired
+    private CajaService servCaja;
+
+    @Autowired
+    private CajaMapper mapperCaja;
+
+    /**
+     * Sirve para devolver un DTO de destinatario con los datos
+     * de información necesarios correctamente actualizados
+     *
+     * @param d Objeto destinatario
+     * @return Objeto DestinatarioDto
+     */
+    public DestinatarioDto setDatosDestinatarioDto(Destinatario d){
+        //Declaracion de variables
         DestinatarioDto dto = mapperDest.toDestinatarioDto(d);
-        List<CajaDto> cajas = dto.getCajas();
         List<Integer> numeros = new ArrayList<Integer>();
+
+        //Actualizamos los pesos de las cajas relacionadas con el destinatario
+        List<CajaDto> cajasDto = mapperCaja.toListCajaDto(servCaja.actualizarDatosCajas(d.getCajas()));
+        dto.setCajas(cajasDto);
+
+        //Calculamos los kilos totales enviados al destinatario determinado
         double total = 0;
-        for(CajaDto caja: cajas){
+        for(CajaDto caja: cajasDto){
             total = total + caja.getTotalKilos();
             numeros.add(caja.getNumeroCaja());
         }
+        dto.setTotalKilos(total);
+
+        //Creado de array de enteros con los numeros de las cajas asignadas
         int[] arr = numeros.stream().filter(i -> i != null).mapToInt(i -> i).toArray();
         dto.setNumerosCaja(arr);
-        dto.setTotalKilos(total);
+
+        //Conteo de cajas enviadas
         dto.setCantidadCajas(arr.length); //Actualizar numeros de cajas
-        System.out.println(d);
+        
         return dto;
     }
 }

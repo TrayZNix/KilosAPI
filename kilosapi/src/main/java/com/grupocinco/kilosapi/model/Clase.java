@@ -38,6 +38,4 @@ public class Clase {
         aportaciones.forEach(a -> a.setClase(null));
     }
 
-
-
 }
