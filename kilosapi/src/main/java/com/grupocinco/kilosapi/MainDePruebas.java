@@ -5,8 +5,7 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.DestinatarioService;
-import com.grupocinco.kilosapi.service.TieneService;
+import com.grupocinco.kilosapi.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,13 @@ public class MainDePruebas {
     private DestinatarioService destServ;
     @Autowired
     private TieneService tieneService;
+
+    @Autowired
+    private DetalleAportacionService detalleAportacionService;
+    @Autowired
+    private AportacionService aportacionService;
+    @Autowired
+    private ClaseService claseService;
 
     @PostConstruct
     public void datos(){
@@ -61,6 +67,11 @@ public class MainDePruebas {
         c2.addDestinatario(des1);
         c3.addDestinatario(des2);
 
+        KilosDisponibles k1 = KilosDisponibles.builder().cantidadDisponible(20.3).build();
+        KilosDisponibles k2 = KilosDisponibles.builder().cantidadDisponible(10.0).build();
+        KilosDisponibles k3 = KilosDisponibles.builder().cantidadDisponible(12.5).build();
+        KilosDisponibles k4 = KilosDisponibles.builder().cantidadDisponible(26.0).build();
+        KilosDisponibles k5 = KilosDisponibles.builder().cantidadDisponible(29.99).build();
 
         TipoAlimento t1 = TipoAlimento.builder().nombre("Arroz").build();
         TipoAlimento t2 = TipoAlimento.builder().nombre("Azúcar").build();
@@ -74,6 +85,11 @@ public class MainDePruebas {
         t2.setKilosDisponible(k2);
 
 
+        t1.addToKilosDisponibles(k1);
+        t2.addToKilosDisponibles(k2);
+        t3.addToKilosDisponibles(k3);
+        t4.addToKilosDisponibles(k4);
+        t5.addToKilosDisponibles(k5);
 
         repoDestinatario.saveAll(List.of(des1, des2));
         repoCaja.saveAll(List.of(c1, c2, c3));
@@ -109,6 +125,42 @@ public class MainDePruebas {
 
         tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5));
 
-    }
+        Clase cl1 = Clase.builder()
+                .tutor("Luismi")
+                .nombre("Clase tal")
+                .build();
+        Clase cl2 = Clase.builder()
+                .tutor("Miguel")
+                .nombre("Clase tal 2")
+                .build();
 
+        Aportacion a1 = Aportacion.builder()
+                .fecha("17/12/2022")
+                .clase(cl1)
+                .build();
+
+        Aportacion a2 = Aportacion.builder()
+                .fecha("21/12/2022")
+                .clase(cl2)
+                .build();
+
+//        DetalleAportacion det1 = DetalleAportacion.builder()
+//                .cantidad_en_kgs(20.6)
+//                .tipoAlimento(t1)
+//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
+//                        .aportacion(a1)
+//                        .numLinea(123)
+//                        .build())
+//                .build();
+//
+//        a1.getDetalles().add(det1);
+//
+//        detalleAportacionService.add(det1);
+
+        claseService.save(cl1);
+        claseService.save(cl2);
+
+        aportacionService.add(a1);
+        aportacionService.add(a2);
+    }
 }

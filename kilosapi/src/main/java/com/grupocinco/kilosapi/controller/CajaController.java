@@ -13,6 +13,8 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.CajaService;
+import com.grupocinco.kilosapi.repository.*;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +51,11 @@ public class CajaController {
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
+    @Autowired
+    private CajaService servCaja;
+
+    @Autowired
+    private KilosDisponiblesRepository repoKilos;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -91,6 +98,39 @@ public class CajaController {
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
+    @Operation(description = "Añade la cantidad deseada del tipo de alimento indicado, a la caja de id proporcionado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se añadió correctamente",
+                    content = {@Content(mediaType = "application/json",
+                            examples = {@ExampleObject(
+                                    value = """
+                                            [
+                                                {
+                                                        "id": 3,
+                                                        "qr": "qrqrqr",
+                                                        "numeroCaja": 1,
+                                                        "destinatario": {
+                                                            "id": 1,
+                                                            "nombre": "Comedor Pagés del Corro"
+                                                        }
+                                                    },
+                                                    {
+                                                        "id": 4,
+                                                        "qr": "tetete",
+                                                        "numeroCaja": 2,
+                                                        "destinatario": {
+                                                            "id": 1,
+                                                            "nombre": "Comedor Pagés del Corro"
+                                                        }
+                                                    },
+                                            ]
+                                            """
+                            )})}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontró la caja donde añadir los alimentos",
+                    content = {@Content})
+    })
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
@@ -102,17 +142,38 @@ public class CajaController {
             if (optTipo.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             else{
                 TipoAlimento t = optTipo.get();
-                TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
-                Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
-                servicetiene.saveLinea(ti);
-                CajaDto cdto = CajaDto.of(c);
-                cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
-                return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
+                Double cantidadDisponible = repoKilos.getKilosByTipoRelacionado(t);
+                if(cantidad > cantidadDisponible) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                else{
+                    repoKilos.setKilosDisponiblesToTipoRelacionado(t, -cantidad);
+                    TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
+                    Optional<Double> optCantidadExist = repoTiene.findIfAlreadySavedTipoAlimentoInCaja(t, c);
+                    if(optCantidadExist.isEmpty()){
+                        Tiene ti = Tiene.builder()
+                                .id(tPk)
+                                .caja(c)
+                                .tipoAlimento(t)
+                                .cantidadKgs(cantidad)
+                                .build();
+                        servicetiene.saveLinea(ti);
+                    }
+                    else{
+                        Tiene ti = Tiene.builder()
+                                .id(tPk)
+                                .caja(c)
+                                .tipoAlimento(t)
+                                .cantidadKgs(cantidad + optCantidadExist.get())
+                                .build();
+                        servicetiene.saveLinea(ti);
+                    }
+                    c = servCaja.actualizarDatosCajas(List.of(c)).stream().findAny().get();
+                    CajaDto cDto = CajaDto.of(c);
+                    cDto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
+                    return ResponseEntity.status(HttpStatus.CREATED).body(cDto);
+                }
             }
         }
     }
-
-
 
     @Operation(description = "Crea una caja mediante un cuerpo de petición.")
     @ApiResponses(value = {

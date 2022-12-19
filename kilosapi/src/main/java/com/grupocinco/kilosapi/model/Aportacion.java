@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -35,5 +36,14 @@ public class Aportacion {
    public void removeFromClase(Clase c) {
        this.clase = null;
        c.getAportaciones().remove(this);
+   }
+
+   public void addDetalleAportacion(DetalleAportacion d){
+       this.getDetalles().add(d);
+       d.getDetalleAportacionId().setAportacion(this);
+   }
+   public void removeDetalleAportacion(DetalleAportacion d){
+       this.getDetalles().remove(d);
+       d.getDetalleAportacionId().setAportacion(this);
    }
 }

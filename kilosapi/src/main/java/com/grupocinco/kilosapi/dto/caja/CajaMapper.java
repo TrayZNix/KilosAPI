@@ -20,7 +20,7 @@ public class CajaMapper {
                 .qr(c.getQr())
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
-                .totalKilos(c.getTotalKilos())
+                .totalKilos(c.getKilosTotales())
                 .contenido(mapperTiene.ofList(c.getLineas()))
                 .build();
     }
@@ -33,7 +33,7 @@ public class CajaMapper {
                     .numeroCaja(c.getNumeroCaja())
                     .qr(c.getQr())
                     .destinatario(c.getDestinatario())
-                    .totalKilos(c.getTotalKilos())
+                    .totalKilos(c.getKilosTotales())
                     .build());
         }
         return listaDto;

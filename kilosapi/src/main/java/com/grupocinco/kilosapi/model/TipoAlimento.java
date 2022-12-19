@@ -36,4 +36,8 @@ public class TipoAlimento implements  Serializable{
         this.kilosDisponible.setCantidadDisponible(kilosDisponible.getCantidadDisponible() + cantidad);
         return this;
     }
+    public void addToKilosDisponibles(KilosDisponibles k){
+        this.kilosDisponible = k;
+        k.setTipoAlimento(this);
+    }
 }
