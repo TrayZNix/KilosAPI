@@ -28,13 +28,14 @@ public class MainDePruebas {
     private DestinatarioService destServ;
     @Autowired
     private TieneService tieneService;
+
+    @Autowired
+    private DetalleAportacionService detalleAportacionService;
     @Autowired
     private AportacionService aportacionService;
     @Autowired
     private ClaseService claseService;
 
-    @Autowired
-    private DetalleAportacionService detalleAportacionService;
     @PostConstruct
     public void datos(){
         Destinatario des1 = Destinatario.builder()
@@ -137,6 +138,19 @@ public class MainDePruebas {
                 .fecha("21/12/2022")
                 .clase(cl2)
                 .build();
+
+//        DetalleAportacion det1 = DetalleAportacion.builder()
+//                .cantidad_en_kgs(20.6)
+//                .tipoAlimento(t1)
+//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
+//                        .aportacion(a1)
+//                        .numLinea(123)
+//                        .build())
+//                .build();
+//
+//        a1.getDetalles().add(det1);
+//
+//        detalleAportacionService.add(det1);
 
         claseService.save(cl1);
         claseService.save(cl2);

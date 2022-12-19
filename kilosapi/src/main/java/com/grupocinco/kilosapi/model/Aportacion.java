@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ public class Aportacion {
        c.getAportaciones().remove(this);
    }
 
-   //TODO poner el ser de los detalles para que añada y ponga en null la aportacion
    public void addDetalleAportacion(DetalleAportacion d){
        this.getDetalles().add(d);
        d.getDetalleAportacionId().setAportacion(this);
