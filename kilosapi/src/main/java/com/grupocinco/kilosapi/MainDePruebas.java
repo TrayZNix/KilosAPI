@@ -68,6 +68,11 @@ public class MainDePruebas {
         TipoAlimento t4 = TipoAlimento.builder().nombre("Huevo").build();
         TipoAlimento t5 = TipoAlimento.builder().nombre("Zanahoria").build();
 
+        KilosDisponibles k1 = KilosDisponibles.builder().tipoAlimento(t1).cantidadDisponible(10.0).build();
+        KilosDisponibles k2 = KilosDisponibles.builder().tipoAlimento(t2).cantidadDisponible(10.0).build();
+        t1.setKilosDisponible(k1);
+        t2.setKilosDisponible(k2);
+
 
 
         repoDestinatario.saveAll(List.of(des1, des2));

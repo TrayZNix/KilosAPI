@@ -34,11 +34,11 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
     public List<Caja> getRelacionesCajasByDestinatario(@Param("id") Destinatario id);
 
     @Query(value = """
-            select  c
-            from Caja c join fetch Tiene t
+            select c
+            from Caja c join fetch c.lineas t
             where
             c.id = :id and
-            t.id = :idTipo
+            t.id.tipoAlimentoId = :idTipo
             """)
     public Optional<Caja> getCajaByIdAndIdTipo(@Param("id") Long id, @Param("idTipo") Long idTipo);
 }

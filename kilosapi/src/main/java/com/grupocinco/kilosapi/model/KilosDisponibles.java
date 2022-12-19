@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Entity @ToString
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
+@Builder
 public class KilosDisponibles implements Serializable{
     @Id
     private Long id;

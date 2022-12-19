@@ -15,6 +15,7 @@ import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -100,7 +101,6 @@ public class CajaController {
                 TienePK tPk = TienePK.builder().cajaId(c.getId()).tipoAlimentoId(t.getId()).build();
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
                 servicetiene.saveLinea(ti);
-                c = cajaService.actualizarDatosCajaById(c);
                 CajaDto cdto = CajaDto.of(c);
                 cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
@@ -137,6 +137,40 @@ public class CajaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(repoCaja.save(ca));
     }
 
+    @PutMapping("{id}/tipo/{idTipoAlim}/kg/{cantidad}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la aportación", description = "id de la aportación a editar") @PathVariable Long id,
+                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
+                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Double cantidad) {
+        Optional<Caja> cajaOpt = cajaService.getCajaByIdAndIdTipo(id, idTipoAlim); //FIXME solo devuelve el tipo de alimento con el id que se pasa, si tiene más tipos no se muestran
+        Caja caja;
+        double dif = 0.0;
+        TipoAlimento tipoAlimento;
+        CajaMapper mapper = new CajaMapper();
+        if (cajaOpt.isPresent()) {
+            caja = cajaOpt.get();
+            System.out.println(caja.getLineas().size());
+            cajaService.actualizarDatosCajas(List.of(caja));
+            dif = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getCantidadKgs() - cantidad;
+            if (dif != 0) {
+                tipoAlimento = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getTipoAlimento();
+                if (dif < 0) {
+                    System.out.println(tipoAlimento.getKilosDisponible().getCantidadDisponible() + dif);
+                    if (tipoAlimento.getKilosDisponible().getCantidadDisponible() > dif) {
+                        tipoAlimento.sumKilos(dif);
+                        caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().setCantidadKgs(cantidad);
+                    }
+                } else {
+                    tipoAlimento.sumKilos(dif);
+                    caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().setCantidadKgs(cantidad);
+                }
+            }
+            System.out.println(caja.getLineas().size());
+            return ResponseEntity.ok().body(mapper.toCajaDto(caja));
+        } else
+            return ResponseEntity.badRequest().build();
+    }
+
     @Operation(description = "Borra una caja y la lista de alimentos que contiene")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -152,18 +186,5 @@ public class CajaController {
             repoCaja.deleteById(id1);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-
-    @PutMapping("caja/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la aportación", description = "id de la aportación a editar") @PathVariable Long id,
-                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
-                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Double cantidad) {
-        Optional<Caja> caja = cajaService.getCajaByIdAndIdTipo(id, idTipoAlim);
-        if (caja.isPresent()) {
-
-        } else
-            return ResponseEntity.badRequest().build();
     }
 }
