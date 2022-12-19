@@ -1,11 +1,13 @@
 package com.grupocinco.kilosapi.dto.caja;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
 import com.grupocinco.kilosapi.dto.tiene.TieneDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
+import com.grupocinco.kilosapi.model.Tiene;
 import lombok.*;
 
 import java.util.List;
@@ -28,6 +30,7 @@ public class CajaDto {
     private Destinatario destinatario;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private List<TieneDto> contenido;
+    private String destinatarioString;
 
     public static CajaDto of(Caja c){
         return CajaDto.builder()
@@ -35,7 +38,7 @@ public class CajaDto {
                 .qr(c.getQr())
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
-                .totalKilos(c.getKilosTotales())
+                .totalKilos(c.getTotalKilos())
                 .build();
 
     }

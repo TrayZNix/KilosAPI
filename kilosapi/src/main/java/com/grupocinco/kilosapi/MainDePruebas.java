@@ -14,7 +14,6 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class MainDePruebas {
     @Autowired
     private DestinatarioRepository repoDestinatario;

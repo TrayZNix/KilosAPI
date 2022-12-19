@@ -27,7 +27,7 @@ public class DestinatarioDto {
     private String personaContacto;
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private String telefono;
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.DestinatarioList.class})
+    @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     private Double totalKilos;
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     private Integer cantidadCajas;
@@ -36,7 +36,6 @@ public class DestinatarioDto {
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private List<CajaDto> cajas;
 
-    //Usado cuando no necesite las cajas, ahorrando de esta manera memoria
     public static DestinatarioDto of(Destinatario d){
         return DestinatarioDto.builder()
                 .id(d.getId())

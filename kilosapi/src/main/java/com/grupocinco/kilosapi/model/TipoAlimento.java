@@ -3,6 +3,8 @@ package com.grupocinco.kilosapi.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.BaseServiceImpl;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,7 +18,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @Builder
 @Embeddable
-public class TipoAlimento implements  Serializable{
+public class TipoAlimento extends BaseServiceImpl<TipoAlimento, Long, TipoAlimentoRepository> implements  Serializable{
 
     @Id
     @GeneratedValue

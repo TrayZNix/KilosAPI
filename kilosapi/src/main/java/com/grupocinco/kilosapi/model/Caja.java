@@ -22,8 +22,8 @@ public class Caja {
     @Column(name = "NUMERO_CAJA")
     private Integer numeroCaja;
     @Column(name = "TOTAL_KILOS")
-    private Double kilosTotales;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    private Double totalKilos;
+    @ManyToOne
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     private Destinatario destinatario;
 
@@ -40,10 +40,5 @@ public class Caja {
         this.destinatario.getCajas().remove(this);
         this.destinatario = null;
         d.getCajas().remove(this);
-    }
-
-    @PreRemove
-    public void removeCaja(){
-
     }
 }
