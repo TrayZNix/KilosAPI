@@ -4,8 +4,4 @@ public class CajaViews {
     public static class CajasList{
 
     }
-
-    public static class InfoCajas{
-
-    }
 }

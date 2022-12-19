@@ -3,6 +3,8 @@ package com.grupocinco.kilosapi.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
@@ -43,6 +45,8 @@ public class CajaController {
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
+    @Autowired
+    private DestinatarioMapper mapperDest;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -172,17 +176,16 @@ public class CajaController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @PostMapping("/{id}/destinatario/{idDestinataro}")
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
+    @JsonView(DestinatarioViews.DestinatarioCajaActualizadaDtoJson.class)
+    public ResponseEntity<DestinatarioCajaActualizadaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
         Optional<Caja> optC = servCaja.findById(id);
         Optional<Destinatario> optD = servDest.findById(idDestinataro);
         if(optC.isPresent()){
             if (optD.isPresent()){
-                Caja c = optC.get();
                 Destinatario d = optD.get();
-                c.setDestinatario(d);
-
-                return ResponseEntity.ok(mapperCaja.toCajaDto(c));
+                servCaja.asignarCaja(optC.get().getId(), d);
+                Caja c = servCaja.findById(id).get();
+                return ResponseEntity.ok(mapperDest.toDestinatarioCajaActualizadaDto(d, c));
             }
             else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
