@@ -5,7 +5,6 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.service.TieneService;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +29,6 @@ public class MainDePruebas {
     private DestinatarioService destServ;
     @Autowired
     private TieneService tieneService;
-
-    @Autowired
-    private CajaService cajaService;
 
     @PostConstruct
     public void datos(){
@@ -104,21 +100,9 @@ public class MainDePruebas {
                 .tipoAlimento(t5)
                 .cantidadKgs(2.4)
                 .build();
-        Tiene tiene6 = Tiene.builder()
-                .caja(c2)
-                .tipoAlimento(t4)
-                .cantidadKgs(2.4)
-                .build();
 
 
-        tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5, tiene6));
-
-        //Caculamos y guardamos los pesos de cada caja
-        cajaService.actualizarDatosCajaById(c1);
-        cajaService.actualizarDatosCajaById(c2);
-        cajaService.actualizarDatosCajaById(c3);
-
-
+        tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5));
 
     }
 

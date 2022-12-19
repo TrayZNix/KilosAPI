@@ -27,7 +27,7 @@ public class DestinatarioDto {
     private String personaContacto;
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private String telefono;
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.DestinatarioList.class})
+    @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     private Double totalKilos;
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     private Integer cantidadCajas;
