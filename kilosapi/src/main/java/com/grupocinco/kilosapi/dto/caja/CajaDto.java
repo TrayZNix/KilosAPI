@@ -32,6 +32,8 @@ public class CajaDto {
     private List<TieneDto> contenido;
     private String destinatarioString;
 
+
+
     public static CajaDto of(Caja c){
         return CajaDto.builder()
                 .id(c.getId())

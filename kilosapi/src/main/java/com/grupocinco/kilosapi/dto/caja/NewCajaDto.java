@@ -1,4 +1,4 @@
-package com.grupocinco.kilosapi.dtos;
+package com.grupocinco.kilosapi.dto.caja;
 
 
 import lombok.*;

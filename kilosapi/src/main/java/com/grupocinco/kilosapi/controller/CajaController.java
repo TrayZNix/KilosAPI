@@ -1,12 +1,13 @@
 package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaDeleteDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
-import com.grupocinco.kilosapi.dtos.NewCajaDto;
+import com.grupocinco.kilosapi.dto.caja.NewCajaDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TipoAlimento;
@@ -154,16 +155,25 @@ public class CajaController {
 
             Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idtipoAlim);
 
-            if(tipoAlimentoOptional.isPresent()){
+            if(tipoAlimentoOptional.isPresent()) {
                 TipoAlimento ta = tipoAlimentoOptional.get();
 
-                Tiene tiene = cajaService.getAlimentoEnCaja(ta,c);
+                Tiene tiene = cajaService.getAlimentoEnCaja(ta, c);
 
                 repoCaja.deleteById(id1);
+
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(CajaDeleteDto.builder()
+                                .id(ta.getId())
+                                .name(ta.getNombre())
+                                .cantKilos(tiene.getCantidadKgs())
+                                .build()
+                        );
             }
-            
         }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
+
     }
 
 }
