@@ -23,7 +23,7 @@ public class Caja {
     private Integer numeroCaja;
     @Column(name = "TOTAL_KILOS")
     private Double kilosTotales;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @ManyToOne()
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     private Destinatario destinatario;
 
