@@ -14,10 +14,10 @@ public class CajaService {
     private TieneRepository repoTiene;
     @Autowired
     private CajaRepository repoCaja;
+
     public List<Caja> actualizarDatosCajas(List<Caja> c){
-        //TODO Hago esto como consulta? Lo dejo asi?
         c.forEach(caja -> {
-            caja.setTotalKilos(repoTiene.getPesoTotalCaja(caja));
+            caja.setKilosTotales(repoTiene.getPesoTotalCaja(caja));
         });
         return repoCaja.saveAll(c);
     }

@@ -2,7 +2,7 @@ En /destinatario/{id}/detalle, tengo que mostrar el array de numeros de cajas, c
 
 Es correcta la representación del tipo de alimento, o debo escribir solo el string del nombre del tipo de alimento?
 
-Al crear linea en tiene, sumamos o sustituimos? (Planeado sumar)
+Las respuestas de destinatario son correctas?
 
 //No prior.
 
