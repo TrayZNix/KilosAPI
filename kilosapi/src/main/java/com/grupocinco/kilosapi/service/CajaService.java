@@ -19,20 +19,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CajaService {
-    private final CajaRepository cajaRepository;
     @Autowired
     private CajaRepository repoCaja;
 
     @Autowired
     private TieneRepository repoTiene;
+    @Autowired
+    private CajaRepository repoCaja;
+    public List<Caja> actualizarDatosCajas(List<Caja> c){
+        //TODO Hago esto como consulta? Lo dejo asi?
+        c.forEach(caja -> {
+            caja.setTotalKilos(repoTiene.getPesoTotalCaja(caja));
+        });
+        return repoCaja.saveAll(c);
 
     public Optional<Caja> getCajaByIdAndIdTipo(Long id, Long idTipo) {
         return cajaRepository.getCajaByIdAndIdTipo(id, idTipo);
-    }
-
-    public Caja actualizarDatosCajaById(Caja c){
-    //TODO Hago esto como consulta? Lo dejo asi?
-            c.setTotalKilos(repoTiene.getPesoTotalCaja(c));
-            return repoCaja.save(c);
     }
 }

@@ -2,7 +2,6 @@ package com.grupocinco.kilosapi.dto.caja;
 
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.model.Caja;
-import com.grupocinco.kilosapi.repository.TieneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +13,6 @@ public class CajaMapper {
     @Autowired
     private TieneMapper mapperTiene;
 
-    @Autowired
-    private TieneRepository repoTiene;
-
     public CajaDto toCajaDto(Caja c){
         return CajaDto.builder()
                 .id(c.getId())
@@ -24,8 +20,7 @@ public class CajaMapper {
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
                 .totalKilos(c.getTotalKilos())
-//                .contenido(mapperTiene.ofList(c.getLineas()))
-                .contenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)))
+                .contenido(mapperTiene.ofList(c.getLineas()))
                 .build();
     }
     public List<CajaDto> toListCajaDto(List<Caja> lista) {
@@ -33,8 +28,7 @@ public class CajaMapper {
         for (Caja c : lista) {
             listaDto.add(CajaDto.builder()
                     .id(c.getId())
-//                    .contenido(mapperTiene.ofList(c.getLineas()))
-                    .contenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)))
+                    .contenido(mapperTiene.ofList(c.getLineas()))
                     .numeroCaja(c.getNumeroCaja())
                     .qr(c.getQr())
                     .destinatario(c.getDestinatario())

@@ -4,7 +4,6 @@ import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
-import com.grupocinco.kilosapi.repository.CajaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +15,8 @@ public class DestinatarioMapper {
     @Autowired
     private CajaMapper mapperCaja;
 
-    @Autowired
-    private CajaRepository repoCaja;
-
     public DestinatarioDto toDestinatarioDto(Destinatario d){
-        List<Caja> cajas = repoCaja.getRelacionesCajasByDestinatario(d);
+        List<Caja> cajas = d.getCajas();
         List<CajaDto> cajasDto = new ArrayList<CajaDto>();
         cajas.forEach(caja -> {
             cajasDto.add(mapperCaja.toCajaDto(caja));

@@ -30,18 +30,18 @@ public class Caja {
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     private Destinatario destinatario;
 
-//    @OneToMany(mappedBy = "caja", fetch = FetchType.EAGER)
-//    @Builder.Default
-//    @ToString.Exclude
-//    private List<Tiene> lineas = new ArrayList<Tiene>();
+    @OneToMany(mappedBy = "caja")
+    @Builder.Default
+    @ToString.Exclude
+    private List<Tiene> lineas = new ArrayList<Tiene>();
     public void addDestinatario(Destinatario d){
         this.destinatario = d;
-//        d.getCajas().add(this);
+        d.getCajas().add(this);
     }
 
     public void removeDestinatario(Destinatario d){
         this.destinatario = null;
-//        d.getCajas().remove(this);
+        d.getCajas().remove(this);
     }
 
 }

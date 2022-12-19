@@ -26,6 +26,7 @@ public class Clase {
     @JsonView(ClaseViews.NewClase.class)
     private String nombre, tutor;
 
+
     @ToString.Exclude
     @OneToMany(mappedBy = "clase", fetch = FetchType.EAGER)
     @Builder.Default
@@ -36,4 +37,6 @@ public class Clase {
     public void setNullClase() {
         aportaciones.forEach(a -> a.setClase(null));
     }
+
+
 }
