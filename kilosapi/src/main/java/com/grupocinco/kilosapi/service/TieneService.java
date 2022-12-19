@@ -2,6 +2,7 @@ package com.grupocinco.kilosapi.service;
 
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TienePK;
+import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,9 @@ public class TieneService {
                     .build());
             tieneRepo.save(t);
         }
+    }
+
+    public void deleteTipoAlimento(TipoAlimento id){
+        tieneRepo.deleteTipoAlimento(id);
     }
 }

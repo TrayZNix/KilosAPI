@@ -4,6 +4,7 @@ import com.grupocinco.kilosapi.dto.tipoAlimento.TipoAlimentoDto;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
 import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.service.KilosDisponiblesService;
+import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +33,9 @@ public class TipoAlimentoController {
     private TipoAlimentoService serviceTA;
     @Autowired
     private KilosDisponiblesService serviceK;
+
+    @Autowired
+    private TieneService serviceT;
 
     //================================================
     //GET LISTA TIPO ALIMENTO
@@ -201,10 +205,10 @@ public class TipoAlimentoController {
     public ResponseEntity<TipoAlimentoDto> addTipoAlimento(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = " Objeto Dto necesario para la creacion del tipo de alimento")
             @RequestBody TipoAlimentoDto dto){
-        if(dto.nombre() == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if(dto.nombre() == null || dto.cantidad() != null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
         KilosDisponibles k = KilosDisponibles.builder()
-                .cantidadDisponible(dto.cantidad())
+                .cantidadDisponible(0.0)
                 .build();
         TipoAlimento tAdd = TipoAlimento.builder()
                 .nombre(dto.nombre())
@@ -235,8 +239,13 @@ public class TipoAlimentoController {
     public ResponseEntity<?> removeTipoAlimento(
             @Parameter(description = " ID del tipo de alimento a eliminar")
             @PathVariable Long id){
-        if(serviceTA.existsById(id))
-        serviceTA.deleteById(id);
+        if(serviceTA.existsById(id)){
+            TipoAlimento t = serviceTA.findById(id).get();
+            serviceT.deleteTipoAlimento(t);
+
+            serviceTA.deleteById(id);
+        }
+
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

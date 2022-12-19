@@ -149,5 +149,13 @@ public class CajaController {
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<CajaDto> getCajaById(){
+        return null;
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(){
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

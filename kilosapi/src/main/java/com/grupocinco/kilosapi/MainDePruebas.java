@@ -135,7 +135,7 @@ public class MainDePruebas {
                 .fecha("21/12/2022")
                 .clase(cl2)
                 .build();
-
+//
 //        DetalleAportacion det1 = DetalleAportacion.builder()
 //                .cantidad_en_kgs(20.6)
 //                .tipoAlimento(t1)
