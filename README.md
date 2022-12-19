@@ -2,7 +2,7 @@
 
 
 # KiloAPI
-[		![](https://raw.githubusercontent.com/TrayZNix/KilosAPI/development/images/logo.png?token=GHSAT0AAAAAABZYGYZALGPQSFE4DDPB75UMY5AMR4Q)](https://github.com/TrayZNix/trianafy/blob/main/historiasDeUsuario.png)
+[		![](https://raw.githubusercontent.com/TrayZNix/KilosAPI/development/images/logo.png?token=GHSAT0AAAAAABZYGYZAGMVPXGRGW6H2G5HYY5AM5HA)
 **Kiloapi** es una *API* que nos permite gestionar la campaña Operación Kilo que se realiza todos los años en el mes de diciembre en nuestro colegio.
 
 ## Requisitos
