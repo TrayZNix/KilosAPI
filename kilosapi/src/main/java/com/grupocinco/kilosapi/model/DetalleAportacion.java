@@ -23,7 +23,7 @@ public class DetalleAportacion {
     private Double cantidad_en_kgs;
 
     @ManyToOne()
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", updatable = false, insertable = false) //TODO Esto hay que cogerlo con pizas, porque hay que preguntar a luismi
     private Aportacion aportacion;
 
     @PreRemove //TODO comprobar que se guarda la cantidad restada
