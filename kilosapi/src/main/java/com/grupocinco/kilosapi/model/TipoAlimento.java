@@ -32,4 +32,8 @@ public class TipoAlimento implements  Serializable{
 //    @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private KilosDisponibles kilosDisponible;
 
+    public void addToKilosDisponibles(KilosDisponibles k){
+        this.kilosDisponible = k;
+        k.setTipoAlimento(this);
+    }
 }
