@@ -22,6 +22,10 @@ public class DetalleAportacion {
 
     private Double cantidad_en_kgs;
 
+    @ManyToOne()
+    @JoinColumn(name = "id")
+    private Aportacion aportacion;
+
     @PreRemove //TODO comprobar que se guarda la cantidad restada
     public void restarKilos() {
         KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
