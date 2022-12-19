@@ -6,7 +6,10 @@ import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
+import com.grupocinco.kilosapi.model.Tiene;
+import com.grupocinco.kilosapi.model.TienePK;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
+import com.grupocinco.kilosapi.repository.TieneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DestinatarioService {
-    @Autowired
-    private DestinatarioRepository repo;
+public class DestinatarioService extends BaseServiceImpl<Destinatario, Long, DestinatarioRepository>{
 
     @Autowired
     private DestinatarioMapper mapperDest;
