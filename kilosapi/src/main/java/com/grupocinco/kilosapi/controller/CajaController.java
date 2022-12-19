@@ -2,20 +2,30 @@ package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
+import com.grupocinco.kilosapi.dto.caja.CajaDetalleDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.dto.view.ClaseViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.*;
+import com.grupocinco.kilosapi.repository.CajaRepository;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.repository.*;
+import com.grupocinco.kilosapi.service.TieneService;
+import com.grupocinco.kilosapi.service.TipoAlimentoService;
 import com.grupocinco.kilosapi.service.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +52,7 @@ public class CajaController {
     @Autowired
     private KilosDisponiblesService servKilos;
     @Autowired
-    private TipoAlimentoService servTipoAlim;
+    private TipoAlimentoService tipoAlimentoService;
     @Autowired
     private TieneMapper mapperTiene;
     @Autowired
@@ -83,11 +94,16 @@ public class CajaController {
                     content = {@Content})
     })
     @GetMapping()
-    @JsonView(CajaViews.CajasList.class)
-    public ResponseEntity<List<CajaDto>> getCajas(){
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
+    public ResponseEntity<List<CajaContenidoDto>> getCajas(){
         List<Caja> listaCajas = servCaja.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
+        List<CajaContenidoDto> listaDto = new ArrayList<CajaContenidoDto>();
+        listaCajas.forEach(caja -> {
+            caja = servCaja.actualizarDatosCajas(caja);
+            listaDto.add(mapperCaja.toCajaContenidoDto(caja));
+        });
+        return ResponseEntity.ok(listaDto);
     }
 
 
@@ -127,7 +143,7 @@ public class CajaController {
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             Caja c = optCaja.get();
-            Optional<TipoAlimento> optTipo = servTipoAlim.findById(idTipoAlim);
+            Optional<TipoAlimento> optTipo = tipoAlimentoService.findById(idTipoAlim);
             if (optTipo.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             else{
                 TipoAlimento t = optTipo.get();
@@ -182,13 +198,81 @@ public class CajaController {
                     content = {@Content})
     })
     @PostMapping("/caja/")
-    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
+    public ResponseEntity<CajaContenidoDto> createCaja(@RequestBody NewCajaDto dto){
 
         Caja ca = Caja.builder()
                 .qr(dto.getQr())
                 .numeroCaja(dto.getNumeroCaja())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(servCaja.save(ca));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapperCaja.toCajaContenidoDto(servCaja.save(ca)));
+    }
+
+    @Operation(
+            summary = "Edita kg de una caja",
+            description = "Esta petición edita los kg de un tipo de alimento de una caja"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se editó la caja",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClaseViews.NewClase.class), examples = @ExampleObject("""
+                            {
+                                "id": 3,
+                                "numeroCaja": 1,
+                                "totalKilos": 2.6,
+                                "contenido": [
+                                    {
+                                        "tipoAlimento": {
+                                            "id": 6,
+                                            "nombre": "Arroz"
+                                        },
+                                        "cantidadKgs": 1.0
+                                    }
+                                ]
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos para editar una caja",
+                    content = {@Content()}
+            )
+    })
+    @PutMapping("{id}/tipo/{idTipoAlim}/kg/{cantidad}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la caja", description = "id de la caja a editar") @PathVariable Long id,
+                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
+                                              @Parameter(name = "Cantidad kg", description = "Cantidad de kg a tener en una caja si la cantidad disponible del tipo indicado lo permite.") @PathVariable Double cantidad) {
+        Optional<Caja> cajaOpt = servCaja.getCajaByIdAndIdTipo(id, idTipoAlim); //FIXME solo devuelve el tipo de alimento con el id que se pasa, si tiene más tipos no se muestran
+        Caja caja;
+        double dif;
+        TipoAlimento tipoAlimento;
+        CajaMapper mapper = new CajaMapper();
+        Double kgCaja;
+
+        if (cajaOpt.isPresent()) {
+            caja = cajaOpt.get();
+            kgCaja = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getCantidadKgs();
+            servCaja.actualizarDatosCajas(List.of(caja));
+            dif = kgCaja - cantidad;
+            if (cantidad >= 0) {
+                if (dif != 0) {
+                    tipoAlimento = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getTipoAlimento();
+                    if (dif < 0) {
+                        if (tipoAlimento.getKilosDisponible().getCantidadDisponible() >= -dif) {
+                            tipoAlimentoService.save(tipoAlimento.sumKilos(dif));
+                            caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().setCantidadKgs(cantidad);
+                        }
+                    } else {
+                        tipoAlimentoService.save(tipoAlimento.sumKilos(dif));
+                        caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().setCantidadKgs(cantidad);
+                    }
+                }
+            }
+            servCaja.save(caja);
+            return ResponseEntity.ok().body(mapper.toCajaDto(caja));
+        } else
+            return ResponseEntity.badRequest().build();
     }
 
     @Operation(description = "Borra una caja y la lista de alimentos que contiene")

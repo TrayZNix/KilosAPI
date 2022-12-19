@@ -2,7 +2,7 @@ package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.clase.ClaseDetalleDto;
-import com.grupocinco.kilosapi.dto.clase.ClaseViews;
+import com.grupocinco.kilosapi.dto.view.ClaseViews;
 import com.grupocinco.kilosapi.model.Clase;
 import com.grupocinco.kilosapi.service.ClaseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -95,7 +95,7 @@ public class ClaseController {
     })
     @GetMapping("{id}")
     public ResponseEntity<ClaseDetalleDto> getClaseById(@Parameter(name = "Id de la clase", description = "Id de la clase a buscar") @PathVariable Long id) {
-        Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id);
+        Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id); //TODO comprobar que va cuando se puedan tener kilos y esas cosas
         if (clase.isPresent())
             return ResponseEntity.ok().body(clase.get());
         else

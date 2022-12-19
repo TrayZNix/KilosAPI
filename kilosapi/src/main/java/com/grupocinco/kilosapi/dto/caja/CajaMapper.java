@@ -4,6 +4,7 @@ import com.grupocinco.kilosapi.dto.tiene.LineaCajaContenidoDto;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
