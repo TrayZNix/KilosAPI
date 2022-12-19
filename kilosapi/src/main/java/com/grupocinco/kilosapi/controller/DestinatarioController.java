@@ -1,15 +1,14 @@
-package com.grupocinco.kilosapi.Controller;
+package com.grupocinco.kilosapi.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.service.DestinatarioService;
-import com.grupocinco.kilosapi.view.DestinatarioViews;
+import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,6 +34,9 @@ public class DestinatarioController {
     private CajaRepository repoCaja;
     @Autowired
     private DestinatarioService servDest;
+    @Autowired
+    private DestinatarioMapper mapperDest;
+
     @Operation(description = "Devuelve una lista de todos los destinatarios guardados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -69,11 +71,7 @@ public class DestinatarioController {
     public ResponseEntity<List<DestinatarioDto>> getListaDestinatarios(){
         List<Destinatario> lista = repoDestinatarios.findAll();
         List<DestinatarioDto> listaDto = new ArrayList<DestinatarioDto>();
-        lista.forEach(destinatario -> {
-            listaDto.add(DestinatarioDto.of(destinatario));
-        });
-        listaDto.forEach(destinatario -> servDest.calculosDestinatario(destinatario));
-
+        lista.forEach(destinatario -> listaDto.add(servDest.setDatosDestinatarioDto(destinatario)));
         if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(listaDto);
     }
@@ -115,7 +113,7 @@ public class DestinatarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return ResponseEntity.ok(servDest.calculosDestinatario(DestinatarioDto.of(optDest.get())));
+            return ResponseEntity.ok(servDest.setDatosDestinatarioDto(optDest.get()));
         }
 
     }
@@ -147,7 +145,7 @@ public class DestinatarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return ResponseEntity.ok(servDest.calculosDestinatario(DestinatarioDto.of(optDest.get())));
+            return ResponseEntity.ok(servDest.setDatosDestinatarioDto(optDest.get()));
         }
     }
 

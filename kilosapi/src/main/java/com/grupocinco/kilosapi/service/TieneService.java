@@ -12,14 +12,14 @@ import java.util.List;
 public class TieneService {
     @Autowired
     private TieneRepository tieneRepo;
-    public void saveLinea(Tiene t){
+    public Tiene saveLinea(Tiene t){
         t.setId(TienePK.builder()
                 .tipoAlimentoId(t.getTipoAlimento()
                         .getId())
                 .cajaId(t.getCaja()
                         .getId())
                 .build());
-        tieneRepo.save(t);
+        return tieneRepo.save(t);
     }
     public void saveListaLineas(List<Tiene> lista){
         for(Tiene t: lista){
