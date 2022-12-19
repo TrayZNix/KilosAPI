@@ -32,8 +32,7 @@ public class DetalleAportacion {
     @Setter
     @Embeddable
     public static class DetalleAportacionId implements Serializable {
-        @ManyToOne()
-        private Aportacion aportacion;
+        private Long aportacionId;
 
         private Integer numLinea;
     }
