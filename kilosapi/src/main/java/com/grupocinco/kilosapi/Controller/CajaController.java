@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
+import com.grupocinco.kilosapi.model.Tiene;
+import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.view.CajaViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +30,7 @@ public class CajaController {
     @Autowired
     private CajaRepository repoCaja;
     private TipoAlimentoRepository repoTipoAli;
+    private CajaService cajaService;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -88,7 +92,7 @@ public class CajaController {
                     description = "Caja no creada",
                     content = {@Content})
     })
-    @PostMapping("/caja/")
+    @PostMapping("")
     public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
 
         Caja ca = Caja.builder()
@@ -104,15 +108,25 @@ public class CajaController {
                     description = "Caja borrada satisfactoriamente",
                     content = {@Content})
     })
-    @DeleteMapping("/caja/{id1}/tipo/{idTipoAlim}")
+    @DeleteMapping("/{id1}/tipo/{idTipoAlim}")
     public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idtipoAlim){
         Optional<Caja> caja = repoCaja.findById(id1);
+
         if(caja.isPresent()){
             Caja c = caja.get();
 
-            repoCaja.deleteById(id1);
+            Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idtipoAlim);
+
+            if(tipoAlimentoOptional.isPresent()){
+                TipoAlimento ta = tipoAlimentoOptional.get();
+
+                Tiene tiene = cajaService.getAlimentoEnCaja(ta,c);
+
+                repoCaja.deleteById(id1);
+            }
+            
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
- w
+
 }
