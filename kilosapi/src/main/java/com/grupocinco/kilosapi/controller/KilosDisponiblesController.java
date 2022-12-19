@@ -2,8 +2,15 @@ package com.grupocinco.kilosapi.controller;
 
 
 import com.grupocinco.kilosapi.dto.kilosDisponibles.KilosDisponiblesDto;
+import com.grupocinco.kilosapi.model.Aportacion;
+import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
+import com.grupocinco.kilosapi.model.TipoAlimento;
+import com.grupocinco.kilosapi.repository.AportacionRepository;
 import com.grupocinco.kilosapi.repository.KilosDisponiblesRepository;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.AportacionService;
+import com.grupocinco.kilosapi.service.KilosDisponiblesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -20,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController()
 @RequestMapping("/kilosDisponibles")
@@ -28,6 +36,15 @@ public class KilosDisponiblesController {
 
     @Autowired
     private KilosDisponiblesRepository repo;
+
+    @Autowired
+    private KilosDisponiblesService kilosDispService;
+
+    @Autowired
+    private TipoAlimentoRepository tipoAlimentoRepo;
+
+    @Autowired
+    private AportacionRepository aportacionRepository;
 
 
     @Operation(description = "Devuelve una lista de todos los kilos disponibles guardados")
@@ -42,12 +59,22 @@ public class KilosDisponiblesController {
                                                     "id": 1,
                                                     "tipoAlimento": ,
                                                     "cantidadDisponible": 18.5
+                                               },
+                                               {
+                                                    "id": 2,
+                                                    "tipoAlimento": ,
+                                                    "cantidadDisponible": 20
+                                               },
+                                               {
+                                                    "id": 3,
+                                                    "tipoAlimento": ,
+                                                    "cantidadDisponible": 11.75
                                                }
                                             ]
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontraron artistas",
+                    description = "No se encontraron kilos disponibles",
                     content = {@Content})
     })
     @GetMapping()
@@ -61,10 +88,10 @@ public class KilosDisponiblesController {
     }
 
 
-    @Operation(description = "Devuelve una lista de todos los kilos disponibles guardados")
+    @Operation(description = "Devuelve una lista de todos los kilos disponibles guardados de un tipo de alimento")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Se han encontrado algunos kilos disponibles",
+                    description = "Se han encontrado algunos kilos disponibles de dicho alimento",
                     content = {@Content(mediaType = "application/json",
                             examples = {@ExampleObject(
                                     value = """
@@ -78,17 +105,26 @@ public class KilosDisponiblesController {
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontraron artistas",
+                    description = "No se encontraron kilos disponibles de dicho alimento",
                     content = {@Content})
     })
     @GetMapping("/{id}")
-    public ResponseEntity<List<KilosDisponiblesDto>> getListaKilosUnAlimento(@PathVariable Long id){
-        List<KilosDisponibles> lista = repo.findAll();
-        KilosDisponiblesDto kilos = new KilosDisponiblesDto();
-        List<KilosDisponiblesDto> listaDto = new ArrayList<>();
-        lista.forEach(k -> listaDto.add(kilos.of(k)));
-        if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(listaDto);
+    public ResponseEntity<List<Aportacion>> getListaKilosUnAlimento(@PathVariable Long id){
+
+        Optional<TipoAlimento> optionalTipoAli = tipoAlimentoRepo.findById(id);
+
+        if(optionalTipoAli.isPresent()){
+            TipoAlimento tipoAlimento = optionalTipoAli.get();
+
+            List<DetalleAportacion> listaDetallesAportacion = kilosDispService.findDetalleAportacionByTipoAlimentoId(tipoAlimento);
+
+            
+
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+
     }
 
 
