@@ -1,9 +1,12 @@
 package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDetalleDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
+import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.ClaseViews;
@@ -30,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,29 +42,23 @@ import java.util.Optional;
 public class CajaController {
 
     @Autowired
-    private CajaRepository repoCaja;
-    @Autowired
-    private CajaService cajaService;
+    private CajaService servCaja;
     @Autowired
     private TieneService servTiene;
     @Autowired
     private TieneService servicetiene;
     @Autowired
-    private TipoAlimentoRepository repoTipoAl;
-    @Autowired
-    private TipoAlimentoService tipoAlimentoService;
-    @Autowired
     private DestinatarioService servDest;
     @Autowired
     private KilosDisponiblesService servKilos;
+    @Autowired
+    private TipoAlimentoService tipoAlimentoService;
     @Autowired
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
     @Autowired
-    private CajaService servCaja;
-    @Autowired
-    private KilosDisponiblesRepository repoKilos;
+    private DestinatarioMapper mapperDest;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -96,98 +94,51 @@ public class CajaController {
                     content = {@Content})
     })
     @GetMapping()
-    @JsonView(CajaViews.CajasList.class)
-    public ResponseEntity<List<CajaDto>> getCajas(){
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
+    public ResponseEntity<List<CajaContenidoDto>> getCajas(){
         List<Caja> listaCajas = servCaja.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
+        List<CajaContenidoDto> listaDto = new ArrayList<CajaContenidoDto>();
+        listaCajas.forEach(caja -> {
+            caja = servCaja.actualizarDatosCajas(caja);
+            listaDto.add(mapperCaja.toCajaContenidoDto(caja));
+        });
+        return ResponseEntity.ok(listaDto);
     }
 
-    @Operation(
-            summary = "Obtener una caja",
-            description = "Esta petición devuelve la caja con el id indicado"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "La caja existe",
-                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CajaDetalleDto.class)), examples = @ExampleObject("""
-                            {
-                                "id": 1,
-                                "qr": "qrqrqr",
-                                "numeroCaja": 1,
-                                "kilosTotales": null,
-                                "destinatario": {
-                                    "id": 4,
-                                    "nombre": "Comedor Pagés del Corro"
-                                },
-                                "tiposAlimento": [
-                                    {
-                                        "id": 6,
-                                        "nombre": "Arroz",
-                                        "cantidad": 2.5
-                                    },
-                                    {
-                                        "id": 7,
-                                        "nombre": "Azúcar",
-                                        "cantidad": 2.6
-                                    }
-                                ]
-                            }
-                            """))}
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "La caja no existe",
-                    content = {@Content()}
-            )
-    })
-    @GetMapping("{id}")
-    public ResponseEntity<CajaDetalleDto> getCajaById(@Parameter(name = "Id de una caja", description = "id de la caja a editar") @PathVariable Long id) {
-        Optional<Caja> cajaOptional = repoCaja.findById(id); //
 
-        if (cajaOptional.isPresent()) {
-            return ResponseEntity.ok().body(CajaDetalleDto.of(cajaOptional.get()));
-        } else
-            return ResponseEntity.notFound().build();
-    }
-
-    @Operation(description = "Añade la cantidad deseada del tipo de alimento indicado, a la caja de id proporcionado")
+    @Operation(description = "Añade un tipo de alimento a la caja determinada")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
-                    description = "Se añadió correctamente",
+            @ApiResponse(responseCode = "200",
+                    description = "Se encontró el destinatario",
                     content = {@Content(mediaType = "application/json",
                             examples = {@ExampleObject(
                                     value = """
-                                            [
-                                                {
-                                                        "id": 3,
-                                                        "qr": "qrqrqr",
-                                                        "numeroCaja": 1,
-                                                        "destinatario": {
-                                                            "id": 1,
-                                                            "nombre": "Comedor Pagés del Corro"
-                                                        }
-                                                    },
+                                            {
+                                                "id": 2,
+                                                "nombre": "Hermanitas de los Pobres",
+                                                "direccion": "C/ Luis Montoto 43",
+                                                "personaContacto": "José",
+                                                "telefono": "954543092",
+                                                "cajas": [
                                                     {
-                                                        "id": 4,
-                                                        "qr": "tetete",
-                                                        "numeroCaja": 2,
-                                                        "destinatario": {
-                                                            "id": 1,
-                                                            "nombre": "Comedor Pagés del Corro"
-                                                        }
-                                                    },
-                                            ]
+                                                        "id": 5,
+                                                        "numeroCaja": 3,
+                                                        "totalKilos": 17.57
+                                                    }
+                                                ],
+                                                "totalKilos": 17.57,
+                                                "cantidadCajas": 1
+                                            }
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontró la caja donde añadir los alimentos",
+                    description = "No se encontraro el destinatario",
                     content = {@Content})
     })
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
+    public ResponseEntity<CajaContenidoDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
         Optional<Caja> optCaja = servCaja.findById(id);
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
@@ -220,9 +171,10 @@ public class CajaController {
                                 .build();
                         servicetiene.saveLinea(ti);
                     }
-                    CajaDto cdto = CajaDto.of(c);
-                    cdto.setContenido(mapperTiene.ofList(servTiene.getLineasCajas(c)));
-                    return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
+                    c = servCaja.actualizarDatosCajas(c);
+                    CajaContenidoDto cajaDto = mapperCaja.toCajaContenidoDto(c);
+                    cajaDto.setContenido(mapperTiene.fromListtoLineaCajaCont(servTiene.getLineasCajas(c)));
+                    return ResponseEntity.status(HttpStatus.CREATED).body(cajaDto);
                 }
             }
         }
@@ -246,13 +198,13 @@ public class CajaController {
                     content = {@Content})
     })
     @PostMapping("/caja/")
-    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
+    public ResponseEntity<CajaContenidoDto> createCaja(@RequestBody NewCajaDto dto){
 
         Caja ca = Caja.builder()
                 .qr(dto.getQr())
                 .numeroCaja(dto.getNumeroCaja())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(servCaja.save(ca));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapperCaja.toCajaContenidoDto(servCaja.save(ca)));
     }
 
     @Operation(
@@ -291,7 +243,7 @@ public class CajaController {
     public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la caja", description = "id de la caja a editar") @PathVariable Long id,
                                               @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
                                               @Parameter(name = "Cantidad kg", description = "Cantidad de kg a tener en una caja si la cantidad disponible del tipo indicado lo permite.") @PathVariable Double cantidad) {
-        Optional<Caja> cajaOpt = cajaService.getCajaByIdAndIdTipo(id, idTipoAlim); //FIXME solo devuelve el tipo de alimento con el id que se pasa, si tiene más tipos no se muestran
+        Optional<Caja> cajaOpt = servCaja.getCajaByIdAndIdTipo(id, idTipoAlim); //FIXME solo devuelve el tipo de alimento con el id que se pasa, si tiene más tipos no se muestran
         Caja caja;
         double dif;
         TipoAlimento tipoAlimento;
@@ -301,7 +253,7 @@ public class CajaController {
         if (cajaOpt.isPresent()) {
             caja = cajaOpt.get();
             kgCaja = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getCantidadKgs();
-            cajaService.actualizarDatosCajas(List.of(caja));
+            servCaja.actualizarDatosCajas(List.of(caja));
             dif = kgCaja - cantidad;
             if (cantidad >= 0) {
                 if (dif != 0) {
@@ -317,7 +269,7 @@ public class CajaController {
                     }
                 }
             }
-            cajaService.save(caja);
+            servCaja.save(caja);
             return ResponseEntity.ok().body(mapper.toCajaDto(caja));
         } else
             return ResponseEntity.badRequest().build();
@@ -340,17 +292,16 @@ public class CajaController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @PostMapping("/{id}/destinatario/{idDestinataro}")
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
+    public ResponseEntity<DestinatarioCajaActualizadaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
         Optional<Caja> optC = servCaja.findById(id);
         Optional<Destinatario> optD = servDest.findById(idDestinataro);
         if(optC.isPresent()){
             if (optD.isPresent()){
-                Caja c = optC.get();
                 Destinatario d = optD.get();
-                c.setDestinatario(d);
-
-                return ResponseEntity.ok(mapperCaja.toCajaDto(c));
+                servCaja.asignarCaja(optC.get().getId(), d);
+                Caja c = servCaja.findById(id).get();
+                return ResponseEntity.ok(mapperDest.toDestinatarioCajaActualizadaDto(d, c));
             }
             else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 

@@ -1,5 +1,6 @@
 package com.grupocinco.kilosapi.service;
 
+import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
@@ -41,12 +42,12 @@ public class DestinatarioService extends BaseServiceImpl<Destinatario, Long, Des
         List<Integer> numeros = new ArrayList<Integer>();
 
         //Actualizamos los pesos de las cajas relacionadas con el destinatario
-        List<CajaDto> cajasDto = mapperCaja.toListCajaDto(servCaja.actualizarDatosCajas(d.getCajas()));
+        List<CajaContenidoDto> cajasDto = mapperCaja.toCajaContenidoDto(servCaja.actualizarDatosCajas(d.getCajas()));
         dto.setCajas(cajasDto);
 
         //Calculamos los kilos totales enviados al destinatario determinado
         double total = 0;
-        for(CajaDto caja: cajasDto){
+        for(CajaContenidoDto caja: cajasDto){
             total = total + caja.getTotalKilos();
             numeros.add(caja.getNumeroCaja());
         }

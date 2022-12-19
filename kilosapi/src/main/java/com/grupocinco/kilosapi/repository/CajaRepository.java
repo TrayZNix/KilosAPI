@@ -29,6 +29,10 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
     public Tiene getTipoAlimentoEnCaja(@Param("id") TipoAlimento id, @Param("id") Caja idCaja);
     //CON ESTA RECUPERAS LA TUPLA, PASANDOLE EL OBJETO TIPOALIMENTO Y EL OBJETO CAJA
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Caja c SET c.destinatario = :destinatario WHERE c.id = :id")
+    public void asignarCaja(@Param("id") Long id, @Param("destinatario") Destinatario destinatario);
 
     @Query("SELECT c FROM Caja c WHERE c.destinatario = :id")
     public List<Caja> getRelacionesCajasByDestinatario(@Param("id") Destinatario id);

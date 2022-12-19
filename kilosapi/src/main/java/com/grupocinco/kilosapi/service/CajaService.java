@@ -12,44 +12,31 @@ import java.util.Optional;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class CajaService {
-    private final CajaRepository cajaRepository;
+public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
     @Autowired
     private CajaRepository repoCaja;
-
     @Autowired
     private TieneRepository repoTiene;
-
-    public Caja save(Caja caja) {
-        return cajaRepository.save(caja);
+    public List<Caja> actualizarDatosCajas(List<Caja> c){
+        c.forEach(caja -> {
+            caja.setTotalKilos(repoTiene.getPesoTotalCaja(caja));
+        });
+        return repository.saveAll(c);
     }
-
-    public List<Caja> findAll() {
-        return cajaRepository.findAll();
+    public Caja actualizarDatosCajas(Caja c){
+            c.setTotalKilos(repoTiene.getPesoTotalCaja(c));
+        return repository.save(c);
     }
-
-    public void deleteById(Long id) {
-        cajaRepository.deleteById(id);
-    }
-
-    public Optional<Caja> findById(Long id) {
-        return cajaRepository.findById(id);
-    }
-
-        public List<Caja> actualizarDatosCajas (List < Caja > c) {
-            //TODO Hago esto como consulta? Lo dejo asi?
-            c.forEach(caja -> {
-                caja.setTotalKilos(repoTiene.getPesoTotalCaja(caja));
-            });
-            return cajaRepository.saveAll(c);
-        }
 
         public void deleteRelacionesCajasDestinatarioBorrado (Destinatario d){
-            cajaRepository.deleteRelacionesCajasDestinatarioBorrado(d);
+            repoCaja.deleteRelacionesCajasDestinatarioBorrado(d);
         }
 
     public Optional<Caja> getCajaByIdAndIdTipo(Long id, Long idTipo) {
         return repoCaja.getCajaByIdAndIdTipo(id, idTipo);
+    }
+
+    public void asignarCaja(Long c, Destinatario d){
+        repository.asignarCaja(c, d);
     }
 }
