@@ -10,6 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import java.util.Optional;
+
 public interface CajaRepository extends JpaRepository<Caja, Long> {
     @Modifying
     @Transactional
@@ -26,4 +30,15 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
     //CON ESTA RECUPERAS LA TUPLA, PASANDOLE EL OBJETO TIPOALIMENTO Y EL OBJETO CAJA
 
 
+    @Query("SELECT c FROM Caja c WHERE c.destinatario = :id")
+    public List<Caja> getRelacionesCajasByDestinatario(@Param("id") Destinatario id);
+
+    @Query(value = """
+            select c
+            from Caja c join fetch c.lineas t
+            where
+            c.id = :id and
+            t.id.tipoAlimentoId = :idTipo
+            """)
+    public Optional<Caja> getCajaByIdAndIdTipo(@Param("id") Long id, @Param("idTipo") Long idTipo);
 }

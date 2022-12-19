@@ -34,6 +34,10 @@ public class TipoAlimento extends BaseServiceImpl<TipoAlimento, Long, TipoAlimen
 //    @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private KilosDisponibles kilosDisponible;
 
+    public TipoAlimento sumKilos(Double cantidad) { //TODO ver que esto se sume o reste y se guarde
+        this.kilosDisponible.setCantidadDisponible(kilosDisponible.getCantidadDisponible() + cantidad);
+        return this;
+    }
     public void addToKilosDisponibles(KilosDisponibles k){
         this.kilosDisponible = k;
         k.setTipoAlimento(this);
