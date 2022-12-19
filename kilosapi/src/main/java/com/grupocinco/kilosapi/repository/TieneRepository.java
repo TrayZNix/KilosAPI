@@ -12,4 +12,7 @@ import java.util.List;
 public interface TieneRepository extends JpaRepository<Tiene, TienePK> {
     @Query("SELECT t FROM Tiene t WHERE t.caja = :id")
     public List<Tiene> getLineasCajas(@Param("id") Caja id);
+
+    @Query("SELECT SUM(t.cantidadKgs) FROM Tiene t WHERE t.caja = :id")
+    public Double getPesoTotalCaja(@Param("id") Caja id);
 }

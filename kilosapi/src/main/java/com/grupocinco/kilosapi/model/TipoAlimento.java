@@ -30,7 +30,7 @@ public class TipoAlimento implements  Serializable{
     @ToString.Exclude
     @OneToOne(mappedBy = "tipoAlimento", cascade = CascadeType.ALL)
     @JoinColumn(name="tipoAlimento_id", foreignKey = @ForeignKey(name = "FK_KILOSDISPONIBLES_TIPOALIMENTO"))
-    @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
+//    @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private KilosDisponibles kilosDisponible;
 
 }

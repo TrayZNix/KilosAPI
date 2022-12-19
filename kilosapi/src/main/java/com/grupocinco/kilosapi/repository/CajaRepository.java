@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import java.util.Optional;
 
 public interface CajaRepository extends JpaRepository<Caja, Long> {
@@ -15,6 +17,9 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
     @Transactional
     @Query("UPDATE Caja c SET c.destinatario = null WHERE c.destinatario = :id")
     public void deleteRelacionesCajasDestinatarioBorrado(@Param("id") Destinatario id);
+
+    @Query("SELECT c FROM Caja c WHERE c.destinatario = :id")
+    public List<Caja> getRelacionesCajasByDestinatario(@Param("id") Destinatario id);
 
     @Query(value = """
             select  c

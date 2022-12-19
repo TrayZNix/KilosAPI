@@ -17,27 +17,24 @@ import java.util.List;
 @Setter
 @ToString
 public class DestinatarioDto {
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class,
-            DestinatarioViews.DestinatarioList.class,
-            CajaViews.CajasList.class,
-            DestinatarioViews.ModeloPostDestinatario.class})
+    @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private Long id;
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.ModeloPostDestinatario.class})
+    @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private String direccion;
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.ModeloPostDestinatario.class})
+    @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private String nombre;
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.ModeloPostDestinatario.class})
+    @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private String personaContacto;
-    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.ModeloPostDestinatario.class})
+    @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     private String telefono;
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    private List<CajaDto> cajas;
-    @JsonView({DestinatarioViews.DestinatarioList.class, DestinatarioViews.DestinatarioConcreto.class})
+    @JsonView({DestinatarioViews.DestinatarioConcreto.class, DestinatarioViews.DestinatarioList.class})
     private Double totalKilos;
-    @JsonView(DestinatarioViews.DestinatarioList.class)
-    private int[] numerosCaja;
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     private Integer cantidadCajas;
+    @JsonView(DestinatarioViews.DestinatarioList.class)
+    private int[] numerosCaja;
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    private List<CajaDto> cajas;
 
     public static DestinatarioDto of(Destinatario d){
         return DestinatarioDto.builder()
