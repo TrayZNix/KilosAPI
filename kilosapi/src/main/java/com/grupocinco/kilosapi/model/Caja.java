@@ -43,5 +43,4 @@ public class Caja {
         this.destinatario = null;
         d.getCajas().remove(this);
     }
-
 }
