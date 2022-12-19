@@ -147,13 +147,13 @@ public class CajaController {
                     content = {@Content})
     })
     @DeleteMapping("/{id1}/tipo/{idTipoAlim}")
-    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idtipoAlim){
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idTipoAlim){
         Optional<Caja> caja = repoCaja.findById(id1);
 
         if(caja.isPresent()){
             Caja c = caja.get();
 
-            Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idtipoAlim);
+            Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idTipoAlim);
 
             if(tipoAlimentoOptional.isPresent()) {
                 TipoAlimento ta = tipoAlimentoOptional.get();
