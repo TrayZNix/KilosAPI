@@ -9,7 +9,6 @@ import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.*;
-import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,8 +38,6 @@ public class CajaController {
     private TieneMapper mapperTiene;
     @Autowired
     private CajaMapper mapperCaja;
-    @Autowired
-    private CajaService servCaja;
 
     @Autowired
     private KilosDisponiblesRepository repoKilos;
@@ -86,39 +83,6 @@ public class CajaController {
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
-    @Operation(description = "Añade la cantidad deseada del tipo de alimento indicado, a la caja de id proporcionado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
-                    description = "Se añadió correctamente",
-                    content = {@Content(mediaType = "application/json",
-                            examples = {@ExampleObject(
-                                    value = """
-                                            [
-                                                {
-                                                        "id": 3,
-                                                        "qr": "qrqrqr",
-                                                        "numeroCaja": 1,
-                                                        "destinatario": {
-                                                            "id": 1,
-                                                            "nombre": "Comedor Pagés del Corro"
-                                                        }
-                                                    },
-                                                    {
-                                                        "id": 4,
-                                                        "qr": "tetete",
-                                                        "numeroCaja": 2,
-                                                        "destinatario": {
-                                                            "id": 1,
-                                                            "nombre": "Comedor Pagés del Corro"
-                                                        }
-                                                    },
-                                            ]
-                                            """
-                            )})}),
-            @ApiResponse(responseCode = "404",
-                    description = "No se encontró la caja donde añadir los alimentos",
-                    content = {@Content})
-    })
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
@@ -154,10 +118,9 @@ public class CajaController {
                                 .build();
                         servicetiene.saveLinea(ti);
                     }
-                    c = servCaja.actualizarDatosCajas(List.of(c)).stream().findAny().get();
-                    CajaDto cDto = CajaDto.of(c);
-                    cDto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
-                    return ResponseEntity.status(HttpStatus.CREATED).body(cDto);
+                    CajaDto cdto = CajaDto.of(c);
+                    cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
+                    return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
                 }
             }
         }
