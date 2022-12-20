@@ -41,4 +41,11 @@ public class TieneService extends BaseServiceImpl<Tiene, TienePK, TieneRepositor
     public Optional<Double> findIfAlreadySavedTipoAlimentoInCaja(TipoAlimento t, Caja c){
         return repository.findIfAlreadySavedTipoAlimentoInCaja(t, c);
     }
+
+    public void deleteTipoAlimento(TipoAlimento id){
+        repository.deleteTipoAlimento(id);
+    }
+    public void deleteCaja(Caja id){
+        repository.deleteCaja(id);
+    }
 }

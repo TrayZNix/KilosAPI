@@ -179,7 +179,7 @@ public class MainDePruebas {
 //                        .build())
 //                .build();
 //
-//        a1.getDetalles().add(det1);
+//        a1.addDetalleAportacion(det1);
 //
 //        detalleAportacionService.add(det1);
 
