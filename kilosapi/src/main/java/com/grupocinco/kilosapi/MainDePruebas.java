@@ -143,18 +143,14 @@ public class MainDePruebas {
                 .fecha(LocalDate.now())
                 .clase(cl2)
                 .build();
-//
+
 //        DetalleAportacion det1 = DetalleAportacion.builder()
 //                .cantidad_en_kgs(20.6)
 //                .tipoAlimento(t1)
-//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
-//                        .aportacion(a1)
-//                        .numLinea(123)
-//                        .build())
 //                .build();
 //
-//        a1.getDetalles().add(det1);
-//
+//        a1.addDetalleAportacion(det1);
+
 //        detalleAportacionService.add(det1);
 
         claseService.save(cl1);

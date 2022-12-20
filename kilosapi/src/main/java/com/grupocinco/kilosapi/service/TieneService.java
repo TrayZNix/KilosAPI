@@ -43,9 +43,9 @@ public class TieneService extends BaseServiceImpl<Tiene, TienePK, TieneRepositor
     }
 
     public void deleteTipoAlimento(TipoAlimento id){
-        tieneRepo.deleteTipoAlimento(id);
+        repository.deleteTipoAlimento(id);
     }
     public void deleteCaja(Caja id){
-        tieneRepo.deleteCaja(id);
+        repository.deleteCaja(id);
     }
 }

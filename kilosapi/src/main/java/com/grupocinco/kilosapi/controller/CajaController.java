@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -318,23 +319,26 @@ public class CajaController {
             @ApiResponse(responseCode = "200",
                     description = "Se ha realizado correctamente la edicion",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CajaDto.class),
+                            schema = @Schema(implementation = CajaContenidoDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                                 {
-                                                    "id": 4,
-                                                    "numeroCaja": 7,
-                                                    "totalKilos": 23.4,
-                                                    "contenido": [
-                                                        {
-                                                            "tipoAlimento": {
-                                                                "id": 7,
-                                                                "nombre": "Azúcar"
-                                                            },
-                                                            "cantidadKgs": 6.3
-                                                        }
-                                                    ]
-                                                }                                                                 
+                                                                      "id": 3,
+                                                                      "numeroCaja": 7,
+                                                                      "totalKilos": 5.0,
+                                                                      "contenido": [
+                                                                          {
+                                                                              "id": 9,
+                                                                              "nombre": "Huevo",
+                                                                              "cantidad": 2.6
+                                                                          },
+                                                                          {
+                                                                              "id": 10,
+                                                                              "nombre": "Ball",
+                                                                              "cantidad": 2.4
+                                                                          }
+                                                                      ]
+                                                                  }                                                
                                             """
                             )}
                     )}),
@@ -347,25 +351,29 @@ public class CajaController {
     })
     @PutMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaDto> editCajaById(
+    public ResponseEntity<CajaContenidoDto> editCajaById(
+            @Parameter(description = " ID de la caja a editar")
             @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = " Objeto Dto necesario para la creacion de la caja")
             @JsonView(CajaViews.UpdateCaja.class)@RequestBody CajaDto dto){
         Optional<Caja> c = cajaService.findById(id);
         if(c.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
+            if(dto.getNumeroCaja() == null || StringUtils.isEmpty(dto.getQr())) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
             Caja data = c.map(old ->{
                 old.setQr(dto.getQr());
                 old.setNumeroCaja(dto.getNumeroCaja());
                 return cajaService.add(old);
             }).orElse(null);
 
-            CajaDto result = CajaDto.of(c.get());
-            result.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c.get())));
+            data = servCaja.actualizarDatosCajas(data);
+            CajaContenidoDto result = mapperCaja.toCajaContenidoDto(data);
+            result.setContenido(mapperTiene.fromListtoLineaCajaCont(servTiene.getLineasCajas(data)));
 
             return ResponseEntity.ok(result);
         }
     }
-
 
     @Operation(summary = "Elimina una Caja con ID especificado")
     @ApiResponses(value = {
@@ -375,7 +383,9 @@ public class CajaController {
             )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Long id){
+    public ResponseEntity<?> deleteById(
+            @Parameter(description = " ID de la caja a eliminar")
+            @PathVariable Long id){
         if(cajaService.existById(id)){
             Caja c = cajaService.findById(id).get();
             servicetiene.deleteCaja(c);
