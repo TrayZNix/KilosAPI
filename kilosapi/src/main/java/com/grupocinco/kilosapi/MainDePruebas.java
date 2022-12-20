@@ -134,6 +134,9 @@ public class MainDePruebas {
                 .nombre("Clase tal 2")
                 .build();
 
+        claseService.save(cl1);
+        claseService.save(cl2);
+
         Aportacion a1 = Aportacion.builder()
                 .fecha(LocalDate.now())
                 .clase(cl1)
@@ -144,11 +147,34 @@ public class MainDePruebas {
                 .clase(cl2)
                 .build();
 
+        aportacionService.add(a1);
+        aportacionService.add(a2);
+
+        DetalleAportacion dt1 = DetalleAportacion.builder()
+                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(1L).build())
+                .tipoAlimento(t1)
+                .cantidad_en_kgs(10.0)
+                .aportacion(aportacionService.findById(13L).get())
+                .build();
+
+        DetalleAportacion dt2 = DetalleAportacion.builder()
+                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(2L).build())
+                .tipoAlimento(t2)
+                .cantidad_en_kgs(10.0)
+                .aportacion(aportacionService.findById(13L).get())
+                .build();
+
+        detalleAportacionService.add(dt1);
+        detalleAportacionService.add(dt2);
+
+        a1.addDetalleAportacion(dt1);
+        a1.addDetalleAportacion(dt2);
+
 //        DetalleAportacion det1 = DetalleAportacion.builder()
 //                .cantidad_en_kgs(20.6)
 //                .tipoAlimento(t1)
 //                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
-//                        .aportacion(a1)
+//                        .aportacionId(a1.getId())
 //                        .numLinea(123)
 //                        .build())
 //                .build();

@@ -21,13 +21,14 @@ public class AportacionService {
     private final AportacionRepository aportacionRepository;
     @Autowired
     private AportacionRepository repo;
+    private final ClaseService claseService;
 
     public Optional<ClaseInfoAportacionDto> aportacionDetalleByClaseId(Long id) {
-        Optional<Clase> clase = aportacionRepository.aportacionDetalleByClaseId(id);
+        Optional<Clase> clase = claseService.findById(id);
         if (clase.isPresent()){
             return Optional.of(ClaseInfoAportacionDto.of(clase.get()));
         } else
-            return Optional.of(null);
+            return Optional.empty();
     }
 
     public boolean existsById(Long id) {
