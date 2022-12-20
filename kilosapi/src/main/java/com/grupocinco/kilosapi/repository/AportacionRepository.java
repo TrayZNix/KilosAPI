@@ -13,7 +13,7 @@ public interface AportacionRepository extends JpaRepository<Aportacion, Long> {
     @Query(value = """
             select c
             from Clase c
-            where c.id = :claseId
+            where c.idClase = :claseId
             """)
     public Optional<Clase> aportacionDetalleByClaseId(@Param("claseId") Long id); //TODO ver que esto funcione
 }

@@ -3,10 +3,12 @@ package com.grupocinco.kilosapi.controller;
 import com.grupocinco.kilosapi.dto.clase.ClaseDetalleDto;
 import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
+import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.service.AportacionService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.aportacion.AportacionDto;
 import com.grupocinco.kilosapi.dto.view.AportacionViews;
+import com.grupocinco.kilosapi.service.DetalleAportacionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -36,6 +38,8 @@ import java.util.Optional;
 @Tag(name = "Aportación", description = "Controlador con las peticiones relacionadas con la aportación: obtención, creación, edición y eliminación de aportaciones")
 public class AportacionController {
     private final AportacionService aportacionService;
+
+    private final DetalleAportacionService detalleAportacionService;
 
     @Autowired
     private AportacionService serviceA;
@@ -80,6 +84,26 @@ public class AportacionController {
         if (aportacionService.existsById(id))
             aportacionService.deleteById(id);
         return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("{id}/linea/{num}")
+    public ResponseEntity<ClaseInfoAportacionDto> deleteDetalleAportacionByLineaAndId(@Parameter(name = "Id de la aportación", description = "Id de la aportación cuyo detalle queremos eliminar") @PathVariable Long id,
+                                                                                      @Parameter(name = "Num de detalle de la aportación", description = "Num de detalle de aportación a eliminar") @PathVariable Long num) {
+        Optional<DetalleAportacion> detalleAportacionOptional = detalleAportacionService.findDetalleAportacionByAportacionIdAndLinea(id, num);
+        DetalleAportacion detalleAportacion;
+        Optional<ClaseInfoAportacionDto> clase;
+
+        if (detalleAportacionOptional.isPresent()) {
+            detalleAportacion = detalleAportacionOptional.get();
+            clase = aportacionService.aportacionDetalleByClaseId(detalleAportacion.getAportacion().getClase().getIdClase());
+            detalleAportacionService.delete(detalleAportacion);
+
+            if (clase.isPresent())
+                return ResponseEntity.ok().body(clase.get());
+            else
+                return ResponseEntity.badRequest().build();
+        } else
+            return ResponseEntity.badRequest().build();
     }
 
     //================================================
