@@ -1,7 +1,10 @@
 package com.grupocinco.kilosapi.dto.caja;
 
+import com.grupocinco.kilosapi.dto.tiene.LineaCajaContenidoDto;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.model.Caja;
+import lombok.RequiredArgsConstructor;
+import com.grupocinco.kilosapi.model.Tiene;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,6 +40,26 @@ public class CajaMapper {
                     .totalKilos(c.getTotalKilos())
                     .build());
         }
+        return listaDto;
+    }
+
+    public CajaContenidoDto toCajaContenidoDto(Caja c) {
+        List<Tiene> lineas = c.getLineas();
+        List<LineaCajaContenidoDto> lineasDto = new ArrayList<LineaCajaContenidoDto>();
+        lineas.forEach(linea -> lineasDto.add(LineaCajaContenidoDto.of(linea)));
+        return CajaContenidoDto.builder()
+                .id(c.getId())
+                .qr(c.getQr())
+                .numeroCaja(c.getNumeroCaja())
+                .totalKilos(c.getTotalKilos())
+                .contenido(lineasDto)
+                .build();
+    }
+    public List<CajaContenidoDto> toCajaContenidoDto(List<Caja> lista) {
+        List<CajaContenidoDto> listaDto = new ArrayList<CajaContenidoDto>();
+        lista.forEach(caja -> {
+            listaDto.add(toCajaContenidoDto(caja));
+        });
         return listaDto;
     }
 

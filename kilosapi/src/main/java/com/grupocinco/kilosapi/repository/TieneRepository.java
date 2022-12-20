@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface TieneRepository extends JpaRepository<Tiene, TienePK> {
     @Query("SELECT t FROM Tiene t WHERE t.caja = :id")
@@ -18,6 +19,9 @@ public interface TieneRepository extends JpaRepository<Tiene, TienePK> {
 
     @Query("SELECT SUM(t.cantidadKgs) FROM Tiene t WHERE t.caja = :id")
     public Double getPesoTotalCaja(@Param("id") Caja id);
+
+    @Query("SELECT COALESCE(t.cantidadKgs, 0) FROM Tiene t WHERE t.caja = :idCaja AND t.tipoAlimento = :idTipo")
+    public Optional<Double> findIfAlreadySavedTipoAlimentoInCaja(@Param("idTipo")TipoAlimento tipo, @Param("idCaja") Caja caja);
 
     @Modifying
     @Transactional

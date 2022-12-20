@@ -1,7 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,6 +21,10 @@ public class DetalleAportacion {
 
     private Double cantidad_en_kgs;
 
+    @ManyToOne()
+    @JoinColumn(name = "id", updatable = false, insertable = false) //TODO Esto hay que cogerlo con pizas, porque hay que preguntar a luismi
+    private Aportacion aportacion;
+
     @PreRemove //TODO comprobar que se guarda la cantidad restada
     public void restarKilos() {
         KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
@@ -33,9 +36,10 @@ public class DetalleAportacion {
     @Embeddable
     @EqualsAndHashCode
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class DetalleAportacionId implements Serializable {
-        @ManyToOne()
-        private Aportacion aportacion;
+        private Long aportacionId;
 
 
         private Integer numLinea;

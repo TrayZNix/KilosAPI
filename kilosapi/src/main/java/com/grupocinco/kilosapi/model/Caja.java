@@ -1,8 +1,5 @@
 package com.grupocinco.kilosapi.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.grupocinco.kilosapi.dto.view.CajaViews;
-import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,7 +27,7 @@ public class Caja {
     @JoinColumn(name = "DESTINATARIO", foreignKey = @ForeignKey(name = "FK_CAJA_DESTINATARIO"))
     private Destinatario destinatario;
 
-    @OneToMany(mappedBy = "caja")
+    @OneToMany(mappedBy = "caja", orphanRemoval = true, cascade = CascadeType.REMOVE)
     @Builder.Default
     @ToString.Exclude
     private List<Tiene> lineas = new ArrayList<Tiene>();
@@ -40,6 +37,7 @@ public class Caja {
     }
 
     public void removeDestinatario(Destinatario d){
+        this.destinatario.getCajas().remove(this);
         this.destinatario = null;
         d.getCajas().remove(this);
     }

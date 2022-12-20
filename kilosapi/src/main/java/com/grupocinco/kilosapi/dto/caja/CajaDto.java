@@ -30,7 +30,6 @@ public class CajaDto {
     private Destinatario destinatario;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private List<TieneDto> contenido;
-    private String destinatarioString;
 
     public static CajaDto of(Caja c){
         return CajaDto.builder()

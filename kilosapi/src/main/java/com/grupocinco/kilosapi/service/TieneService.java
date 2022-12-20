@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class TieneService {
-    @Autowired
-    private TieneRepository tieneRepo;
+public class TieneService extends BaseServiceImpl<Tiene, TienePK, TieneRepository>{
+
     public Tiene saveLinea(Tiene t){
         t.setId(TienePK.builder()
                 .tipoAlimentoId(t.getTipoAlimento()
@@ -21,7 +21,7 @@ public class TieneService {
                 .cajaId(t.getCaja()
                         .getId())
                 .build());
-        return tieneRepo.save(t);
+        return repository.save(t);
     }
     public void saveListaLineas(List<Tiene> lista){
         for(Tiene t: lista){
@@ -31,8 +31,15 @@ public class TieneService {
                     .cajaId(t.getCaja()
                             .getId())
                     .build());
-            tieneRepo.save(t);
+            repository.save(t);
         }
+    }
+    public List<Tiene> getLineasCajas(Caja c){
+        return repository.getLineasCajas(c);
+    }
+
+    public Optional<Double> findIfAlreadySavedTipoAlimentoInCaja(TipoAlimento t, Caja c){
+        return repository.findIfAlreadySavedTipoAlimentoInCaja(t, c);
     }
 
     public void deleteTipoAlimento(TipoAlimento id){

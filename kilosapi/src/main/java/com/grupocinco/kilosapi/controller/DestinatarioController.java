@@ -6,6 +6,7 @@ import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,12 +29,11 @@ import java.util.Optional;
 @RequestMapping("/destinatario")
 @Tag(name = "Destinatarios", description = "Controlador que manejará peticiones de objetos destinatario")
 public class DestinatarioController {
-    @Autowired
-    private DestinatarioRepository repoDestinatarios;
-    @Autowired
-    private CajaRepository repoCaja;
+
     @Autowired
     private DestinatarioService servDest;
+    @Autowired
+    private CajaService servCaja;
     @Autowired
     private DestinatarioMapper mapperDest;
 
@@ -69,7 +69,7 @@ public class DestinatarioController {
     @GetMapping()
     @JsonView(DestinatarioViews.DestinatarioList.class)
     public ResponseEntity<List<DestinatarioDto>> getListaDestinatarios(){
-        List<Destinatario> lista = repoDestinatarios.findAll();
+        List<Destinatario> lista = servDest.findAll();
         List<DestinatarioDto> listaDto = new ArrayList<DestinatarioDto>();
         lista.forEach(destinatario -> listaDto.add(servDest.setDatosDestinatarioDto(destinatario)));
         if(lista.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -108,7 +108,7 @@ public class DestinatarioController {
     @GetMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
     public ResponseEntity<DestinatarioDto> getDestinatarioConcreto(@PathVariable Long id){
-        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        Optional<Destinatario> optDest = servDest.findById(id);
         if (optDest.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -140,7 +140,7 @@ public class DestinatarioController {
     @GetMapping("/{id}/detalle")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<DestinatarioDto> getDestinatarioConcretoDetallado(@PathVariable Long id){
-        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        Optional<Destinatario> optDest = servDest.findById(id);
         if (optDest.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -189,7 +189,7 @@ public class DestinatarioController {
                 .direccion(d.getDireccion())
                 .personaContacto(d.getPersonaContacto())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(DestinatarioDto.of(repoDestinatarios.save(DestinatarioDto.to(dest))));
+        return ResponseEntity.status(HttpStatus.CREATED).body(DestinatarioDto.of(servDest.save(DestinatarioDto.to(dest))));
     }
 
     @Operation(description = "Modifica un destinatario según el id introducido en la url y el cuerpo que le mandamos")
@@ -227,7 +227,7 @@ public class DestinatarioController {
     @PutMapping("/{id}")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
     public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d, @PathVariable Long id){
-        Optional<Destinatario> optD = repoDestinatarios.findById(id);
+        Optional<Destinatario> optD = servDest.findById(id);
         if(optD.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -241,7 +241,7 @@ public class DestinatarioController {
                 dest.setNombre(d.getNombre());
                 dest.setDireccion(d.getDireccion());
                 dest.setPersonaContacto(d.getPersonaContacto());
-        return ResponseEntity.status(HttpStatus.OK).body(DestinatarioDto.of(repoDestinatarios.save(dest)));
+        return ResponseEntity.status(HttpStatus.OK).body(DestinatarioDto.of(servDest.save(dest)));
             }
         }
     }
@@ -254,11 +254,11 @@ public class DestinatarioController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDestinatario(@PathVariable Long id){
-        Optional<Destinatario> optDest = repoDestinatarios.findById(id);
+        Optional<Destinatario> optDest = servDest.findById(id);
         if(optDest.isPresent()){
             Destinatario d = optDest.get();
-            repoCaja.deleteRelacionesCajasDestinatarioBorrado(d);
-            repoDestinatarios.deleteById(id);
+            servCaja.deleteRelacionesCajasDestinatarioBorrado(d);
+            servDest.deleteById(id);
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
