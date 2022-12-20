@@ -153,7 +153,7 @@ public class MainDePruebas {
         DetalleAportacion dt1 = DetalleAportacion.builder()
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(1L).build())
                 .tipoAlimento(t1)
-                .cantidad_en_kgs(10.0)
+                .cantidad_en_kgs(15.0)
                 .aportacion(aportacionService.findById(13L).get())
                 .build();
 
@@ -164,24 +164,11 @@ public class MainDePruebas {
                 .aportacion(aportacionService.findById(13L).get())
                 .build();
 
-        detalleAportacionService.add(dt1);
-        detalleAportacionService.add(dt2);
-
         a1.addDetalleAportacion(dt1);
         a1.addDetalleAportacion(dt2);
 
-//        DetalleAportacion det1 = DetalleAportacion.builder()
-//                .cantidad_en_kgs(20.6)
-//                .tipoAlimento(t1)
-//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
-//                        .aportacionId(a1.getId())
-//                        .numLinea(123)
-//                        .build())
-//                .build();
-//
-//        a1.addDetalleAportacion(det1);
-//
-//        detalleAportacionService.add(det1);
+        detalleAportacionService.add(dt1);
+        detalleAportacionService.add(dt2);
 
         claseService.save(cl1);
         claseService.save(cl2);

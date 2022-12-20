@@ -185,6 +185,8 @@ public class AportacionController {
         if(a.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             AportacionDto result = AportacionDto.of(a.get());
+
+            System.out.println(result.getDetalleAportaciones());
             return ResponseEntity.ok(result);
         }
     }
