@@ -22,7 +22,7 @@ public class Aportacion {
    private Clase clase;
 
    @ToString.Exclude
-   @OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(mappedBy = "aportacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
    private List<DetalleAportacion> detalles = new ArrayList<>();
 
@@ -40,10 +40,10 @@ public class Aportacion {
    //TODO comprueba esto ale que me huele regular el remove
    public void addDetalleAportacion(DetalleAportacion d){
        this.getDetalles().add(d);
-       d.getDetalleAportacionId().setAportacionId(this.id);
+       d.getDetalleAportacionId().setIdAportacion(this.id);
    }
    public void removeDetalleAportacion(DetalleAportacion d){
        this.getDetalles().remove(d);
-       d.getDetalleAportacionId().setAportacionId(this.id);
+       d.getDetalleAportacionId().setIdAportacion(this.id);
    }
 }

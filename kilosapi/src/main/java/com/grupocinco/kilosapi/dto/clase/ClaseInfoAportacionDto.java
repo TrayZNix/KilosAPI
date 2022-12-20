@@ -12,11 +12,11 @@ import java.util.List;
 @Setter
 @Builder
 public class ClaseInfoAportacionDto {
-    private Long id;
+    private Long claseId;
 
     private List<AportacionInfoDto> aportaciones;
 
     public static ClaseInfoAportacionDto of(Clase clase) {
-        return ClaseInfoAportacionDto.builder().id(clase.getId()).aportaciones(clase.getAportaciones().stream().map(AportacionInfoDto::of).toList()).build();
+        return ClaseInfoAportacionDto.builder().claseId(clase.getIdClase()).aportaciones(clase.getAportaciones().stream().map(AportacionInfoDto::of).toList()).build();
     }
 }

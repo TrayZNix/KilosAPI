@@ -21,7 +21,7 @@ public class Clase {
     @Id
     @GeneratedValue
     @JsonView(ClaseViews.NewClase.class)
-    private Long id;
+    private Long idClase;
 
     @JsonView(ClaseViews.NewClase.class)
     private String nombre, tutor;
