@@ -8,16 +8,11 @@ import com.grupocinco.kilosapi.dto.caja.CajaMapper;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
-import com.grupocinco.kilosapi.dto.tipoAlimento.TipoAlimentoDto;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.ClaseViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.*;
-import com.grupocinco.kilosapi.repository.CajaRepository;
-import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.CajaService;
-import com.grupocinco.kilosapi.repository.*;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
@@ -111,6 +106,54 @@ public class CajaController {
         return ResponseEntity.ok(listaDto);
     }
 
+    @Operation(
+            summary = "Obtener una caja",
+            description = "Esta petición devuelve la caja con el id indicado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "La caja existe",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CajaDetalleDto.class)), examples = @ExampleObject("""
+                            {
+                                "id": 1,
+                                "qr": "qrqrqr",
+                                "numeroCaja": 1,
+                                "kilosTotales": null,
+                                "destinatario": {
+                                    "id": 4,
+                                    "nombre": "Comedor Pagés del Corro"
+                                },
+                                "tiposAlimento": [
+                                    {
+                                        "id": 6,
+                                        "nombre": "Arroz",
+                                        "cantidad": 2.5
+                                    },
+                                    {
+                                        "id": 7,
+                                        "nombre": "Azúcar",
+                                        "cantidad": 2.6
+                                    }
+                                ]
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "La caja no existe",
+                    content = {@Content()}
+            )
+    })
+    @GetMapping("{id}")
+    public ResponseEntity<CajaDetalleDto> getCajaById(@Parameter(name = "Id de una caja", description = "id de la caja a editar") @PathVariable Long id) {
+        Optional<Caja> cajaOptional = cajaService.findById(id); //
+
+        if (cajaOptional.isPresent()) {
+            return ResponseEntity.ok().body(CajaDetalleDto.of(cajaOptional.get()));
+        } else
+            return ResponseEntity.notFound().build();
+    }
 
     @Operation(description = "Añade un tipo de alimento a la caja determinada")
     @ApiResponses(value = {
