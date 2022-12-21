@@ -7,4 +7,8 @@ public class AportacionViews {
     public static class AportacionById{
 
     }
+
+    public static class AportacionResponse{
+
+    }
 }

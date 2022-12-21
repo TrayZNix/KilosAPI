@@ -1,12 +1,13 @@
 package com.grupocinco.kilosapi.service;
 
 import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
-import com.grupocinco.kilosapi.model.*;
+
+import com.grupocinco.kilosapi.model.Aportacion;
+import com.grupocinco.kilosapi.model.Clase;
+
 import com.grupocinco.kilosapi.repository.AportacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.grupocinco.kilosapi.model.Clase;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import java.util.List;
@@ -15,8 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AportacionService {
     private final AportacionRepository aportacionRepository;
-    @Autowired
-    private AportacionRepository repo;
+
     private final ClaseService claseService;
 
     public Optional<ClaseInfoAportacionDto> aportacionDetalleByClaseId(Long id) {
@@ -27,6 +27,10 @@ public class AportacionService {
             return Optional.empty();
     }
 
+    public Aportacion save(Aportacion aportacion) {
+        return aportacionRepository.save(aportacion);
+    }
+
     public boolean existsById(Long id) {
         return aportacionRepository.existsById(id);
     }
@@ -35,17 +39,13 @@ public class AportacionService {
         aportacionRepository.deleteById(id);
     }
 
-    public Aportacion save(Aportacion aportacion) {
-        return aportacionRepository.save(aportacion);
-    }
-
     public List<Aportacion> findAll() {
-        return repo.findAll();
+        return aportacionRepository.findAll();
     }
     public Optional<Aportacion> findById(Long id) {
-        return repo.findById(id);
+        return aportacionRepository.findById(id);
     }
     public Aportacion add(Aportacion a) {
-        return repo.save(a);
+        return aportacionRepository.save(a);
     }
 }
