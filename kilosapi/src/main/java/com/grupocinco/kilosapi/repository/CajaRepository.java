@@ -22,7 +22,7 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
 
 
     @Query("SELECT t FROM Tiene t WHERE t.tipoAlimento = :id AND t.caja = :idCaja")
-    public Tiene getTipoAlimentoEnCaja(@Param("id") TipoAlimento id, @Param("id") Caja idCaja);
+    public Tiene getTipoAlimentoEnCaja(@Param("id") TipoAlimento id, @Param("idCaja") Caja idCaja);
 
     @Modifying
     @Transactional

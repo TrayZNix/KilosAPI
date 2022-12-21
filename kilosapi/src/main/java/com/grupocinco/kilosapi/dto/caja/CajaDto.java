@@ -21,9 +21,9 @@ import java.util.List;
 public class CajaDto {
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
     private Long id;
-    @JsonView({CajaViews.CajasList.class, CajaViews.UpdateCaja.class})
+    @JsonView({CajaViews.CajasList.class, CajaViews.UpdateCaja.class, CajaViews.NewCaja.class})
     private String qr;
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class, CajaViews.UpdateCaja.class})
+    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class, CajaViews.UpdateCaja.class, CajaViews.NewCaja.class})
     private Integer numeroCaja;
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Double totalKilos;

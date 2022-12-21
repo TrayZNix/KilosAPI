@@ -130,13 +130,14 @@ public class CajaController {
                     content = {@Content})
     })
     @PostMapping("")
-    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
+    public ResponseEntity<NewCajaDto> createCaja(@RequestBody NewCajaDto dto){
 
         Caja ca = Caja.builder()
                 .qr(dto.getQr())
                 .numeroCaja(dto.getNumeroCaja())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(cajaService.save(ca));
+        cajaService.save(ca);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @Operation(description = "Borra una caja y la lista de alimentos que contiene")
@@ -171,8 +172,7 @@ public class CajaController {
                         );
             }
         }
-        return ResponseEntity.ok().build();
-
+            return ResponseEntity.noContent().build();
     }
 
 }
