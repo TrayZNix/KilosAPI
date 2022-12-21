@@ -1,11 +1,1 @@
 En /destinatario/{id}/detalle, tengo que mostrar el array de numeros de cajas, cantidad de cajas, y total de kilos, o solo las cajas?
-
-Es correcta la representación del tipo de alimento, o debo escribir solo el string del nombre del tipo de alimento?
-
-Las respuestas de destinatario son correctas?
-
-//No prior.
-
-Mover contenido de endpoints a servicios?
-
-Algo para evitar errores de coma flotante (excesivos decimales) en la respuesta.
