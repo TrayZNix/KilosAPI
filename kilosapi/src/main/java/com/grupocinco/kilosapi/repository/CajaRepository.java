@@ -22,7 +22,7 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
 
 
     @Query("SELECT t FROM Tiene t WHERE t.tipoAlimento = :id AND t.caja = :idCaja")
-    public Tiene getTipoAlimentoEnCaja(@Param("id") TipoAlimento id, @Param("id") Caja idCaja);
+    public Tiene getTipoAlimentoEnCaja(@Param("id") TipoAlimento id, @Param("idCaja") Caja idCaja);
 
     @Modifying
     @Transactional
@@ -37,7 +37,7 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
             from Caja c join fetch c.lineas t
             where
             c.id = :id and
-            t.id.tipoAlimentoId = :idTipo
+            :idTipo = any (select t1.tipoAlimento.id from Tiene t1 where t1.caja.id = :id)
             """)
     public Optional<Caja> getCajaByIdAndIdTipo(@Param("id") Long id, @Param("idTipo") Long idTipo);
 }

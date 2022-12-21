@@ -19,7 +19,6 @@ public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
     @Autowired
     private TieneRepository repoTiene;
     public List<Caja> actualizarDatosCajas(List<Caja> c){
-        //TODO Hago esto como consulta? Lo dejo asi?
         c.forEach(caja -> {
             caja.setTotalKilos(repoTiene.getPesoTotalCaja(caja));
         });
@@ -31,7 +30,12 @@ public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
     }
     public Caja actualizarDatosCajas(Caja c){
         c.setTotalKilos(repoTiene.getPesoTotalCaja(c));
+        System.out.println(c.getTotalKilos());
         return repository.save(c);
+    }
+
+    public Double getKilosTotales(Caja c) {
+        return repoTiene.getPesoTotalCaja(c);
     }
 
     public void deleteRelacionesCajasDestinatarioBorrado (Destinatario d){

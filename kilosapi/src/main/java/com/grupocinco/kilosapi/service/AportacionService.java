@@ -1,16 +1,12 @@
 package com.grupocinco.kilosapi.service;
 
 import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
-import com.grupocinco.kilosapi.model.Clase;
+import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.AportacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.Clase;
-import com.grupocinco.kilosapi.model.TipoAlimento;
-import com.grupocinco.kilosapi.repository.AportacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
@@ -37,6 +33,10 @@ public class AportacionService {
 
     public void deleteById(Long id) {
         aportacionRepository.deleteById(id);
+    }
+
+    public Aportacion save(Aportacion aportacion) {
+        return aportacionRepository.save(aportacion);
     }
 
     public List<Aportacion> findAll() {

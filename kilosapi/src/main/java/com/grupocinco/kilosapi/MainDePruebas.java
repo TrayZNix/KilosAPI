@@ -3,7 +3,6 @@ package com.grupocinco.kilosapi;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
-import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,6 @@ public class MainDePruebas {
     @Autowired
     private TipoAlimentoRepository repoTipoAlimento;
     @Autowired
-    private TieneRepository repoTiene;
-    @Autowired
-    private DestinatarioService destServ;
-    @Autowired
     private TieneService tieneService;
 
     @Autowired
@@ -34,6 +29,9 @@ public class MainDePruebas {
     private AportacionService aportacionService;
     @Autowired
     private ClaseService claseService;
+
+    @Autowired
+    private CajaService cajaService;
 
     @PostConstruct
     public void datos(){
@@ -81,12 +79,12 @@ public class MainDePruebas {
 
         KilosDisponibles k6 = KilosDisponibles.builder().tipoAlimento(t1).cantidadDisponible(10.0).build();
         KilosDisponibles k7 = KilosDisponibles.builder().tipoAlimento(t2).cantidadDisponible(10.0).build();
-        t1.setKilosDisponible(k6);
-        t2.setKilosDisponible(k7);
+/*        t1.setKilosDisponible(k6);
+        t2.setKilosDisponible(k7);*/
 
 
-        t1.addToKilosDisponibles(k1);
-        t2.addToKilosDisponibles(k2);
+        t1.addToKilosDisponibles(k6);
+        t2.addToKilosDisponibles(k7);
         t3.addToKilosDisponibles(k3);
         t4.addToKilosDisponibles(k4);
         t5.addToKilosDisponibles(k5);
@@ -147,46 +145,56 @@ public class MainDePruebas {
                 .clase(cl2)
                 .build();
 
+        Aportacion a3 = Aportacion.builder()
+                .fecha(LocalDate.now())
+                .clase(cl1)
+                .build();
+
         aportacionService.add(a1);
         aportacionService.add(a2);
+        aportacionService.add(a3);
 
         DetalleAportacion dt1 = DetalleAportacion.builder()
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(1L).build())
                 .tipoAlimento(t1)
-                .cantidad_en_kgs(10.0)
-                .aportacion(aportacionService.findById(13L).get())
+                .cantidad_en_kgs(15.0)
+                .aportacion(a1)
                 .build();
 
         DetalleAportacion dt2 = DetalleAportacion.builder()
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(2L).build())
                 .tipoAlimento(t2)
                 .cantidad_en_kgs(10.0)
-                .aportacion(aportacionService.findById(13L).get())
+                .aportacion(a1)
                 .build();
 
-        detalleAportacionService.add(dt1);
-        detalleAportacionService.add(dt2);
+        DetalleAportacion dt3 = DetalleAportacion.builder()
+                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a3.getId()).numLinea(3L).build())
+                .tipoAlimento(t3)
+                .cantidad_en_kgs(10.0)
+                .aportacion(aportacionService.findById(a3.getId()).get())
+                .build();
+
 
         a1.addDetalleAportacion(dt1);
         a1.addDetalleAportacion(dt2);
+        a3.addDetalleAportacion(dt3);
 
-//        DetalleAportacion det1 = DetalleAportacion.builder()
-//                .cantidad_en_kgs(20.6)
-//                .tipoAlimento(t1)
-//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
-//                        .aportacionId(a1.getId())
-//                        .numLinea(123)
-//                        .build())
-//                .build();
-//
-//        a1.addDetalleAportacion(det1);
-//
-//        detalleAportacionService.add(det1);
+        a1.removeDetalleAportacion(dt2);
+
+        a1.addDetalleAportacion(dt2);
+
+        detalleAportacionService.add(dt1);
+        detalleAportacionService.add(dt2);
+        detalleAportacionService.add(dt3);
 
         claseService.save(cl1);
         claseService.save(cl2);
 
         aportacionService.add(a1);
         aportacionService.add(a2);
+
+        cajaService.actualizarDatosCajas(List.of(c1, c2, c3));
+        cajaService.saveAll(List.of(c1, c2, c3));
     }
 }

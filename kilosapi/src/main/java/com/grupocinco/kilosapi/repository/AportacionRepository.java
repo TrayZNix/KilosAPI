@@ -1,6 +1,5 @@
 package com.grupocinco.kilosapi.repository;
 
-import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.Clase;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +14,5 @@ public interface AportacionRepository extends JpaRepository<Aportacion, Long> {
             from Clase c
             where c.idClase = :claseId
             """)
-    public Optional<Clase> aportacionDetalleByClaseId(@Param("claseId") Long id); //TODO ver que esto funcione
+    public Optional<Clase> aportacionDetalleByClaseId(@Param("claseId") Long id);
 }

@@ -17,6 +17,7 @@ public class ClaseInfoAportacionDto {
     private List<AportacionInfoDto> aportaciones;
 
     public static ClaseInfoAportacionDto of(Clase clase) {
+        System.out.println(clase.getAportaciones().size());
         return ClaseInfoAportacionDto.builder().claseId(clase.getIdClase()).aportaciones(clase.getAportaciones().stream().map(AportacionInfoDto::of).toList()).build();
     }
 }

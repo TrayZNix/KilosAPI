@@ -25,19 +25,14 @@ public class DetalleAportacion {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "aportacion_id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_APORTACION")) //TODO Esto hay que cogerlo con pizas, porque hay que preguntar a luismi
+    @JoinColumn(name = "aportacion_id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_APORTACION"))
     private Aportacion aportacion;
 
-    @PreRemove //TODO comprobar que se guarda la cantidad restada
+    @PreRemove
     public void restarKilos() {
         KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
         kilos.setCantidadDisponible(kilos.getCantidadDisponible() - cantidad_en_kgs);
     }
-
-/*    @PreRemove //TODO esta es la unica manera que he encontrado de que se elimine de alguna manera
-    public void eliminarDeAportacion() {
-        this.aportacion.getDetalles().remove(this);
-    }*/
 
     @Getter
     @Setter
