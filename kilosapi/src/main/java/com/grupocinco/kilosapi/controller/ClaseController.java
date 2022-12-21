@@ -95,7 +95,7 @@ public class ClaseController {
     })
     @GetMapping("{id}")
     public ResponseEntity<ClaseDetalleDto> getClaseById(@Parameter(name = "Id de la clase", description = "Id de la clase a buscar") @PathVariable Long id) {
-        Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id); //TODO comprobar que va cuando se puedan tener kilos y esas cosas
+        Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id);
         if (clase.isPresent())
             return ResponseEntity.ok().body(clase.get());
         else
@@ -126,7 +126,6 @@ public class ClaseController {
     })
     @JsonView(ClaseViews.NewClase.class)
     @PostMapping("")
-    //TODO comprobar que la consulta funciona cuando se puedan hacer cosas con aportaciones y detalles de aportaciones
     public ResponseEntity<Clase> newClase(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos necesarios para la creación de una nueva clase", content = @Content(examples = @ExampleObject("""
             {
                 "nombre": "2º DAM",

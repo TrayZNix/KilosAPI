@@ -5,7 +5,6 @@ import com.grupocinco.kilosapi.dto.caja.*;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
-import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
@@ -13,8 +12,6 @@ import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.CajaService;
-import com.grupocinco.kilosapi.repository.*;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
@@ -27,7 +24,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -141,6 +137,54 @@ public class CajaController {
         return ResponseEntity.ok(listaDto);
     }
 
+    @Operation(
+            summary = "Obtener una caja",
+            description = "Esta petición devuelve la caja con el id indicado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "La caja existe",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CajaDetalleDto.class)), examples = @ExampleObject("""
+                            {
+                                "id": 1,
+                                "qr": "qrqrqr",
+                                "numeroCaja": 1,
+                                "kilosTotales": null,
+                                "destinatario": {
+                                    "id": 4,
+                                    "nombre": "Comedor Pagés del Corro"
+                                },
+                                "tiposAlimento": [
+                                    {
+                                        "id": 6,
+                                        "nombre": "Arroz",
+                                        "cantidad": 2.5
+                                    },
+                                    {
+                                        "id": 7,
+                                        "nombre": "Azúcar",
+                                        "cantidad": 2.6
+                                    }
+                                ]
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "La caja no existe",
+                    content = {@Content()}
+            )
+    })
+    @GetMapping("{id}")
+    public ResponseEntity<CajaDetalleDto> getCajaById(@Parameter(name = "Id de una caja", description = "id de la caja a editar") @PathVariable Long id) {
+        Optional<Caja> cajaOptional = cajaService.findById(id); //
+
+        if (cajaOptional.isPresent()) {
+            return ResponseEntity.ok().body(CajaDetalleDto.of(cajaOptional.get()));
+        } else
+            return ResponseEntity.notFound().build();
+    }
 
     @Operation(summary = "Añade un tipo de alimento a la caja determinada")
     @ApiResponses(value = {
@@ -220,44 +264,80 @@ public class CajaController {
         }
     }
 
-    @Operation(summary = "Asigna una caja determinada al destinatario deseado")
+    @Operation(
+            summary = "Edita kg de una caja",
+            description = "Esta petición edita los kg de un tipo de alimento de una caja"
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "La operación se efectuó correctamente",
-                    content = {@Content(mediaType = "application/json",
-                            examples = {@ExampleObject(
-                                    value = """
-                                            {
-                                                "id": 1,
-                                                "nombreDestinatario": "Comedor Don Bosco",
-                                                "caja": {
-                                                    "id": 1,
-                                                    "qr": "qr1",
-                                                    "numeroCaja": 3,
-                                                    "totalKilos": 25.0,
-                                                    "contenido": [
-                                                        {
-                                                            "id": 1,
-                                                            "nombre": "Huevo",
-                                                            "cantidad": 2.6
-                                                        },
-                                                        {
-                                                            "id": 2,
-                                                            "nombre": "Zanahoria",
-                                                            "cantidad": 22.4
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                            """
-                            )})}),
-            @ApiResponse(responseCode = "404",
-                    description = "No se encontró la caja a la que asignar destinatario",
-                    content = {@Content}),
-            @ApiResponse(responseCode = "400",
-                    description = "No se encontró el destinatario que asignar a la caja",
-                    content = {@Content})
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se editó la caja",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DestinatarioViews.DestinatarioConcretoDetalles.class), examples = @ExampleObject("""
+                            {
+                                "id": 1,
+                                "numeroCaja": 1,
+                                "totalKilos": 5.1,
+                                "contenido": [
+                                    {
+                                        "tipoAlimento": {
+                                            "id": 6,
+                                            "nombre": "Arroz"
+                                        },
+                                        "cantidadKgs": 7.4
+                                    },
+                                    {
+                                        "tipoAlimento": {
+                                            "id": 7,
+                                            "nombre": "Azúcar"
+                                        },
+                                        "cantidadKgs": 2.6
+                                    }
+                                ]
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos para editar una caja",
+                    content = {@Content()}
+            )
     })
+    @PutMapping("{id}/tipo/{idTipoAlim}/kg/{cantidad}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la caja", description = "id de la caja a editar") @PathVariable Long id,
+                                              @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
+                                              @Parameter(name = "Cantidad kg", description = "Cantidad de kg a tener en una caja si la cantidad disponible del tipo indicado lo permite.") @PathVariable Double cantidad) {
+        Optional<Caja> cajaOpt = servCaja.getCajaByIdAndIdTipo(id, idTipoAlim);
+        Caja caja;
+        double dif;
+        TipoAlimento tipoAlimento;
+        Double kgCaja;
+
+        if (cajaOpt.isPresent()) {
+            caja = cajaOpt.get();
+            kgCaja = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getCantidadKgs();
+            servCaja.actualizarDatosCajas(List.of(caja));
+            dif = kgCaja - cantidad;
+            if (cantidad >= 0) {
+                if (dif != 0) {
+                    tipoAlimento = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getTipoAlimento();
+                    if (dif < 0) {
+                        if (tipoAlimento.getKilosDisponible().getCantidadDisponible() >= -dif) {
+                            tipoAlimentoService.save(tipoAlimento.sumKilos(dif));
+                            caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().setCantidadKgs(cantidad);
+                        }
+                    } else {
+                        tipoAlimentoService.save(tipoAlimento.sumKilos(dif));
+                        caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().setCantidadKgs(cantidad);
+                    }
+                }
+            }
+            servCaja.save(caja);
+            return ResponseEntity.ok().body(mapperCaja.toCajaDto(caja));
+        } else
+            return ResponseEntity.badRequest().build();
+    }
+
     @PostMapping("/{id}/destinatario/{idDestinataro}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
     public ResponseEntity<DestinatarioCajaActualizadaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
