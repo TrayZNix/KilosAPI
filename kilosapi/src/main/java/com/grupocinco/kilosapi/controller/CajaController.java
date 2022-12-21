@@ -5,6 +5,7 @@ import com.grupocinco.kilosapi.dto.caja.*;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
+import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
@@ -24,6 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -420,7 +422,7 @@ public class CajaController {
                     content = {@Content})
     })
     @PostMapping("")
-    public ResponseEntity<NewCajaDto> createCaja(@RequestBody NewCajaDto dto){
+    public ResponseEntity<NewCajaDto> createCaja(@RequestBody NewCajaDto dto) {
 
         Caja ca = Caja.builder()
                 .qr(dto.getQr())
@@ -437,15 +439,15 @@ public class CajaController {
                     content = {@Content})
     })
     @DeleteMapping("/{id1}/tipo/{idTipoAlim}")
-    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idTipoAlim){
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idTipoAlim) {
         Optional<Caja> caja = cajaService.findById(id1);
 
-        if(caja.isPresent()){
+        if (caja.isPresent()) {
             Caja c = caja.get();
 
             Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idTipoAlim);
 
-            if(tipoAlimentoOptional.isPresent()) {
+            if (tipoAlimentoOptional.isPresent()) {
                 TipoAlimento ta = tipoAlimentoOptional.get();
 
                 Tiene tiene = cajaService.getAlimentoEnCaja(ta, c);
@@ -462,6 +464,88 @@ public class CajaController {
                         );
             }
         }
-            return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Modifica la caja con ID especificado por caja recibida")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha realizado correctamente la edicion",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CajaContenidoDto.class),
+                            examples = {@ExampleObject(
+                                    value = """
+                                                {
+                                                                      "id": 3,
+                                                                      "numeroCaja": 7,
+                                                                      "totalKilos": 5.0,
+                                                                      "contenido": [
+                                                                          {
+                                                                              "id": 9,
+                                                                              "nombre": "Huevo",
+                                                                              "cantidad": 2.6
+                                                                          },
+                                                                          {
+                                                                              "id": 10,
+                                                                              "nombre": "Ball",
+                                                                              "cantidad": 2.4
+                                                                          }
+                                                                      ]
+                                                                  }                                                
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "400",
+                    description = "Ha habido un error en los datos recibidos",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado ninguna caja",
+                    content = @Content),
+    })
+    @PutMapping("/{id}")
+    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
+    public ResponseEntity<CajaContenidoDto> editCajaById(
+            @Parameter(description = " ID de la caja a editar")
+            @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = " Objeto Dto necesario para la creacion de la caja")
+            @JsonView(CajaViews.UpdateCaja.class)@RequestBody CajaDto dto){
+        Optional<Caja> c = cajaService.findById(id);
+        if(c.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else{
+            if(dto.getNumeroCaja() == null || StringUtils.isEmpty(dto.getQr())) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+            Caja data = c.map(old ->{
+                old.setQr(dto.getQr());
+                old.setNumeroCaja(dto.getNumeroCaja());
+                return cajaService.add(old);
+            }).orElse(null);
+
+            data = servCaja.actualizarDatosCajas(data);
+            CajaContenidoDto result = mapperCaja.toCajaContenidoDto(data);
+            result.setContenido(mapperTiene.fromListtoLineaCajaCont(servTiene.getLineasCajas(data)));
+
+            return ResponseEntity.ok(result);
+        }
+    }
+
+    @Operation(summary = "Elimina una Caja con ID especificado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha realizado correctamente la eliminacion, y por tanto no hay contenido",
+                    content = @Content
+            )
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(
+            @Parameter(description = " ID de la caja a eliminar")
+            @PathVariable Long id){
+        if(cajaService.existById(id)){
+            Caja c = cajaService.findById(id).get();
+            servicetiene.deleteCaja(c);
+
+            cajaService.deleteById(id);
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
