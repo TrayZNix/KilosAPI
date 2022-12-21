@@ -1,0 +1,859 @@
+{
+	"info": {
+		"_postman_id": "a429c10d-795e-41bb-a0a6-d60e0ec32dfe",
+		"name": "kilosAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23783434"
+	},
+	"item": [
+		{
+			"name": "Destinatarios",
+			"item": [
+				{
+					"name": "destinatarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/destinatario/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"destinatario",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destinatarioConcreto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/destinatario/5",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"destinatario",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destinatarioConcretoDetallado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/destinatario/16/detalle",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"destinatario",
+								"16",
+								"detalle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createDestinatario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Comedor Don Bosco\",\r\n    \"direccion\": \"C/ Condes de Bustillo 13\",\r\n    \"telefono\": \"954742432\",\r\n    \"personaContacto\": \"Julio Vera\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/destinatario",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"destinatario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editDestinatario",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Comedor Salesianos Triana\",\r\n    \"direccion\": \"C/ Condes de Bustillo 17\",\r\n    \"telefono\": \"954331488\",\r\n    \"personaContacto\": \"Julio Vera\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/destinatario/16",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"destinatario",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteDestinatario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/destinatario/17",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"destinatario",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cajas",
+			"item": [
+				{
+					"name": "cajas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/caja",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cajaById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/caja/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearCaja",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"qr\": \"qrqr\",\r\n    \"numeroCaja\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/caja",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editCajaById",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"qr\": \"asdsqwe\",\r\n    \"numeroCaja\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/caja/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearLineaCaja",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/caja/3/tipo/10/kg/0.0000001",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"3",
+								"tipo",
+								"10",
+								"kg",
+								"0.0000001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editarCantidadAlimentoEnCaja",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/caja/17/tipo/8/kg/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"17",
+								"tipo",
+								"8",
+								"kg",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "asignarDestinatarioACaja",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/caja/3/destinatario/16",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"3",
+								"destinatario",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCajaObteniendoDatos",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/caja/1/tipo/6",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"1",
+								"tipo",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/caja/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"caja",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TipoAlimento",
+			"item": [
+				{
+					"name": "addTipoAlimento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"{{$randomProduct}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tipoAlimento/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tipoAlimento",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllTipoAlimento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tipoAlimento/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tipoAlimento",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTipoAlimentoById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tipoAlimento/{{randomAlimentoId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tipoAlimento",
+								"{{randomAlimentoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editTipoAlimentoById",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"{{$randomProduct}}\",\r\n    \"cantidad\": 20.5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tipoAlimento/{{randomAlimentoId}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tipoAlimento",
+								"{{randomAlimentoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTipoAlimentoById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tipoAlimento/7",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tipoAlimento",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let rand = _.random(1, 5);",
+							"console.log(\"TipoAlimento Id: \" + rand)",
+							"pm.collectionVariables.set(\"randomAlimentoId\", rand );"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Clase",
+			"item": [
+				{
+					"name": "getClases",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/clase/12",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"clase",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getClase",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/clase/12",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"clase",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteClase",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/clase/12",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"clase",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createClase",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"2º DAM\",\r\n    \"tutor\": \"Lusmi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/clase",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"clase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editClase",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"2º DAM\",\r\n    \"tutor\": \"Lusmi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/clase/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"clase",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Aportacion",
+			"item": [
+				{
+					"name": "getAportacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/aportacion",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAportacionById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/aportacion/8",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAportacionByClaseId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/aportacion/clase/11",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion",
+								"clase",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAportacionById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/aportacion/13",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteDetalleAportacionByLineaAndId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/aportacion/13/linea/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion",
+								"13",
+								"linea",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearAportacion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idTipoAlimento\": 1,\r\n    \"cantidadKilos\": 24.2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/aportacion",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editarAportacion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/aportacion/8/linea/1/kg/25",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"aportacion",
+								"8",
+								"linea",
+								"1",
+								"kg",
+								"25"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "KilosDisponibles",
+			"item": [
+				{
+					"name": "getAllKilosDisp",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/kilosDisponibles",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"kilosDisponibles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getKilosDisponiblesUnTipoAlimento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/kilosDisponibles/7",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"kilosDisponibles",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ranking",
+			"item": [
+				{
+					"name": "getRanking",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/ranking",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"ranking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "randomAlimentoId",
+			"value": ""
+		},
+		{
+			"key": "AportacionId",
+			"value": ""
+		}
+	]
+}
