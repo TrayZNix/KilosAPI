@@ -1,6 +1,5 @@
 package com.grupocinco.kilosapi.controller;
 
-import com.grupocinco.kilosapi.dto.clase.ClaseDetalleDto;
 import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
@@ -51,14 +50,30 @@ public class AportacionController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "La aportación existe", //TODO hay que poner el ejemplo de schema cuando se pueda probar
-                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClaseDetalleDto.class)), examples = @ExampleObject("""
+                    description = "La aportación existe",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClaseInfoAportacionDto.class)), examples = @ExampleObject("""
                             {
-                                "id": 11,
-                                "nombre": "2º DAM",
-                                "tutor": "Luismi",
-                                "numAportaciones": 0,
-                                "numKilos": 0.0
+                                "claseId": 11,
+                                "aportaciones": [
+                                    {
+                                        "fecha": "2022-12-21",
+                                        "detalleAportaciones": [
+                                            {
+                                                "nombreTipoAlimento": "Azúcar",
+                                                "cantidadKg": 10.0
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "fecha": "2022-12-21",
+                                        "detalleAportaciones": [
+                                            {
+                                                "nombreTipoAlimento": "Leche",
+                                                "cantidadKg": 10.0
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                             """))}
             ),
@@ -68,10 +83,9 @@ public class AportacionController {
                     content = {@Content()}
             )
     })
-    @GetMapping("/clase/{id}")
-    //TODO comprobar que esto funciona cuando se puedan hacer cosas con las aportaciones y los detalles de aportación
-    public ResponseEntity<ClaseInfoAportacionDto> getAportacionByClaseId(@Parameter(name = "Id de la aportación", description = "Id de la aportación a buscar") @PathVariable Long id) {
-        Optional<ClaseInfoAportacionDto> clase = aportacionService.aportacionDetalleByClaseId(id);
+    @GetMapping("clase/{id}")
+    public ResponseEntity<ClaseInfoAportacionDto> getAportacionByClaseId(@Parameter(name = "Id de la clase", description = "Id de la clase a buscar aportaciones") @PathVariable Long id) {
+        Optional<ClaseInfoAportacionDto> clase = aportacionService.aportacionDetalleByClaseId(id); //FIXME se ponen tantas aportaciones como detalles tenga
         if (clase.isPresent())
             return ResponseEntity.ok().body(clase.get());
         else
@@ -86,17 +100,51 @@ public class AportacionController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(
+            summary = "Elimina un detalle de aportación de una aportación",
+            description = "Esta petición elimina un detalle de aportación con el numero de detalle indicado de una aportación con id indicado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Se encontró la aportación con el id indicado y con detalle de aportación con num indicado",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClaseInfoAportacionDto.class)), examples = @ExampleObject("""
+                            {
+                                "claseId": 11,
+                                "aportaciones": [
+                                    {
+                                        "fecha": "2022-12-21",
+                                        "detalleAportaciones": [
+                                            {
+                                                "nombreTipoAlimento": "Azúcar",
+                                                "cantidadKg": 10.0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "No existe el detalle de aportación porque el id, el num o ambos son incorrectos",
+                    content = {@Content()}
+            )
+    })
     @DeleteMapping("{id}/linea/{num}")
     public ResponseEntity<ClaseInfoAportacionDto> deleteDetalleAportacionByLineaAndId(@Parameter(name = "Id de la aportación", description = "Id de la aportación cuyo detalle queremos eliminar") @PathVariable Long id,
                                                                                       @Parameter(name = "Num de detalle de la aportación", description = "Num de detalle de aportación a eliminar") @PathVariable Long num) {
         Optional<DetalleAportacion> detalleAportacionOptional = detalleAportacionService.findDetalleAportacionByAportacionIdAndLinea(id, num);
         DetalleAportacion detalleAportacion;
+        Aportacion aportacion;
         Optional<ClaseInfoAportacionDto> clase;
 
         if (detalleAportacionOptional.isPresent()) {
             detalleAportacion = detalleAportacionOptional.get();
-            clase = aportacionService.aportacionDetalleByClaseId(detalleAportacion.getAportacion().getClase().getIdClase());
-            detalleAportacionService.delete(detalleAportacion);
+            aportacion = detalleAportacion.getAportacion();
+            aportacion.removeDetalleAportacion(detalleAportacion);
+            aportacionService.save(aportacion);
+            clase = aportacionService.aportacionDetalleByClaseId(aportacion.getClase().getIdClase());
 
             if (clase.isPresent())
                 return ResponseEntity.ok().body(clase.get());
