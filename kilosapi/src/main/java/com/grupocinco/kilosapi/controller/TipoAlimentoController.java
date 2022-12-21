@@ -44,7 +44,7 @@ public class TipoAlimentoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se han encontrado tipos de alimento",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = TipoAlimentoDto.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -68,14 +68,14 @@ public class TipoAlimentoController {
                     content = @Content),
     })
     @GetMapping("")
-    public ResponseEntity<List<TipoAlimentoDto>> getListaTipoAlimentos(){
+    public ResponseEntity<List<TipoAlimentoDto>> getListaTipoAlimentos() {
         List<TipoAlimento> data = serviceTA.findAll();
 
-        if(data.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        else{
+        if (data.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else {
             List<TipoAlimentoDto> result = new ArrayList<TipoAlimentoDto>();
-            data.forEach(ta ->{
-                result.add(new TipoAlimentoDto(ta.getId(),ta.getNombre(),ta.getKilosDisponible().getCantidadDisponible()));
+            data.forEach(ta -> {
+                result.add(new TipoAlimentoDto(ta.getId(), ta.getNombre(), ta.getKilosDisponible().getCantidadDisponible()));
             });
 
             return ResponseEntity.ok(result);
@@ -90,7 +90,7 @@ public class TipoAlimentoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se ha encontrado tipo de alimento",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = TipoAlimentoDto.class),
                             examples = {@ExampleObject(
                                     value = """
@@ -109,11 +109,11 @@ public class TipoAlimentoController {
     @GetMapping("/{id}")
     public ResponseEntity<TipoAlimentoDto> getTipoAlimentoById(
             @Parameter(description = " ID del tipo de alimento a consultar")
-            @PathVariable Long id){
+            @PathVariable Long id) {
         Optional<TipoAlimento> t = serviceTA.findById(id);
 
-        if(t.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        else{
+        if (t.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else {
             TipoAlimentoDto result = new TipoAlimentoDto(
                     t.get().getId(),
                     t.get().getNombre(),
@@ -129,7 +129,7 @@ public class TipoAlimentoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se ha realizado correctamente la edicion",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = TipoAlimentoDto.class),
                             examples = {@ExampleObject(
                                     value = """
@@ -154,15 +154,15 @@ public class TipoAlimentoController {
             @Parameter(description = " ID del tipo de alimento a editar")
             @PathVariable Long id,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = " Objeto Dto necesario para la creacion del tipo de alimento")
-            @RequestBody TipoAlimentoDto dto){
+            @RequestBody TipoAlimentoDto dto) {
 
 
-        if (dto.nombre() ==null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        else{
+        if (dto.nombre() == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        else {
             Optional<TipoAlimento> t = serviceTA.findById(id);
-            if(t.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            else{
-                TipoAlimento dataSave = t.map(old ->{
+            if (t.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            else {
+                TipoAlimento dataSave = t.map(old -> {
                     old.setNombre(dto.nombre());
                     old.getKilosDisponible().addCantidad(dto.cantidad());
                     return serviceTA.add(old);
@@ -185,7 +185,7 @@ public class TipoAlimentoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Se ha creado satisfactoriamente el tipo de alimento",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = TipoAlimentoDto.class),
                             examples = {@ExampleObject(
                                     value = """
@@ -204,8 +204,9 @@ public class TipoAlimentoController {
     @PostMapping("")
     public ResponseEntity<TipoAlimentoDto> addTipoAlimento(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = " Objeto Dto necesario para la creacion del tipo de alimento")
-            @RequestBody TipoAlimentoDto dto){
-        if(dto.nombre() == null || dto.cantidad() != null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            @RequestBody TipoAlimentoDto dto) {
+        if (dto.nombre() == null || dto.cantidad() != null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
         KilosDisponibles k = KilosDisponibles.builder()
                 .cantidadDisponible(0.0)
@@ -238,8 +239,8 @@ public class TipoAlimentoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeTipoAlimento(
             @Parameter(description = " ID del tipo de alimento a eliminar")
-            @PathVariable Long id){
-        if(serviceTA.existsById(id)){
+            @PathVariable Long id) {
+        if (serviceTA.existsById(id)) {
             TipoAlimento t = serviceTA.findById(id).get();
             serviceT.deleteTipoAlimento(t);
 
