@@ -175,7 +175,7 @@ public class MainDePruebas {
 
         a1.addDetalleAportacion(dt1);
         a1.addDetalleAportacion(dt2);
-        a1.addDetalleAportacion(dt3);
+        a3.addDetalleAportacion(dt3);
 
         a1.removeDetalleAportacion(dt2);
 
