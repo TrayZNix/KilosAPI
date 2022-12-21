@@ -5,7 +5,6 @@ import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,30 +18,28 @@ public class TipoAlimentoService {
         return tipoAlimentoRepository.save(tipoAlimento);
     }
 
-    @Autowired
-    private TipoAlimentoRepository repo;
 
     public List<TipoAlimento> findAll() {
-        return repo.findAll();
+        return tipoAlimentoRepository.findAll();
     }
 
     public Optional<TipoAlimento> findById(Long id) {
-        return repo.findById(id);
+        return tipoAlimentoRepository.findById(id);
     }
 
     public void delete(TipoAlimento alimento) {
-        repo.delete(alimento);
+        tipoAlimentoRepository.delete(alimento);
     }
 
     public void deleteById(Long id) {
-        repo.deleteById(id);
+        tipoAlimentoRepository.deleteById(id);
     }
 
     public TipoAlimento add(TipoAlimento t) {
-        return repo.save(t);
+        return tipoAlimentoRepository.save(t);
     }
 
     public boolean existsById(Long id) {
-        return repo.existsById(id);
+        return tipoAlimentoRepository.existsById(id);
     }
 }

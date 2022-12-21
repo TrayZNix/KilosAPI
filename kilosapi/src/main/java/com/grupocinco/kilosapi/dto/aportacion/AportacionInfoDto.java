@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @Builder
 public class AportacionInfoDto {
+
     private LocalDate fecha;
 
     private List<DetalleAportacionInfoDto> detalleAportaciones;

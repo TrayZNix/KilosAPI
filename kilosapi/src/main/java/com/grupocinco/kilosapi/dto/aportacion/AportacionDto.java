@@ -1,7 +1,6 @@
 package com.grupocinco.kilosapi.dto.aportacion;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.grupocinco.kilosapi.dto.detalleAportacion.DetalleAportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.dto.view.AportacionViews;
@@ -24,8 +23,14 @@ public class AportacionDto {
     private LocalDate fecha;
     @JsonView({AportacionViews.ListaAportacion.class, AportacionViews.AportacionById.class})
     private String nombreClase;
-    @JsonView({AportacionViews.ListaAportacion.class, AportacionViews.AportacionById.class})
+    @JsonView({AportacionViews.ListaAportacion.class, AportacionViews.AportacionById.class, AportacionViews.AportacionResponse.class})
     private Double kilosTotales;
+
+    @JsonView({AportacionViews.AportacionResponse.class})
+    private Long numLinea;
+
+    @JsonView({AportacionViews.AportacionResponse.class})
+    private String nombreAlimento;
 
     @JsonView({AportacionViews.AportacionById.class})
     List<DetalleAportacionDto> detalleAportaciones;
@@ -40,7 +45,6 @@ public class AportacionDto {
 
             detList.add(new DetalleAportacionDto(
                     det.getDetalleAportacionId().getNumLinea(),
-                    det.getTipoAlimento().getNombre(),
                     det.getCantidad_en_kgs()));
         }
 

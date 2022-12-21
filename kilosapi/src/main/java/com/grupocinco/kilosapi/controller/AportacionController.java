@@ -1,13 +1,23 @@
 package com.grupocinco.kilosapi.controller;
 
+
+import com.grupocinco.kilosapi.dto.aportacion.DetalleAportacionDto;
+import com.grupocinco.kilosapi.dto.clase.ClaseDetalleDto;
 import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
+import com.grupocinco.kilosapi.model.KilosDisponibles;
+import com.grupocinco.kilosapi.model.TipoAlimento;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+
+
 import com.grupocinco.kilosapi.service.AportacionService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.aportacion.AportacionDto;
 import com.grupocinco.kilosapi.dto.view.AportacionViews;
 import com.grupocinco.kilosapi.service.DetalleAportacionService;
+import com.grupocinco.kilosapi.service.KilosDisponiblesService;
+import com.grupocinco.kilosapi.service.TipoAlimentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -18,18 +28,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,10 +50,14 @@ import java.util.Optional;
 public class AportacionController {
     private final AportacionService aportacionService;
 
+    private final TipoAlimentoService tipoAlimentoService;
     private final DetalleAportacionService detalleAportacionService;
+
+    private final KilosDisponiblesService kilosDisponiblesService;
 
     @Autowired
     private AportacionService serviceA;
+
 
     @Operation(
             summary = "Obtener una aportación",
@@ -93,13 +109,165 @@ public class AportacionController {
             return ResponseEntity.notFound().build();
     }
 
+<<<<<<< HEAD
     @Operation(
             summary = "Elimina una aportación",
             description = "Esta petición elimina una aportación con id indicado"
+=======
+
+    @Operation(
+            summary = "Crear una aportación",
+            description = "Esta petición crea una aportación nueva"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Aportación creada",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClaseDetalleDto.class)), examples = @ExampleObject("""
+                            {
+                                
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Aportación no creada",
+                    content = {@Content()}
+            )
+    })
+    @JsonView(AportacionViews.AportacionResponse.class)
+    @PostMapping()
+    public ResponseEntity<AportacionDto> createAportacion(@Parameter(name = "Nueva aportación insertada", description = "Cuerpo de petición de la nueva aportación insertada") @RequestBody DetalleAportacionDto dto){
+
+        Optional<TipoAlimento> optional = tipoAlimentoService.findById(dto.getIdTipoAlimento());
+
+        if(optional.isPresent()){
+
+            TipoAlimento alimento = optional.get();
+
+            Aportacion aportacion = Aportacion.builder()
+                    .fecha(LocalDate.now())
+                    .build();
+
+            aportacionService.save(aportacion);
+
+            DetalleAportacion detalleAportacion = DetalleAportacion.builder()
+                    .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().build())
+                    .tipoAlimento(alimento)
+                    .cantidad_en_kgs(dto.getCantidadKilos())
+                    .build();
+
+            List<DetalleAportacion> listaDetAport = new ArrayList<DetalleAportacion>();
+
+            listaDetAport.add(detalleAportacion);
+
+            aportacion.setDetalles(listaDetAport);
+
+            aportacionService.save(aportacion);
+
+
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(AportacionDto.builder()
+                            .nombreAlimento(alimento.getNombre())
+                            .numLinea(detalleAportacion.getDetalleAportacionId().getNumLinea())
+                            .kilosTotales(detalleAportacion.getCantidad_en_kgs())
+                            .build()
+            );
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+
+    @Operation(
+            summary = "Editar una aportación",
+            description = "Esta petición edita una aportación"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Aportación editada",
+                    content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClaseDetalleDto.class)), examples = @ExampleObject("""
+                            {
+                                
+                            }
+                            """))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Aportación no editada",
+                    content = {@Content()}
+            )
+    })
+    @JsonView(AportacionViews.AportacionResponse.class)
+    @PutMapping("{id}/linea/{num}/kg/{numKg}")
+    public ResponseEntity<AportacionDto> editAportacion(@PathVariable Long id, @PathVariable Long num, @PathVariable Double numKg){
+
+        Optional<Aportacion> aportacionOpt = aportacionService.findById(id);
+
+        if(aportacionOpt.isPresent()){
+
+            Aportacion aport = aportacionOpt.get();
+
+            List<DetalleAportacion> listaDetAport = aport.getDetalles();
+
+            DetalleAportacion detalle = new DetalleAportacion();
+
+            for(DetalleAportacion d: listaDetAport){
+                if(d.getDetalleAportacionId().getNumLinea() == num){
+                    detalle = d;
+                }
+            }
+
+            listaDetAport.remove(detalle);
+
+            Double preedit = detalle.getCantidad_en_kgs();
+
+            Double edit = numKg - preedit;
+
+            detalle.setCantidad_en_kgs(preedit + edit);
+
+            listaDetAport.add(detalle);
+
+            aport.setDetalles(listaDetAport);
+
+            aportacionService.save(aport);
+
+            TipoAlimento alimento = detalle.getTipoAlimento();
+
+            Optional<KilosDisponibles> kilosEdit = kilosDisponiblesService.findById(alimento.getId());
+
+            KilosDisponibles k = kilosEdit.get();
+
+            k.setCantidadDisponible(k.getCantidadDisponible() + edit);
+
+            kilosDisponiblesService.save(k);
+
+            AportacionDto dto = AportacionDto.builder()
+                    .nombreAlimento(detalle.getTipoAlimento().getNombre())
+                    .numLinea(num)
+                    .kilosTotales(detalle.getCantidad_en_kgs())
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body(dto);
+
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+
+    @Operation(
+            summary = "Borra una aportación",
+            description = "Esta petición borra una aportación"
+>>>>>>> 8868e55a0aa67c81068484511895db58e8421fc8
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
+<<<<<<< HEAD
                     description = "No existe la aportacion",
                     content = {@Content()}
             )
@@ -111,6 +279,20 @@ public class AportacionController {
             return ResponseEntity.notFound().build();
      }
 
+=======
+                    description = "Sin contenido",
+                    content = {@Content()}
+            )
+    })
+
+    @DeleteMapping("{id}")
+    //TODO comprobar que esto funciona cuando se puedan hacer cosas con las aportaciones y los detalles de aportación
+    public ResponseEntity<Aportacion> deleteAportacionById(@Parameter(name = "Id de la aportación", description = "Id de la aportación a eliminar") @PathVariable Long id) {
+        if (aportacionService.existsById(id))
+            aportacionService.deleteById(id);
+        return ResponseEntity.notFound().build();
+    }
+>>>>>>> 8868e55a0aa67c81068484511895db58e8421fc8
 
     @Operation(
             summary = "Elimina un detalle de aportación de una aportación",

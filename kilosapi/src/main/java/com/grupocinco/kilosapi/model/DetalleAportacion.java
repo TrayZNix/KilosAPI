@@ -43,8 +43,7 @@ public class DetalleAportacion {
     @NoArgsConstructor
     public static class DetalleAportacionId implements Serializable {
         private Long idAportacion;
-
-
+        @GeneratedValue
         private Long numLinea;
     }
 }
