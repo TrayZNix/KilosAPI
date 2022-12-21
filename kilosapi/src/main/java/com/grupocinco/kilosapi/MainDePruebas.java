@@ -3,7 +3,6 @@ package com.grupocinco.kilosapi;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
-import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +20,6 @@ public class MainDePruebas {
     private CajaRepository repoCaja;
     @Autowired
     private TipoAlimentoRepository repoTipoAlimento;
-    @Autowired
-    private TieneRepository repoTiene;
-    @Autowired
-    private DestinatarioService destServ;
     @Autowired
     private TieneService tieneService;
 
@@ -81,12 +76,12 @@ public class MainDePruebas {
 
         KilosDisponibles k6 = KilosDisponibles.builder().tipoAlimento(t1).cantidadDisponible(10.0).build();
         KilosDisponibles k7 = KilosDisponibles.builder().tipoAlimento(t2).cantidadDisponible(10.0).build();
-        t1.setKilosDisponible(k6);
-        t2.setKilosDisponible(k7);
+/*        t1.setKilosDisponible(k6);
+        t2.setKilosDisponible(k7);*/
 
 
-        t1.addToKilosDisponibles(k1);
-        t2.addToKilosDisponibles(k2);
+        t1.addToKilosDisponibles(k6);
+        t2.addToKilosDisponibles(k7);
         t3.addToKilosDisponibles(k3);
         t4.addToKilosDisponibles(k4);
         t5.addToKilosDisponibles(k5);
