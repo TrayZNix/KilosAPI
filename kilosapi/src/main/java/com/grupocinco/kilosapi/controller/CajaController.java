@@ -181,8 +181,7 @@ public class CajaController {
     })
     @GetMapping("{id}")
     public ResponseEntity<CajaDetalleDto> getCajaById(@Parameter(name = "Id de una caja", description = "id de la caja a editar") @PathVariable Long id) {
-        Optional<Caja> cajaOptional = cajaService.findById(id); //
-
+        Optional<Caja> cajaOptional = cajaService.findById(id);
         if (cajaOptional.isPresent()) {
             return ResponseEntity.ok().body(CajaDetalleDto.of(cajaOptional.get()));
         } else
@@ -324,7 +323,6 @@ public class CajaController {
         if (cajaOpt.isPresent()) {
             caja = cajaOpt.get();
             kgCaja = caja.getLineas().stream().filter(linea -> linea.getTipoAlimento().getId().equals(idTipoAlim)).findFirst().get().getCantidadKgs();
-            servCaja.actualizarDatosCajas(List.of(caja));
             dif = kgCaja - cantidad;
             if (cantidad >= 0) {
                 if (dif != 0) {
@@ -340,7 +338,8 @@ public class CajaController {
                     }
                 }
             }
-            servCaja.save(caja);
+            cajaService.save(caja);
+            caja = cajaService.actualizarDatosCajas(caja);
             return ResponseEntity.ok().body(mapperCaja.toCajaDto(caja));
         } else
             return ResponseEntity.badRequest().build();

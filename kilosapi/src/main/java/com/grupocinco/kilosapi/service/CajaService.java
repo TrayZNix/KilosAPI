@@ -30,7 +30,12 @@ public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
     }
     public Caja actualizarDatosCajas(Caja c){
         c.setTotalKilos(repoTiene.getPesoTotalCaja(c));
+        System.out.println(c.getTotalKilos());
         return repository.save(c);
+    }
+
+    public Double getKilosTotales(Caja c) {
+        return repoTiene.getPesoTotalCaja(c);
     }
 
     public void deleteRelacionesCajasDestinatarioBorrado (Destinatario d){

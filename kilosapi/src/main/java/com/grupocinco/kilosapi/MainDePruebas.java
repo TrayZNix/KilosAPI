@@ -30,6 +30,9 @@ public class MainDePruebas {
     @Autowired
     private ClaseService claseService;
 
+    @Autowired
+    private CajaService cajaService;
+
     @PostConstruct
     public void datos(){
         Destinatario des1 = Destinatario.builder()
@@ -190,5 +193,8 @@ public class MainDePruebas {
 
         aportacionService.add(a1);
         aportacionService.add(a2);
+
+        cajaService.actualizarDatosCajas(List.of(c1, c2, c3));
+        cajaService.saveAll(List.of(c1, c2, c3));
     }
 }
