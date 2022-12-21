@@ -98,8 +98,8 @@ public class KilosDisponiblesController {
                                             [
                                                {
                                                     "id": 1,
-                                                    "tipoAlimento": ,
-                                                    "cantidadDisponible": 18.5
+                                                    "lineaDetalle": ,
+                                                    "kgsTipoAlimento": 18.5
                                                }
                                             ]
                                             """
@@ -118,7 +118,10 @@ public class KilosDisponiblesController {
 
             List<DetalleAportacion> listaDetallesAportacion = kilosDispService.findDetalleAportacionByTipoAlimentoId(tipoAlimento);
 
-            
+            List<Aportacion> listaAportacion = new ArrayList<>();
+            listaDetallesAportacion.forEach(d -> listaAportacion.add(d.getAportacion()));
+
+            return ResponseEntity.status(HttpStatus.OK).body(listaAportacion);
 
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

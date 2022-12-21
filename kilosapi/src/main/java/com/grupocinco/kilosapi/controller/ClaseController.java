@@ -95,7 +95,7 @@ public class ClaseController {
     })
     @GetMapping("{id}")
     public ResponseEntity<ClaseDetalleDto> getClaseById(@Parameter(name = "Id de la clase", description = "Id de la clase a buscar") @PathVariable Long id) {
-        Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id);
+        Optional<ClaseDetalleDto> clase = claseService.claseDetalleById(id); //TODO comprobar que va cuando se puedan tener kilos y esas cosas
         if (clase.isPresent())
             return ResponseEntity.ok().body(clase.get());
         else

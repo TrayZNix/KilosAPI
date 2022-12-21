@@ -1,16 +1,20 @@
 package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.caja.CajaDeleteDto;
 import com.grupocinco.kilosapi.dto.caja.CajaDto;
+import com.grupocinco.kilosapi.dto.caja.CajaMapper;
+import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
+import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
+import com.grupocinco.kilosapi.dto.caja.NewCajaDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
-import com.grupocinco.kilosapi.model.TienePK;
 import com.grupocinco.kilosapi.model.TipoAlimento;
-import com.grupocinco.kilosapi.repository.CajaRepository;
-import com.grupocinco.kilosapi.dto.view.CajaViews;
+import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,14 +32,21 @@ import java.util.Optional;
 @RestController()
 @RequestMapping("/caja")
 public class CajaController {
+
     @Autowired
-    private CajaRepository repoCaja;
+    private TipoAlimentoRepository repoTipoAli;
+    @Autowired
+    private CajaService cajaService;
     @Autowired
     private TieneRepository repoTiene;
     @Autowired
     private TieneService servicetiene;
     @Autowired
     private TipoAlimentoRepository repoTipoAl;
+    @Autowired
+    private TieneMapper mapperTiene;
+    @Autowired
+    private CajaMapper mapperCaja;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -45,7 +56,7 @@ public class CajaController {
                             examples = {@ExampleObject(
                                     value = """
                                             [
-                                                    {
+                                                {
                                                         "id": 3,
                                                         "qr": "qrqrqr",
                                                         "numeroCaja": 1,
@@ -72,16 +83,16 @@ public class CajaController {
     })
     @GetMapping()
     @JsonView(CajaViews.CajasList.class)
-    public ResponseEntity<List<Caja>> getCajas(){
-        List<Caja> listaCajas = repoCaja.findAll();
+    public ResponseEntity<List<CajaDto>> getCajas(){
+        List<Caja> listaCajas = cajaService.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(listaCajas);
+        return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
 
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
-        Optional<Caja> optCaja = repoCaja.findById(id);
+        Optional<Caja> optCaja = cajaService.findById(id);
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             Caja c = optCaja.get();
@@ -93,9 +104,75 @@ public class CajaController {
                 Tiene ti = Tiene.builder().id(tPk).caja(c).tipoAlimento(t).cantidadKgs(cantidad).build();
                 servicetiene.saveLinea(ti);
                 CajaDto cdto = CajaDto.of(c);
-                cdto.setContenido(repoTiene.getLineasCajas(c));
+                cdto.setContenido(mapperTiene.ofList(repoTiene.getLineasCajas(c)));
                 return ResponseEntity.status(HttpStatus.CREATED).body(cdto);
             }
         }
     }
+
+
+
+    @Operation(description = "Crea una caja mediante un cuerpo de petición.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Caja creada",
+                    content = {@Content(mediaType = "application/json",
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                                "qr": "qrqr",
+                                                "numeroCaja": 1 
+                                            }
+                                            """
+                            )})}),
+            @ApiResponse(responseCode = "400",
+                    description = "Caja no creada",
+                    content = {@Content})
+    })
+    @PostMapping("")
+    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
+
+        Caja ca = Caja.builder()
+                .qr(dto.getQr())
+                .numeroCaja(dto.getNumeroCaja())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(cajaService.save(ca));
+    }
+
+    @Operation(description = "Borra una caja y la lista de alimentos que contiene")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Caja borrada satisfactoriamente",
+                    content = {@Content})
+    })
+    @DeleteMapping("/{id1}/tipo/{idTipoAlim}")
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idTipoAlim){
+        Optional<Caja> caja = cajaService.findById(id1);
+
+        if(caja.isPresent()){
+            Caja c = caja.get();
+
+            Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idTipoAlim);
+
+            if(tipoAlimentoOptional.isPresent()) {
+                TipoAlimento ta = tipoAlimentoOptional.get();
+
+                Tiene tiene = cajaService.getAlimentoEnCaja(ta, c);
+
+                cajaService.deleteById(id1);
+
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(CajaDeleteDto.builder()
+                                .id(ta.getId())
+                                .name(ta.getNombre())
+                                .cantKilos(tiene.getCantidadKgs())
+                                .build()
+                        );
+            }
+        }
+        return ResponseEntity.ok().build();
+
+    }
+
 }

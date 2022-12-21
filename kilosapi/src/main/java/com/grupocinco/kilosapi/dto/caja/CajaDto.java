@@ -2,6 +2,7 @@ package com.grupocinco.kilosapi.dto.caja;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
+import com.grupocinco.kilosapi.dto.tiene.TieneDto;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Destinatario;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
@@ -20,16 +21,17 @@ import java.util.List;
 public class CajaDto {
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
     private Long id;
-    @JsonView({CajaViews.CajasList.class})
+    @JsonView({CajaViews.CajasList.class, CajaViews.UpdateCaja.class})
     private String qr;
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
+    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class, CajaViews.UpdateCaja.class})
     private Integer numeroCaja;
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Double totalKilos;
     private Destinatario destinatario;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
-    private List<Tiene> contenido;
-    private String destinatarioString;
+    private List<TieneDto> contenido;
+
+
 
     public static CajaDto of(Caja c){
         return CajaDto.builder()
@@ -38,19 +40,17 @@ public class CajaDto {
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
                 .totalKilos(c.getTotalKilos())
-                .contenido(c.getLineas())
                 .build();
 
     }
-    public static Caja to(CajaDto c){
-        return Caja.builder()
-                .id(c.getId())
-                .qr(c.getQr())
-                .numeroCaja(c.getNumeroCaja())
-                .destinatario(c.getDestinatario())
-                .totalKilos(c.getTotalKilos())
-                .lineas(c.getContenido())
-                .build();
-
-    }
+//    public static Caja to(CajaDto c){
+//        return Caja.builder()
+//                .id(c.getId())
+//                .qr(c.getQr())
+//                .numeroCaja(c.getNumeroCaja())
+//                .destinatario(c.getDestinatario())
+//                .totalKilos(c.getTotalKilos())
+//                .build();
+//
+//    }
 }

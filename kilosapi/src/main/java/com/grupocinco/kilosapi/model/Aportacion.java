@@ -22,9 +22,9 @@ public class Aportacion {
    private Clase clase;
 
    @ToString.Exclude
-   @OneToMany( fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(mappedBy = "aportacion", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
-   private List<DetalleAportacion> detalles = new ArrayList<>();
+   private List<DetalleAportacion> detalles = new ArrayList<DetalleAportacion>();
 
 
    public void addToClase(Clase c) {
@@ -35,5 +35,14 @@ public class Aportacion {
    public void removeFromClase(Clase c) {
        this.clase = null;
        c.getAportaciones().remove(this);
+   }
+
+   public void addDetalleAportacion(DetalleAportacion d){
+       this.getDetalles().add(d);
+       d.setAportacion(this);
+   }
+   public void removeDetalleAportacion(DetalleAportacion d){
+       this.getDetalles().remove(d);
+       d.setAportacion(null);
    }
 }

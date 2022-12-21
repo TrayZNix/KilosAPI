@@ -5,17 +5,15 @@ import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.DestinatarioRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.DestinatarioService;
-import com.grupocinco.kilosapi.service.TieneService;
-import lombok.RequiredArgsConstructor;
+import com.grupocinco.kilosapi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class MainDePruebas {
     @Autowired
     private DestinatarioRepository repoDestinatario;
@@ -29,6 +27,13 @@ public class MainDePruebas {
     private DestinatarioService destServ;
     @Autowired
     private TieneService tieneService;
+
+    @Autowired
+    private DetalleAportacionService detalleAportacionService;
+    @Autowired
+    private AportacionService aportacionService;
+    @Autowired
+    private ClaseService claseService;
 
     @PostConstruct
     public void datos(){
@@ -48,22 +53,25 @@ public class MainDePruebas {
         Caja c1 = Caja.builder()
                 .qr("qrqrqr")
                 .numeroCaja(1)
-                .totalKilos(37.67)
                 .build();
         Caja c2 = Caja.builder()
                 .qr("tetete")
                 .numeroCaja(2)
-                .totalKilos(13.26)
                 .build();
         Caja c3 = Caja.builder()
                 .qr("rwrwrww")
                 .numeroCaja(3)
-                .totalKilos(17.57)
                 .build();
+        repoCaja.saveAll(List.of(c1, c2, c3));
         c1.addDestinatario(des1);
         c2.addDestinatario(des1);
         c3.addDestinatario(des2);
 
+        KilosDisponibles k1 = KilosDisponibles.builder().cantidadDisponible(20.3).build();
+        KilosDisponibles k2 = KilosDisponibles.builder().cantidadDisponible(10.0).build();
+        KilosDisponibles k3 = KilosDisponibles.builder().cantidadDisponible(12.5).build();
+        KilosDisponibles k4 = KilosDisponibles.builder().cantidadDisponible(26.0).build();
+        KilosDisponibles k5 = KilosDisponibles.builder().cantidadDisponible(29.99).build();
 
         TipoAlimento t1 = TipoAlimento.builder().nombre("Arroz").build();
         TipoAlimento t2 = TipoAlimento.builder().nombre("Azúcar").build();
@@ -71,7 +79,17 @@ public class MainDePruebas {
         TipoAlimento t4 = TipoAlimento.builder().nombre("Huevo").build();
         TipoAlimento t5 = TipoAlimento.builder().nombre("Zanahoria").build();
 
+        KilosDisponibles k6 = KilosDisponibles.builder().tipoAlimento(t1).cantidadDisponible(10.0).build();
+        KilosDisponibles k7 = KilosDisponibles.builder().tipoAlimento(t2).cantidadDisponible(10.0).build();
+        t1.setKilosDisponible(k6);
+        t2.setKilosDisponible(k7);
 
+
+        t1.addToKilosDisponibles(k1);
+        t2.addToKilosDisponibles(k2);
+        t3.addToKilosDisponibles(k3);
+        t4.addToKilosDisponibles(k4);
+        t5.addToKilosDisponibles(k5);
 
         repoDestinatario.saveAll(List.of(des1, des2));
         repoCaja.saveAll(List.of(c1, c2, c3));
@@ -107,6 +125,68 @@ public class MainDePruebas {
 
         tieneService.saveListaLineas(List.of(tiene1, tiene2, tiene3, tiene4, tiene5));
 
-    }
+        Clase cl1 = Clase.builder()
+                .tutor("Luismi")
+                .nombre("Clase tal")
+                .build();
+        Clase cl2 = Clase.builder()
+                .tutor("Miguel")
+                .nombre("Clase tal 2")
+                .build();
 
+        claseService.save(cl1);
+        claseService.save(cl2);
+
+        Aportacion a1 = Aportacion.builder()
+                .fecha(LocalDate.now())
+                .clase(cl1)
+                .build();
+
+        Aportacion a2 = Aportacion.builder()
+                .fecha(LocalDate.now())
+                .clase(cl2)
+                .build();
+
+        aportacionService.add(a1);
+        aportacionService.add(a2);
+
+        DetalleAportacion dt1 = DetalleAportacion.builder()
+                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(1L).build())
+                .tipoAlimento(t1)
+                .cantidad_en_kgs(10.0)
+                .aportacion(aportacionService.findById(13L).get())
+                .build();
+
+        DetalleAportacion dt2 = DetalleAportacion.builder()
+                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(2L).build())
+                .tipoAlimento(t2)
+                .cantidad_en_kgs(10.0)
+                .aportacion(aportacionService.findById(13L).get())
+                .build();
+
+        detalleAportacionService.add(dt1);
+        detalleAportacionService.add(dt2);
+
+        a1.addDetalleAportacion(dt1);
+        a1.addDetalleAportacion(dt2);
+
+//        DetalleAportacion det1 = DetalleAportacion.builder()
+//                .cantidad_en_kgs(20.6)
+//                .tipoAlimento(t1)
+//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
+//                        .aportacionId(a1.getId())
+//                        .numLinea(123)
+//                        .build())
+//                .build();
+//
+//        a1.addDetalleAportacion(det1);
+//
+//        detalleAportacionService.add(det1);
+
+        claseService.save(cl1);
+        claseService.save(cl2);
+
+        aportacionService.add(a1);
+        aportacionService.add(a2);
+    }
 }
