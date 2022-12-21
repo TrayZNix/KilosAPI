@@ -62,4 +62,6 @@ public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
     public void deleteById(Long id) {
         repoCaja.deleteById(id);
     }
+
+
 }
