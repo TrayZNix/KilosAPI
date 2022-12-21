@@ -93,13 +93,24 @@ public class AportacionController {
             return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("{id}")
-    //TODO comprobar que esto funciona cuando se puedan hacer cosas con las aportaciones y los detalles de aportación
-    public ResponseEntity<Aportacion> deleteAportacionById(@Parameter(name = "Id de la aportación", description = "Id de la aportación a eliminar") @PathVariable Long id) {
-        if (aportacionService.existsById(id))
-            aportacionService.deleteById(id);
-        return ResponseEntity.notFound().build();
-    }
+    @Operation(
+            summary = "Elimina una aportación",
+            description = "Esta petición elimina una aportación con id indicado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "No existe la aportacion",
+                    content = {@Content()}
+            )
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Aportacion> deleteAportacionId(@Parameter(name = "Id de la aportación", description = "Id de la aportación a eliminar") @PathVariable Long id) {
+        if(aportacionService.existsById(id))
+             aportacionService.deleteById(id);
+            return ResponseEntity.notFound().build();
+     }
+
 
     @Operation(
             summary = "Elimina un detalle de aportación de una aportación",
