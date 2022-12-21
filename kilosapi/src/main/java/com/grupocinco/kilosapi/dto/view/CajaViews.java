@@ -12,4 +12,8 @@ public class CajaViews {
 
 
     }
+
+    public static class NewCaja{
+
+    }
 }
