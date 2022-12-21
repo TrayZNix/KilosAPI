@@ -148,35 +148,35 @@ public class MainDePruebas {
         DetalleAportacion dt1 = DetalleAportacion.builder()
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(1L).build())
                 .tipoAlimento(t1)
-                .cantidad_en_kgs(10.0)
-                .aportacion(aportacionService.findById(a1.getId()).get())
+                .cantidad_en_kgs(15.0)
+                .aportacion(a1)
                 .build();
 
         DetalleAportacion dt2 = DetalleAportacion.builder()
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(2L).build())
                 .tipoAlimento(t2)
                 .cantidad_en_kgs(10.0)
-                .aportacion(aportacionService.findById(a1.getId()).get())
+                .aportacion(a1)
                 .build();
 
-        detalleAportacionService.add(dt1);
-        detalleAportacionService.add(dt2);
+        DetalleAportacion dt3 = DetalleAportacion.builder()
+                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(2L).build())
+                .tipoAlimento(t3)
+                .cantidad_en_kgs(20.0)
+                .aportacion(a1)
+                .build();
 
         a1.addDetalleAportacion(dt1);
         a1.addDetalleAportacion(dt2);
+        a1.addDetalleAportacion(dt3);
 
-//        DetalleAportacion det1 = DetalleAportacion.builder()
-//                .cantidad_en_kgs(20.6)
-//                .tipoAlimento(t1)
-//                .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder()
-//                        .aportacionId(a1.getId())
-//                        .numLinea(123)
-//                        .build())
-//                .build();
-//
-//        a1.addDetalleAportacion(det1);
-//
-//        detalleAportacionService.add(det1);
+        a1.removeDetalleAportacion(dt2);
+
+        a1.addDetalleAportacion(dt2);
+
+        detalleAportacionService.add(dt1);
+        detalleAportacionService.add(dt2);
+        detalleAportacionService.add(dt3);
 
         claseService.save(cl1);
         claseService.save(cl2);

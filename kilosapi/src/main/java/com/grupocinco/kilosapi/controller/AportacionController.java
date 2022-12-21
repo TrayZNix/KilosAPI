@@ -113,7 +113,7 @@ public class AportacionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se han encontrado todas las aportaciones",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = AportacionDto.class)),
                             examples = {@ExampleObject(
                                     value = """
@@ -140,12 +140,12 @@ public class AportacionController {
     })
     @GetMapping("")
     @JsonView(AportacionViews.ListaAportacion.class)
-    public ResponseEntity<List<AportacionDto>> getAllAportacioness(){
+    public ResponseEntity<List<AportacionDto>> getAllAportacioness() {
         List<Aportacion> data = serviceA.findAll();
-        if(data.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        else{
+        if (data.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else {
             List<AportacionDto> result = new ArrayList<>();
-            for (Aportacion a: data) result.add(AportacionDto.of(a));
+            for (Aportacion a : data) result.add(AportacionDto.of(a));
             return ResponseEntity.ok(result);
         }
 
@@ -158,17 +158,28 @@ public class AportacionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se ha encontrado la aportacion",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = AportacionDto.class),
                             examples = {@ExampleObject(
                                     value = """
                                                 {
                                                     "id": 13,
-                                                    "fecha": "17/12/2022",
+                                                    "fecha": "2022-12-20",
                                                     "nombreClase": "Clase tal",
-                                                    "kilosTotales": 24.0,
-                                                    "detalleAportaciones": null
-                                                }        
+                                                    "kilosTotales": 25.0,
+                                                    "detalleAportaciones": [
+                                                        {
+                                                            "numLinea": 1,
+                                                            "nombreAlimento": "Arroz",
+                                                            "cantidadKgs": 15.0
+                                                        },
+                                                        {
+                                                            "numLinea": 2,
+                                                            "nombreAlimento": "Azúcar",
+                                                            "cantidadKgs": 10.0
+                                                        }
+                                                    ]
+                                                }  
                                             """
                             )}
                     )}),
@@ -180,11 +191,12 @@ public class AportacionController {
     @JsonView(AportacionViews.AportacionById.class)
     public ResponseEntity<AportacionDto> getAportacionById(
             @Parameter(description = " ID del tipo aportacion a consultar")
-            @PathVariable Long id){
+            @PathVariable Long id) {
         Optional<Aportacion> a = serviceA.findById(id);
-        if(a.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        else{
+        if (a.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else {
             AportacionDto result = AportacionDto.of(a.get());
+
             return ResponseEntity.ok(result);
         }
     }
