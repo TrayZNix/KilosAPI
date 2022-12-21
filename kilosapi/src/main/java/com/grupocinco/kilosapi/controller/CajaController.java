@@ -63,10 +63,6 @@ public class CajaController {
     private CajaService cajaService;
     @Autowired
     private TipoAlimentoRepository repoTipoAli;
-    @Autowired
-    private TieneRepository repoTiene;
-    @Autowired
-    private TipoAlimentoRepository repoTipoAl;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {

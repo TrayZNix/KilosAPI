@@ -24,7 +24,7 @@ public class CajaMapper {
                 .qr(c.getQr())
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
-                .totalKilos(c.getTotalKilos())
+                .totalKilos((double) Math.round(c.getTotalKilos()*100)/100)
                 .contenido(mapperTiene.ofList(c.getLineas()))
                 .build();
     }
