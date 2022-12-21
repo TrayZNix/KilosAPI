@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class TipoAlimento extends BaseServiceImpl<TipoAlimento, Long, TipoAlimentoRepository> implements  Serializable{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private Long id;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
@@ -29,8 +29,8 @@ public class TipoAlimento extends BaseServiceImpl<TipoAlimento, Long, TipoAlimen
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToOne(mappedBy = "tipoAlimento", cascade = CascadeType.ALL)
-    @JoinColumn(name="tipoAlimento_id", foreignKey = @ForeignKey(name = "FK_KILOSDISPONIBLES_TIPOALIMENTO"))
+    @OneToOne(mappedBy = "tipoAlimento", cascade = CascadeType.ALL )
+    @JoinColumn(name="tipoAlimento_id", foreignKey = @ForeignKey(name = "FK_KILOSDISPONIBLES_TIPOALIMENTO") )
 //    @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private KilosDisponibles kilosDisponible;
 
