@@ -33,11 +33,11 @@ import java.util.Optional;
 @RestController()
 @RequestMapping("/caja")
 public class CajaController {
-    @Autowired
-    private CajaRepository repoCaja;
-    private TipoAlimentoRepository repoTipoAli;
-    private CajaService cajaService;
 
+    @Autowired
+    private TipoAlimentoRepository repoTipoAli;
+    @Autowired
+    private CajaService cajaService;
     @Autowired
     private TieneRepository repoTiene;
     @Autowired
@@ -85,7 +85,7 @@ public class CajaController {
     @GetMapping()
     @JsonView(CajaViews.CajasList.class)
     public ResponseEntity<List<CajaDto>> getCajas(){
-        List<Caja> listaCajas = repoCaja.findAll();
+        List<Caja> listaCajas = cajaService.;
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
