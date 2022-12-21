@@ -32,9 +32,9 @@ public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
         return repository.save(c);
     }
 
-        public void deleteRelacionesCajasDestinatarioBorrado (Destinatario d){
-            repoCaja.deleteRelacionesCajasDestinatarioBorrado(d);
-        }
+    public void deleteRelacionesCajasDestinatarioBorrado (Destinatario d){
+        repoCaja.deleteRelacionesCajasDestinatarioBorrado(d);
+    }
 
     public Optional<Caja> getCajaByIdAndIdTipo(Long id, Long idTipo) {
         return repoCaja.getCajaByIdAndIdTipo(id, idTipo);
