@@ -10,6 +10,7 @@ import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -107,7 +108,7 @@ public class DestinatarioController {
     })
     @GetMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
-    public ResponseEntity<DestinatarioDto> getDestinatarioConcreto(@PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> getDestinatarioConcreto( @Parameter(name = "Id del destinatario") @PathVariable Long id){
         Optional<Destinatario> optDest = servDest.findById(id);
         if (optDest.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -149,18 +150,6 @@ public class DestinatarioController {
                                                                 "cantidad": 2.6
                                                             }
                                                         ]
-                                                    },
-                                                    {
-                                                        "id": 2,
-                                                        "numeroCaja": 2,
-                                                        "totalKilos": 6.3,
-                                                        "contenido": [
-                                                            {
-                                                                "id": 7,
-                                                                "nombre": "Azúcar",
-                                                                "cantidad": 6.3
-                                                            }
-                                                        ]
                                                     }
                                                 ]
                                             }
@@ -172,7 +161,7 @@ public class DestinatarioController {
     })
     @GetMapping("/{id}/detalle")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<DestinatarioDto> getDestinatarioConcretoDetallado(@PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> getDestinatarioConcretoDetallado(@Parameter(name = "Id del destinatario") @PathVariable Long id){
         Optional<Destinatario> optDest = servDest.findById(id);
         if (optDest.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -215,7 +204,7 @@ public class DestinatarioController {
     })
     @PostMapping("")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
-    public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d){
+    public ResponseEntity<DestinatarioDto> createDestinatario(@Parameter(name = "Cuerpo del objeto destinatario a crear", required = true) @RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d){
         DestinatarioDto dest = DestinatarioDto.builder()
                 .nombre(d.getNombre())
                 .telefono(d.getTelefono())
@@ -255,11 +244,13 @@ public class DestinatarioController {
             @ApiResponse(responseCode = "400",
                     description = "Alguno de los campos no es del tipo de dato requerido, o es nulo",
                     content = {@Content}),
-            @ApiResponse(responseCode = "404", description = "No se encontró el destinatario a editar")
+            @ApiResponse(responseCode = "404", description = "No se encontró el destinatario a editar",
+                    content = {@Content}),
     })
     @PutMapping("/{id}")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
-    public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d, @PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> createDestinatario(@Parameter(name = "Cuerpo ", description = "Nuevos valores del destinatario", required = true) @RequestBody DestinatarioDto d,
+                                                              @Parameter(name = "ID Caja", description = "Id del destinatario a editar", required = true) @PathVariable Long id){
         Optional<Destinatario> optD = servDest.findById(id);
         if(optD.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -286,7 +277,7 @@ public class DestinatarioController {
                     content = {@Content})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDestinatario(@PathVariable Long id){
+    public ResponseEntity<?> deleteDestinatario(@Parameter(name = "ID Destinatario", description = "Id del Destinatario a borrar", required = true) @PathVariable Long id){
         Optional<Destinatario> optDest = servDest.findById(id);
         if(optDest.isPresent()){
             Destinatario d = optDest.get();
