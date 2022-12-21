@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.service;
 
 import com.grupocinco.kilosapi.dto.clase.ClaseDetalleDto;
+import com.grupocinco.kilosapi.dto.ranking.RankingDto;
 import com.grupocinco.kilosapi.model.Clase;
 import com.grupocinco.kilosapi.repository.ClaseRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,16 @@ public class ClaseService {
 
     public Clase edit(Clase clase){
         return repository.save(clase);
+    }
+
+    public List<RankingDto> getRankingClase(){
+        return repository.getRankingClase();
+    }
+    public Double getAvgKilos(Long id){
+        return repository.getAvgKilos(id);
+    }
+
+    public Double getSumKilos(Long id){
+        return repository.getSumKilos(id);
     }
 }

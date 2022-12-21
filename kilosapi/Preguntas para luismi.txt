@@ -1,1 +1,0 @@
-En /destinatario/{id}/detalle, tengo que mostrar el array de numeros de cajas, cantidad de cajas, y total de kilos, o solo las cajas?

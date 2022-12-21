@@ -8,18 +8,27 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class RankingDto {
+public class RankingDto implements Comparable<RankingDto>{
 
-    private Integer posicion; //1º, 2º, o 3º;
-    private String nombreClase;
+    private String posicion; //1º, 2º, o 3º;
+    private Long id;
+    private String nombre;
     private Integer cantidadAportaciones;
-    private Double mediaKilosAportacion;
+    private Double mediaKilosAportados;
     private Double kilosTotalesAportados;
 
-    /* Lista con las clases y las aportaciones totales que han hecho.
-    Debe aparecer la posición en el ranking,
-     el nombre de la clase,
-      la cantidad de aportaciones,
-       la media de kilos por aportación
-        y los kilos totales aportados. */
+    @Override
+    public int compareTo(RankingDto o) {
+        if(this.kilosTotalesAportados > o.getKilosTotalesAportados()) return -1;
+        else if (this.kilosTotalesAportados < o.getKilosTotalesAportados()) return 1;
+        else{
+            if (this.cantidadAportaciones > o.getCantidadAportaciones()) return -1;
+            else if (this.cantidadAportaciones < o.getCantidadAportaciones()) return 1;
+            else{
+                if (this.mediaKilosAportados > o.getMediaKilosAportados()) return -1;
+                else if (this.mediaKilosAportados > o.getMediaKilosAportados()) return 1;
+                else return 0;
+            }
+        }
+    }
 }
