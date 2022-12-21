@@ -9,7 +9,6 @@ import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
-import com.grupocinco.kilosapi.dto.view.ClaseViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.dtos.NewCajaDto;
 import com.grupocinco.kilosapi.model.*;
@@ -263,18 +262,25 @@ public class CajaController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Se editó la caja",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClaseViews.NewClase.class), examples = @ExampleObject("""
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DestinatarioViews.DestinatarioConcretoDetalles.class), examples = @ExampleObject("""
                             {
-                                "id": 3,
+                                "id": 1,
                                 "numeroCaja": 1,
-                                "totalKilos": 2.6,
+                                "totalKilos": 5.1,
                                 "contenido": [
                                     {
                                         "tipoAlimento": {
                                             "id": 6,
                                             "nombre": "Arroz"
                                         },
-                                        "cantidadKgs": 1.0
+                                        "cantidadKgs": 7.4
+                                    },
+                                    {
+                                        "tipoAlimento": {
+                                            "id": 7,
+                                            "nombre": "Azúcar"
+                                        },
+                                        "cantidadKgs": 2.6
                                     }
                                 ]
                             }
@@ -291,11 +297,10 @@ public class CajaController {
     public ResponseEntity<CajaDto> editKgCaja(@Parameter(name = "Id de la caja", description = "id de la caja a editar") @PathVariable Long id,
                                               @Parameter(name = "Id del tipo de alimento", description = "id del tipo de alimento a editar") @PathVariable Long idTipoAlim,
                                               @Parameter(name = "Cantidad kg", description = "Cantidad de kg a tener en una caja si la cantidad disponible del tipo indicado lo permite.") @PathVariable Double cantidad) {
-        Optional<Caja> cajaOpt = servCaja.getCajaByIdAndIdTipo(id, idTipoAlim); //FIXME solo devuelve el tipo de alimento con el id que se pasa, si tiene más tipos no se muestran
+        Optional<Caja> cajaOpt = servCaja.getCajaByIdAndIdTipo(id, idTipoAlim);
         Caja caja;
         double dif;
         TipoAlimento tipoAlimento;
-        CajaMapper mapper = new CajaMapper();
         Double kgCaja;
 
         if (cajaOpt.isPresent()) {
@@ -318,7 +323,7 @@ public class CajaController {
                 }
             }
             servCaja.save(caja);
-            return ResponseEntity.ok().body(mapper.toCajaDto(caja));
+            return ResponseEntity.ok().body(mapperCaja.toCajaDto(caja));
         } else
             return ResponseEntity.badRequest().build();
     }
