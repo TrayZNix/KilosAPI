@@ -12,7 +12,6 @@ import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.model.*;
-import com.grupocinco.kilosapi.repository.CajaRepository;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.CajaService;
@@ -85,7 +84,7 @@ public class CajaController {
     @GetMapping()
     @JsonView(CajaViews.CajasList.class)
     public ResponseEntity<List<CajaDto>> getCajas(){
-        List<Caja> listaCajas = cajaService.;
+        List<Caja> listaCajas = cajaService.findAll();
         if(listaCajas.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.ok(mapperCaja.toListCajaDto(listaCajas));
     }
@@ -93,7 +92,7 @@ public class CajaController {
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     public ResponseEntity<CajaDto> addAlimentoToCaja(@PathVariable Long id, @PathVariable Long idTipoAlim, @PathVariable Double cantidad){
-        Optional<Caja> optCaja = repoCaja.findById(id);
+        Optional<Caja> optCaja = cajaService.findById(id);
         if(optCaja.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         else{
             Caja c = optCaja.get();
@@ -137,7 +136,7 @@ public class CajaController {
                 .qr(dto.getQr())
                 .numeroCaja(dto.getNumeroCaja())
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(repoCaja.save(ca));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cajaService.save(ca));
     }
 
     @Operation(description = "Borra una caja y la lista de alimentos que contiene")
@@ -148,7 +147,7 @@ public class CajaController {
     })
     @DeleteMapping("/{id1}/tipo/{idTipoAlim}")
     public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idTipoAlim){
-        Optional<Caja> caja = repoCaja.findById(id1);
+        Optional<Caja> caja = cajaService.findById(id1);
 
         if(caja.isPresent()){
             Caja c = caja.get();
@@ -160,7 +159,7 @@ public class CajaController {
 
                 Tiene tiene = cajaService.getAlimentoEnCaja(ta, c);
 
-                repoCaja.deleteById(id1);
+                cajaService.deleteById(id1);
 
                 return ResponseEntity
                         .status(HttpStatus.OK)
