@@ -85,7 +85,8 @@ public class AportacionController {
     })
     @GetMapping("clase/{id}")
     public ResponseEntity<ClaseInfoAportacionDto> getAportacionByClaseId(@Parameter(name = "Id de la clase", description = "Id de la clase a buscar aportaciones") @PathVariable Long id) {
-        Optional<ClaseInfoAportacionDto> clase = aportacionService.aportacionDetalleByClaseId(id); //FIXME se ponen tantas aportaciones como detalles tenga
+        Optional<ClaseInfoAportacionDto> clase = aportacionService.aportacionDetalleByClaseId(id); //FIXME Luismi, esto duplica las aportaciones por un error de hibernate,
+        // se podría solucionar con criterios, pero al no haberlos visto, prefiero dejarlo como un fixme por si los vemos más adelante
         if (clase.isPresent())
             return ResponseEntity.ok().body(clase.get());
         else
