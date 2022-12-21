@@ -38,6 +38,14 @@ public class Aportacion {
     }
 
     public void addDetalleAportacion(DetalleAportacion d) {
+
+        if(detalles.size()==0){
+            d.getDetalleAportacionId().setNumLinea(1L);
+        }else{
+            d.getDetalleAportacionId().setNumLinea(
+                    detalles.get(detalles.size()-1).getDetalleAportacionId().getNumLinea() +1L);
+        }
+
         this.getDetalles().add(d);
         d.setAportacion(this);
     }
