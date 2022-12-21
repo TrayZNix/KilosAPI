@@ -1,8 +1,11 @@
 package com.grupocinco.kilosapi.dto.kilosDisponibles;
 
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
+import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
 import lombok.*;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +20,8 @@ public class KilosDisponiblesDto {
     private String nombre;
 
     private Double cantidadDisponible;
+
+    private List<Aportacion> listAportacionDto;
 
     public static KilosDisponiblesDto of(KilosDisponibles k){
         return KilosDisponiblesDto.builder()

@@ -109,7 +109,7 @@ public class KilosDisponiblesController {
                     content = {@Content})
     })
     @GetMapping("/{id}")
-    public ResponseEntity<List<Aportacion>> getListaKilosUnAlimento(@PathVariable Long id){
+    public ResponseEntity<List<KilosDisponiblesDto>> getListaKilosUnAlimento(@PathVariable Long id){
 
         Optional<TipoAlimento> optionalTipoAli = tipoAlimentoRepo.findById(id);
 
@@ -120,6 +120,10 @@ public class KilosDisponiblesController {
 
             List<Aportacion> listaAportacion = new ArrayList<>();
             listaDetallesAportacion.forEach(d -> listaAportacion.add(d.getAportacion()));
+
+            List<KilosDisponiblesDto> listaDto = new ArrayList<KilosDisponiblesDto>();
+
+            listaAportacion.forEach(aportacion -> );
 
             return ResponseEntity.status(HttpStatus.OK).body(listaAportacion);
 
