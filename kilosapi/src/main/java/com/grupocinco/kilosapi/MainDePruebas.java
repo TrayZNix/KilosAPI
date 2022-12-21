@@ -149,14 +149,14 @@ public class MainDePruebas {
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(1L).build())
                 .tipoAlimento(t1)
                 .cantidad_en_kgs(10.0)
-                .aportacion(aportacionService.findById(13L).get())
+                .aportacion(aportacionService.findById(a1.getId()).get())
                 .build();
 
         DetalleAportacion dt2 = DetalleAportacion.builder()
                 .detalleAportacionId(DetalleAportacion.DetalleAportacionId.builder().idAportacion(a1.getId()).numLinea(2L).build())
                 .tipoAlimento(t2)
                 .cantidad_en_kgs(10.0)
-                .aportacion(aportacionService.findById(13L).get())
+                .aportacion(aportacionService.findById(a1.getId()).get())
                 .build();
 
         detalleAportacionService.add(dt1);

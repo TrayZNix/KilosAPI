@@ -1,17 +1,20 @@
 package com.grupocinco.kilosapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.grupocinco.kilosapi.dto.caja.CajaContenidoDto;
-import com.grupocinco.kilosapi.dto.caja.CajaDetalleDto;
-import com.grupocinco.kilosapi.dto.caja.CajaDto;
-import com.grupocinco.kilosapi.dto.caja.CajaMapper;
+import com.grupocinco.kilosapi.dto.caja.*;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
 import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
-import com.grupocinco.kilosapi.dtos.NewCajaDto;
+import com.grupocinco.kilosapi.model.Caja;
+import com.grupocinco.kilosapi.model.Tiene;
+import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.model.*;
+import com.grupocinco.kilosapi.repository.TieneRepository;
+import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
+import com.grupocinco.kilosapi.service.CajaService;
+import com.grupocinco.kilosapi.repository.*;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
@@ -58,6 +61,12 @@ public class CajaController {
     private DestinatarioMapper mapperDest;
     @Autowired
     private CajaService cajaService;
+    @Autowired
+    private TipoAlimentoRepository repoTipoAli;
+    @Autowired
+    private TieneRepository repoTiene;
+    @Autowired
+    private TipoAlimentoRepository repoTipoAl;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -67,25 +76,56 @@ public class CajaController {
                             examples = {@ExampleObject(
                                     value = """
                                             [
-                                                {
-                                                        "id": 3,
-                                                        "qr": "qrqrqr",
-                                                        "numeroCaja": 1,
-                                                        "destinatario": {
-                                                            "id": 1,
-                                                            "nombre": "Comedor Pagés del Corro"
-                                                        }
-                                                    },
-                                                    {
-                                                        "id": 4,
-                                                        "qr": "tetete",
-                                                        "numeroCaja": 2,
-                                                        "destinatario": {
-                                                            "id": 1,
-                                                            "nombre": "Comedor Pagés del Corro"
-                                                        }
-                                                    },
-                                            ]
+                                                  {
+                                                      "id": 1,
+                                                      "qr": "qr1",
+                                                      "numeroCaja": 1,
+                                                      "totalKilos": 5.1,
+                                                      "contenido": [
+                                                          {
+                                                              "id": 6,
+                                                              "nombre": "Arroz",
+                                                              "cantidad": 2.5
+                                                          },
+                                                          {
+                                                              "id": 7,
+                                                              "nombre": "Azúcar",
+                                                              "cantidad": 2.6
+                                                          }
+                                                      ]
+                                                  },
+                                                  {
+                                                      "id": 2,
+                                                      "qr": "qr2",
+                                                      "numeroCaja": 2,
+                                                      "totalKilos": 6.3,
+                                                      "contenido": [
+                                                          {
+                                                              "id": 7,
+                                                              "nombre": "Azúcar",
+                                                              "cantidad": 6.3
+                                                          }
+                                                      ]
+                                                  },
+                                                  {
+                                                      "id": 3,
+                                                      "qr": "qr3",
+                                                      "numeroCaja": 3,
+                                                      "totalKilos": 5.0,
+                                                      "contenido": [
+                                                          {
+                                                              "id": 9,
+                                                              "nombre": "Huevo",
+                                                              "cantidad": 2.6
+                                                          },
+                                                          {
+                                                              "id": 10,
+                                                              "nombre": "Zanahoria",
+                                                              "cantidad": 2.4
+                                                          }
+                                                      ]
+                                                  }
+                                              ]
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
@@ -154,33 +194,38 @@ public class CajaController {
             return ResponseEntity.notFound().build();
     }
 
-    @Operation(description = "Añade un tipo de alimento a la caja determinada")
+    @Operation(summary = "Añade un tipo de alimento a la caja determinada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Se encontró el destinatario",
+                    description = "La operación se efectuó correctamente",
                     content = {@Content(mediaType = "application/json",
                             examples = {@ExampleObject(
                                     value = """
                                             {
-                                                "id": 2,
-                                                "nombre": "Hermanitas de los Pobres",
-                                                "direccion": "C/ Luis Montoto 43",
-                                                "personaContacto": "José",
-                                                "telefono": "954543092",
-                                                "cajas": [
-                                                    {
-                                                        "id": 5,
-                                                        "numeroCaja": 3,
-                                                        "totalKilos": 17.57
-                                                    }
-                                                ],
-                                                "totalKilos": 17.57,
-                                                "cantidadCajas": 1
-                                            }
+                                                 "id": 3,
+                                                 "qr": "qr1",
+                                                 "numeroCaja": 3,
+                                                 "totalKilos": 15.0,
+                                                 "contenido": [
+                                                     {
+                                                         "id": 9,
+                                                         "nombre": "Huevo",
+                                                         "cantidad": 2.6
+                                                     },
+                                                     {
+                                                         "id": 10,
+                                                         "nombre": "Zanahoria",
+                                                         "cantidad": 12.4
+                                                     }
+                                                 ]
+                                             }
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontraro el destinatario",
+                    description = "No se encontró la caja donde añadir los alimentos",
+                    content = {@Content}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se encontró el alimento que añadir a la caja",
                     content = {@Content})
     })
     @PostMapping("/{id}/tipo/{idTipoAlim}/kg/{cantidad}")
@@ -227,21 +272,42 @@ public class CajaController {
         }
     }
 
-    @Operation(description = "Crea una caja mediante un cuerpo de petición.")
+    @Operation(summary = "Asigna una caja determinada al destinatario deseado")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
-                    description = "Caja creada",
+            @ApiResponse(responseCode = "200",
+                    description = "La operación se efectuó correctamente",
                     content = {@Content(mediaType = "application/json",
                             examples = {@ExampleObject(
                                     value = """
                                             {
-                                                "qr": "qrqr",
-                                                "numeroCaja": 1 
+                                                "id": 1,
+                                                "nombreDestinatario": "Comedor Don Bosco",
+                                                "caja": {
+                                                    "id": 1,
+                                                    "qr": "qr1",
+                                                    "numeroCaja": 3,
+                                                    "totalKilos": 25.0,
+                                                    "contenido": [
+                                                        {
+                                                            "id": 1,
+                                                            "nombre": "Huevo",
+                                                            "cantidad": 2.6
+                                                        },
+                                                        {
+                                                            "id": 2,
+                                                            "nombre": "Zanahoria",
+                                                            "cantidad": 22.4
+                                                        }
+                                                    ]
+                                                }
                                             }
                                             """
                             )})}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontró la caja a la que asignar destinatario",
+                    content = {@Content}),
             @ApiResponse(responseCode = "400",
-                    description = "Caja no creada",
+                    description = "No se encontró el destinatario que asignar a la caja",
                     content = {@Content})
     })
     @PostMapping("/caja/")
@@ -362,85 +428,69 @@ public class CajaController {
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @Operation(summary = "Modifica la caja con ID especificado por caja recibida")
+    @Operation(description = "Crea una caja mediante un cuerpo de petición.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "Se ha realizado correctamente la edicion",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CajaContenidoDto.class),
+            @ApiResponse(responseCode = "201",
+                    description = "Caja creada",
+                    content = {@Content(mediaType = "application/json",
                             examples = {@ExampleObject(
                                     value = """
-                                                {
-                                                                      "id": 3,
-                                                                      "numeroCaja": 7,
-                                                                      "totalKilos": 5.0,
-                                                                      "contenido": [
-                                                                          {
-                                                                              "id": 9,
-                                                                              "nombre": "Huevo",
-                                                                              "cantidad": 2.6
-                                                                          },
-                                                                          {
-                                                                              "id": 10,
-                                                                              "nombre": "Ball",
-                                                                              "cantidad": 2.4
-                                                                          }
-                                                                      ]
-                                                                  }                                                
+                                            {
+                                                "qr": "qrqr",
+                                                "numeroCaja": 1 
+                                            }
                                             """
-                            )}
-                    )}),
+                            )})}),
             @ApiResponse(responseCode = "400",
-                    description = "Ha habido un error en los datos recibidos",
-                    content = @Content),
-            @ApiResponse(responseCode = "404",
-                    description = "No se ha encontrado ninguna caja",
-                    content = @Content),
+                    description = "Caja no creada",
+                    content = {@Content})
     })
-    @PutMapping("/{id}")
-    @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<CajaContenidoDto> editCajaById(
-            @Parameter(description = " ID de la caja a editar")
-            @PathVariable Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = " Objeto Dto necesario para la creacion de la caja")
-            @JsonView(CajaViews.UpdateCaja.class)@RequestBody CajaDto dto){
-        Optional<Caja> c = cajaService.findById(id);
-        if(c.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        else{
-            if(dto.getNumeroCaja() == null || StringUtils.isEmpty(dto.getQr())) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    @PostMapping("")
+    public ResponseEntity<Caja> createCaja(@RequestBody NewCajaDto dto){
 
-            Caja data = c.map(old ->{
-                old.setQr(dto.getQr());
-                old.setNumeroCaja(dto.getNumeroCaja());
-                return cajaService.add(old);
-            }).orElse(null);
-
-            data = servCaja.actualizarDatosCajas(data);
-            CajaContenidoDto result = mapperCaja.toCajaContenidoDto(data);
-            result.setContenido(mapperTiene.fromListtoLineaCajaCont(servTiene.getLineasCajas(data)));
-
-            return ResponseEntity.ok(result);
-        }
+        Caja ca = Caja.builder()
+                .qr(dto.getQr())
+                .numeroCaja(dto.getNumeroCaja())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(cajaService.save(ca));
     }
 
-    @Operation(summary = "Elimina una Caja con ID especificado")
+    @Operation(description = "Borra una caja y la lista de alimentos que contiene")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204",
-                    description = "Se ha realizado correctamente la eliminacion, y por tanto no hay contenido",
-                    content = @Content
-            )
+            @ApiResponse(responseCode = "200",
+                    description = "Caja borrada satisfactoriamente",
+                    content = {@Content})
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(
-            @Parameter(description = " ID de la caja a eliminar")
-            @PathVariable Long id){
-        if(cajaService.existById(id)){
-            Caja c = cajaService.findById(id).get();
-            servicetiene.deleteCaja(c);
+    @DeleteMapping("/{id1}/tipo/{idTipoAlim}")
+    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idTipoAlim){
+        Optional<Caja> caja = cajaService.findById(id1);
 
-            cajaService.deleteById(id);
+        if(caja.isPresent()){
+            Caja c = caja.get();
+
+            Optional<TipoAlimento> tipoAlimentoOptional = repoTipoAli.findById(idTipoAlim);
+
+            if(tipoAlimentoOptional.isPresent()) {
+                TipoAlimento ta = tipoAlimentoOptional.get();
+
+                Tiene tiene = cajaService.getAlimentoEnCaja(ta, c);
+
+                cajaService.deleteById(id1);
+
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(CajaDeleteDto.builder()
+                                .id(ta.getId())
+                                .name(ta.getNombre())
+                                .cantKilos(tiene.getCantidadKgs())
+                                .build()
+                        );
+            }
         }
+        return ResponseEntity.ok().build();
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 }
