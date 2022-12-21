@@ -1,16 +1,14 @@
 package com.grupocinco.kilosapi.service;
-
-import com.grupocinco.kilosapi.dto.caja.CajaDto;
 import com.grupocinco.kilosapi.model.Caja;
-import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.model.Destinatario;
+import com.grupocinco.kilosapi.model.Tiene;
+import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.repository.CajaRepository;
-import lombok.RequiredArgsConstructor;
 import com.grupocinco.kilosapi.repository.TieneRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +25,12 @@ public class CajaService extends BaseServiceImpl<Caja, Long, CajaRepository>{
         });
         return repository.saveAll(c);
     }
+
+    public Tiene getAlimentoEnCaja(TipoAlimento t, Caja c){
+        return repoCaja.getTipoAlimentoEnCaja(t,c);
+    }
     public Caja actualizarDatosCajas(Caja c){
-            c.setTotalKilos(repoTiene.getPesoTotalCaja(c));
+        c.setTotalKilos(repoTiene.getPesoTotalCaja(c));
         return repository.save(c);
     }
 
