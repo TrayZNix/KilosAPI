@@ -2,7 +2,7 @@
 
 
 # KiloAPI
-[		![](https://raw.githubusercontent.com/TrayZNix/KilosAPI/development/images/logo.png?token=GHSAT0AAAAAABZYGYZAGMVPXGRGW6H2G5HYY5AM5HA)
+[](https://raw.githubusercontent.com/TrayZNix/KilosAPI/main/images/logo.png)
 **Kiloapi** es una *API* que nos permite gestionar la campaña Operación Kilo que se realiza todos los años en el mes de diciembre en nuestro colegio.
 
 ## Requisitos
@@ -21,7 +21,7 @@ Si el puerto 8080 se encuentra ocupado, la API no se iniciará. De ocurrir esto,
 ## Peticiones
 
 ### Testing con Postman
-Gracias a Postman, puedes probar las peticiones de una manera fácil y directa. Para ello, dentro del programa, solo debes importar el archivo [TRIANAFY-REQUESTS-POSTMAN.json]() ubicado en la carpeta raiz de *KiloAPI*
+Gracias a Postman, puedes probar las peticiones de una manera fácil y directa. Para ello, dentro del programa, solo debes importar el archivo [kilosAPI.postman_collection.json](https://github.com/TrayZNix/KilosAPI/blob/main/kilosAPI.postman_collection.json) ubicado en la carpeta raiz de *KiloAPI*
 
 ### Documentación de la API
 Tras ejecutar la app, podemos acceder a su documentación accediendo a la siguiente URL
