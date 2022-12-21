@@ -24,7 +24,7 @@ public class CajaMapper {
                 .qr(c.getQr())
                 .numeroCaja(c.getNumeroCaja())
                 .destinatario(c.getDestinatario())
-                .totalKilos((double) Math.round(c.getTotalKilos()*100)/100)
+                .totalKilos(eliminarErrorComaFlotante(c.getTotalKilos()))
                 .contenido(mapperTiene.ofList(c.getLineas()))
                 .build();
     }
@@ -37,7 +37,7 @@ public class CajaMapper {
                     .numeroCaja(c.getNumeroCaja())
                     .qr(c.getQr())
                     .destinatario(c.getDestinatario())
-                    .totalKilos(c.getTotalKilos())
+                    .totalKilos(eliminarErrorComaFlotante(c.getTotalKilos()))
                     .build());
         }
         return listaDto;
@@ -51,7 +51,7 @@ public class CajaMapper {
                 .id(c.getId())
                 .qr(c.getQr())
                 .numeroCaja(c.getNumeroCaja())
-                .totalKilos(c.getTotalKilos())
+                .totalKilos(eliminarErrorComaFlotante(c.getTotalKilos()))
                 .contenido(lineasDto)
                 .build();
     }
@@ -61,6 +61,11 @@ public class CajaMapper {
             listaDto.add(toCajaContenidoDto(caja));
         });
         return listaDto;
+    }
+
+    private Double eliminarErrorComaFlotante(Double d){
+        if(d != null) return (double) Math.round(d*100)/100;
+        else return (double) 0;
     }
 
 }
