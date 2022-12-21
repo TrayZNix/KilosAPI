@@ -10,6 +10,7 @@ import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.DestinatarioService;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +38,7 @@ public class DestinatarioController {
     @Autowired
     private DestinatarioMapper mapperDest;
 
-    @Operation(description = "Devuelve una lista de todos los destinatarios guardados")
+    @Operation(summary = "Devuelve una lista de todos los destinatarios guardados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se encontró uno o más destinatarios",
@@ -46,24 +47,31 @@ public class DestinatarioController {
                                     value = """
                                             [
                                                 {
-                                                        "id": 1,
-                                                        "totalKilos": 50.93,
-                                                        "numerosCaja": [
-                                                            1,
-                                                            2
-                                                        ]
-                                                },{
-                                                        "id": 2,
-                                                        "totalKilos": 17.57,
-                                                        "numerosCaja": [
-                                                            3
-                                                        ]
+                                                    "id": 4,
+                                                    "direccion": "C/ Pagés del Corro 34",
+                                                    "nombre": "Comedor Pagés del Corro",
+                                                    "personaContacto": "María",
+                                                    "telefono": "954347087",
+                                                    "numerosCaja": [
+                                                        1,
+                                                        2
+                                                    ]
+                                                },
+                                                {
+                                                    "id": 5,
+                                                    "direccion": "C/ Luis Montoto 43",
+                                                    "nombre": "Hermanitas de los Pobres",
+                                                    "personaContacto": "José",
+                                                    "telefono": "954543092",
+                                                    "numerosCaja": [
+                                                        3
+                                                    ]
                                                 }
                                             ]
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontraron artistas",
+                    description = "No se encontró ningún destinatario",
                     content = {@Content})
     })
     @GetMapping()
@@ -76,7 +84,7 @@ public class DestinatarioController {
         return ResponseEntity.ok(listaDto);
     }
 
-    @Operation(description = "Devuelve un destinatario según su id guardados")
+    @Operation(summary = "Devuelve un destinatario según su id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se encontró el destinatario",
@@ -84,30 +92,23 @@ public class DestinatarioController {
                             examples = {@ExampleObject(
                                     value = """
                                             {
-                                                "id": 2,
-                                                "nombre": "Hermanitas de los Pobres",
-                                                "direccion": "C/ Luis Montoto 43",
-                                                "personaContacto": "José",
-                                                "telefono": "954543092",
-                                                "cajas": [
-                                                    {
-                                                        "id": 5,
-                                                        "numeroCaja": 3,
-                                                        "totalKilos": 17.57
-                                                    }
-                                                ],
-                                                "totalKilos": 17.57,
-                                                "cantidadCajas": 1
-                                            }
+                                                 "id": 4,
+                                                 "direccion": "C/ Pagés del Corro 34",
+                                                 "nombre": "Comedor Pagés del Corro",
+                                                 "personaContacto": "María",
+                                                 "telefono": "954347087",
+                                                 "totalKilos": 11.4,
+                                                 "cantidadCajas": 2
+                                             }
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontraro el destinatario",
+                    description = "No se encontró el destinatario",
                     content = {@Content})
     })
     @GetMapping("/{id}")
     @JsonView(DestinatarioViews.DestinatarioConcreto.class)
-    public ResponseEntity<DestinatarioDto> getDestinatarioConcreto(@PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> getDestinatarioConcreto( @Parameter(name = "Id del destinatario") @PathVariable Long id){
         Optional<Destinatario> optDest = servDest.findById(id);
         if (optDest.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -117,29 +118,50 @@ public class DestinatarioController {
         }
 
     }
-    @Operation(description = "Devuelve los detalles de un destinatario según su id")
+    @Operation(summary = "Devuelve los detalles de un destinatario según su id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se encontró el destinatario",
                     content = {@Content(mediaType = "application/json",
                             examples = {@ExampleObject(
                                     value = """
-                                            "id": 2,
-                                                "nombre": "Hermanitas de los Pobres",
-                                                "direccion": "C/ Luis Montoto 43",
-                                                "personaContacto": "José",
-                                                "telefono": "954543092",
-                                                "totalKilos": 17.57,
-                                                "cantidadCajas": 1
+                                            {
+                                                "id": 4,
+                                                "direccion": "C/ Pagés del Corro 34",
+                                                "nombre": "Comedor Pagés del Corro",
+                                                "personaContacto": "María",
+                                                "telefono": "954347087",
+                                                "totalKilos": 11.4,
+                                                "cantidadCajas": 2,
+                                                "cajas": [
+                                                    {
+                                                        "id": 1,
+                                                        "numeroCaja": 1,
+                                                        "totalKilos": 5.1,
+                                                        "contenido": [
+                                                            {
+                                                                "id": 6,
+                                                                "nombre": "Arroz",
+                                                                "cantidad": 2.5
+                                                            },
+                                                            {
+                                                                "id": 7,
+                                                                "nombre": "Azúcar",
+                                                                "cantidad": 2.6
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
                                             """
                             )})}),
             @ApiResponse(responseCode = "404",
-                    description = "No se encontraron destinatarios",
+                    description = "No se encontró el destinatarios",
                     content = {@Content})
     })
     @GetMapping("/{id}/detalle")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
-    public ResponseEntity<DestinatarioDto> getDestinatarioConcretoDetallado(@PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> getDestinatarioConcretoDetallado(@Parameter(name = "Id del destinatario") @PathVariable Long id){
         Optional<Destinatario> optDest = servDest.findById(id);
         if (optDest.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -149,17 +171,17 @@ public class DestinatarioController {
         }
     }
 
-    @Operation(description = "Crea un destinatario según el cuerpo que le mandamos")
+    @Operation(summary = "Crea un destinatario según el cuerpo que le mandamos")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = DestinatarioDto.class),
                     examples = @ExampleObject(value = """
                             {
-                                                "nombre": "Comedor Don Bosco",
-                                                "direccion": "C/ Condes de Bustillo 13",
-                                                "personaContacto": "Julio Vera",
-                                                "telefono": "954742432"
-                                            }
+                                "nombre": "Comedor Don Bosco",
+                                "direccion": "C/ Condes de Bustillo 13",
+                                "telefono": "954742432",
+                                "personaContacto": "Julio Vera"
+                            }
                             """)))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
@@ -168,21 +190,21 @@ public class DestinatarioController {
                             examples = {@ExampleObject(
                                     value = """
                                             {
-                                                "id": 6,
-                                                "nombre": "Comedor Don Bosco",
+                                                "id": 1,
                                                 "direccion": "C/ Condes de Bustillo 13",
+                                                "nombre": "Comedor Don Bosco",
                                                 "personaContacto": "Julio Vera",
                                                 "telefono": "954742432"
                                             }
                                             """
                             )})}),
             @ApiResponse(responseCode = "400",
-                    description = "Alguno de los campos no tiene el tipo de dato requerido, o es nulo",
+                    description = "Alguno de los campos no es del tipo de dato requerido, o es nulo",
                     content = {@Content})
     })
     @PostMapping("")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
-    public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d){
+    public ResponseEntity<DestinatarioDto> createDestinatario(@Parameter(name = "Cuerpo del objeto destinatario a crear", required = true) @RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d){
         DestinatarioDto dest = DestinatarioDto.builder()
                 .nombre(d.getNombre())
                 .telefono(d.getTelefono())
@@ -192,17 +214,17 @@ public class DestinatarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(DestinatarioDto.of(servDest.save(DestinatarioDto.to(dest))));
     }
 
-    @Operation(description = "Modifica un destinatario según el id introducido en la url y el cuerpo que le mandamos")
+    @Operation(summary = "Modifica un destinatario según el id introducido en la url y el cuerpo que le mandamos")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = DestinatarioDto.class),
                     examples = @ExampleObject(value = """
                             {
-                                                "nombre": "Comedor Salesianos Triana",
-                                                "direccion": "C/ Condes de Bustillo 17",
-                                                "telefono": "954331488",
-                                                "personaContacto": "Julio Vera"
-                                            }
+                                "nombre": "Comedor Salesianos Triana",
+                                "direccion": "C/ Condes de Bustillo 17",
+                                "telefono": "954331488",
+                                "personaContacto": "Julio Vera"
+                            }
                             """)))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -211,22 +233,24 @@ public class DestinatarioController {
                             examples = {@ExampleObject(
                                     value = """
                                             {
-                                                "id": 6,
-                                                "nombre": "Comedor Salesianos Triana",
+                                                "id": 1,
                                                 "direccion": "C/ Condes de Bustillo 17",
-                                                "telefono": "954331488",
-                                                "personaContacto": "Julio Vera"
+                                                "nombre": "Comedor Salesianos Triana",
+                                                "personaContacto": "Julio Vera",
+                                                "telefono": "954331488"
                                             }
                                             """
                             )})}),
             @ApiResponse(responseCode = "400",
-                    description = "Alguno de los campos no tiene el tipo de dato requerido, o es nulo",
+                    description = "Alguno de los campos no es del tipo de dato requerido, o es nulo",
                     content = {@Content}),
-            @ApiResponse(responseCode = "404", description = "No se encontró el destinatario a editar")
+            @ApiResponse(responseCode = "404", description = "No se encontró el destinatario a editar",
+                    content = {@Content}),
     })
     @PutMapping("/{id}")
     @JsonView(DestinatarioViews.ModeloPostDestinatario.class)
-    public ResponseEntity<DestinatarioDto> createDestinatario(@RequestBody @JsonView(DestinatarioViews.ModeloPostDestinatario.class) DestinatarioDto d, @PathVariable Long id){
+    public ResponseEntity<DestinatarioDto> createDestinatario(@Parameter(name = "Cuerpo ", description = "Nuevos valores del destinatario", required = true) @RequestBody DestinatarioDto d,
+                                                              @Parameter(name = "ID Caja", description = "Id del destinatario a editar", required = true) @PathVariable Long id){
         Optional<Destinatario> optD = servDest.findById(id);
         if(optD.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -246,14 +270,14 @@ public class DestinatarioController {
         }
     }
 
-    @Operation(description = "Borra un destinatario segun su id")
+    @Operation(summary = "Borra un destinatario segun su id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
-                    description = "Se ha ejecutado la orden de borrado",
+                    description = "Se ha ejecutado una orden de borrado",
                     content = {@Content})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDestinatario(@PathVariable Long id){
+    public ResponseEntity<?> deleteDestinatario(@Parameter(name = "ID Destinatario", description = "Id del Destinatario a borrar", required = true) @PathVariable Long id){
         Optional<Destinatario> optDest = servDest.findById(id);
         if(optDest.isPresent()){
             Destinatario d = optDest.get();

@@ -31,6 +31,8 @@ public class CajaDto {
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private List<TieneDto> contenido;
 
+
+
     public static CajaDto of(Caja c){
         return CajaDto.builder()
                 .id(c.getId())
