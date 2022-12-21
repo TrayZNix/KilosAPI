@@ -1,7 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
 import lombok.*;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,10 +16,14 @@ public class DetalleAportacion {
     @EmbeddedId
     private DetalleAportacionId detalleAportacionId;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_TIPOALIMENTO"))
     private TipoAlimento tipoAlimento;
 
     private Double cantidad_en_kgs;
+
+    @ManyToOne
+    @JoinColumn(name = "aportacion_id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_APORTACION")) //TODO Esto hay que cogerlo con pizas, porque hay que preguntar a luismi
+    private Aportacion aportacion;
 
     @PreRemove //TODO comprobar que se guarda la cantidad restada
     public void restarKilos() {
@@ -28,16 +31,22 @@ public class DetalleAportacion {
         kilos.setCantidadDisponible(kilos.getCantidadDisponible() - cantidad_en_kgs);
     }
 
+/*    @PreRemove //TODO esta es la unica manera que he encontrado de que se elimine de alguna manera
+    public void eliminarDeAportacion() {
+        this.aportacion.getDetalles().remove(this);
+    }*/
+
     @Getter
     @Setter
     @Embeddable
     @EqualsAndHashCode
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class DetalleAportacionId implements Serializable {
-        @ManyToOne()
-        private Aportacion aportacion;
+        private Long idAportacion;
 
 
-        private Integer numLinea;
+        private Long numLinea;
     }
 }

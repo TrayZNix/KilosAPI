@@ -14,4 +14,11 @@ public class DestinatarioViews {
     public static class DestinatarioConcretoDetalles extends  DestinatarioConcreto{
 
     }
+    public static class DestinatarioConcretoDetallesConQr extends  DestinatarioConcretoDetalles{
+
+    }
+//
+//    public static  class DestinatarioCajaActualizadaDtoJson{
+//
+//    }
 }

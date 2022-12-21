@@ -1,5 +1,7 @@
 package com.grupocinco.kilosapi.model;
 
+import com.grupocinco.kilosapi.repository.KilosDisponiblesRepository;
+import com.grupocinco.kilosapi.service.BaseServiceImpl;
 import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
