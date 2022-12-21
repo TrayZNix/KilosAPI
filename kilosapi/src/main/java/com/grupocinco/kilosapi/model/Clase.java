@@ -21,10 +21,11 @@ public class Clase {
     @Id
     @GeneratedValue
     @JsonView(ClaseViews.NewClase.class)
-    private Long id;
+    private Long idClase;
 
     @JsonView(ClaseViews.NewClase.class)
     private String nombre, tutor;
+
 
     @ToString.Exclude
     @OneToMany(mappedBy = "clase", fetch = FetchType.EAGER)
@@ -36,4 +37,5 @@ public class Clase {
     public void setNullClase() {
         aportaciones.forEach(a -> a.setClase(null));
     }
+
 }

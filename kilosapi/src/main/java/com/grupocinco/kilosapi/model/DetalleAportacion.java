@@ -15,14 +15,17 @@ import java.io.Serializable;
 public class DetalleAportacion {
     @EmbeddedId
     private DetalleAportacionId detalleAportacionId;
-
-    @ManyToOne()
-    @JoinColumn(name = "id")
+    @ManyToOne
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_TIPOALIMENTO"))
     private TipoAlimento tipoAlimento;
 
     private Double cantidad_en_kgs;
 
-    @PreRemove //TODO comprobar que se guarda la cantidad restada
+    @ManyToOne
+    @JoinColumn(name = "aportacion_id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_APORTACION"))
+    private Aportacion aportacion;
+
+    @PreRemove
     public void restarKilos() {
         KilosDisponibles kilos = tipoAlimento.getKilosDisponible();
         kilos.setCantidadDisponible(kilos.getCantidadDisponible() - cantidad_en_kgs);
@@ -31,10 +34,13 @@ public class DetalleAportacion {
     @Getter
     @Setter
     @Embeddable
+    @EqualsAndHashCode
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class DetalleAportacionId implements Serializable {
-        @ManyToOne()
-        private Aportacion aportacion;
-
-        private Integer numLinea;
+        private Long idAportacion;
+        @GeneratedValue
+        private Long numLinea;
     }
 }

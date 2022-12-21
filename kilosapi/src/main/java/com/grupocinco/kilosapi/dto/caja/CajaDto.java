@@ -21,16 +21,17 @@ import java.util.List;
 public class CajaDto {
     @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
     private Long id;
-    @JsonView({CajaViews.CajasList.class})
+    @JsonView({CajaViews.CajasList.class, CajaViews.UpdateCaja.class, CajaViews.NewCaja.class})
     private String qr;
-    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class})
+    @JsonView({DestinatarioViews.DestinatarioConcretoDetalles.class, CajaViews.CajasList.class, CajaViews.UpdateCaja.class, CajaViews.NewCaja.class})
     private Integer numeroCaja;
     @JsonView(DestinatarioViews.DestinatarioConcretoDetalles.class)
     private Double totalKilos;
     private Destinatario destinatario;
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private List<TieneDto> contenido;
-    private String destinatarioString;
+
+
 
     public static CajaDto of(Caja c){
         return CajaDto.builder()

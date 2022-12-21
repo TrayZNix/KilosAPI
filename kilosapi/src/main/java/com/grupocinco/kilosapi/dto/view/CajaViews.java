@@ -8,4 +8,12 @@ public class CajaViews {
     public static class InfoCajas{
 
     }
+    public static class UpdateCaja{
+
+
+    }
+
+    public static class NewCaja{
+
+    }
 }

@@ -32,6 +32,4 @@ public class Tiene {
     @JsonView({CajaViews.CajasList.class, DestinatarioViews.DestinatarioConcretoDetalles.class})
     private Double cantidadKgs;
 
-
-
 }
