@@ -10,7 +10,6 @@ import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
 import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.model.*;
-import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
@@ -418,7 +417,4 @@ public class CajaController {
         return ResponseEntity.ok().build();
 
     }
-
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//    }
 }
