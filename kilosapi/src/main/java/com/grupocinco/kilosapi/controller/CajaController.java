@@ -5,7 +5,6 @@ import com.grupocinco.kilosapi.dto.caja.*;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioCajaActualizadaDto;
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioMapper;
 import com.grupocinco.kilosapi.dto.tiene.TieneMapper;
-import com.grupocinco.kilosapi.dto.view.CajaViews;
 import com.grupocinco.kilosapi.dto.view.DestinatarioViews;
 import com.grupocinco.kilosapi.model.Caja;
 import com.grupocinco.kilosapi.model.Tiene;
@@ -13,8 +12,6 @@ import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.model.*;
 import com.grupocinco.kilosapi.repository.TieneRepository;
 import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
-import com.grupocinco.kilosapi.service.CajaService;
-import com.grupocinco.kilosapi.repository.*;
 import com.grupocinco.kilosapi.service.CajaService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
@@ -27,7 +24,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,10 +59,6 @@ public class CajaController {
     private CajaService cajaService;
     @Autowired
     private TipoAlimentoRepository repoTipoAli;
-    @Autowired
-    private TieneRepository repoTiene;
-    @Autowired
-    private TipoAlimentoRepository repoTipoAl;
 
     @Operation(description = "Devuelve una lista de todas las cajas guardados")
     @ApiResponses(value = {
@@ -272,54 +264,6 @@ public class CajaController {
         }
     }
 
-    @Operation(summary = "Asigna una caja determinada al destinatario deseado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "La operación se efectuó correctamente",
-                    content = {@Content(mediaType = "application/json",
-                            examples = {@ExampleObject(
-                                    value = """
-                                            {
-                                                "id": 1,
-                                                "nombreDestinatario": "Comedor Don Bosco",
-                                                "caja": {
-                                                    "id": 1,
-                                                    "qr": "qr1",
-                                                    "numeroCaja": 3,
-                                                    "totalKilos": 25.0,
-                                                    "contenido": [
-                                                        {
-                                                            "id": 1,
-                                                            "nombre": "Huevo",
-                                                            "cantidad": 2.6
-                                                        },
-                                                        {
-                                                            "id": 2,
-                                                            "nombre": "Zanahoria",
-                                                            "cantidad": 22.4
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                            """
-                            )})}),
-            @ApiResponse(responseCode = "404",
-                    description = "No se encontró la caja a la que asignar destinatario",
-                    content = {@Content}),
-            @ApiResponse(responseCode = "400",
-                    description = "No se encontró el destinatario que asignar a la caja",
-                    content = {@Content})
-    })
-    @PostMapping("/caja/")
-    public ResponseEntity<CajaContenidoDto> createCaja(@RequestBody NewCajaDto dto){
-
-        Caja ca = Caja.builder()
-                .qr(dto.getQr())
-                .numeroCaja(dto.getNumeroCaja())
-                .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapperCaja.toCajaContenidoDto(servCaja.save(ca)));
-    }
-
     @Operation(
             summary = "Edita kg de una caja",
             description = "Esta petición edita los kg de un tipo de alimento de una caja"
@@ -394,22 +338,6 @@ public class CajaController {
             return ResponseEntity.badRequest().build();
     }
 
-    @Operation(description = "Borra una caja y la lista de alimentos que contiene")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "Caja borrada satisfactoriamente",
-                    content = {@Content})
-    })
-    @DeleteMapping("/caja/{id1}/tipo/{idTipoAlim}")
-    public ResponseEntity<?> deleteCaja(@PathVariable Long id1, @PathVariable Long idtipoAlim){
-        Optional<Caja> caja = servCaja.findById(id1);
-        if(caja.isPresent()){
-            Caja c = caja.get();
-
-            servCaja.deleteById(id1);
-        }
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
     @PostMapping("/{id}/destinatario/{idDestinataro}")
     @JsonView(DestinatarioViews.DestinatarioConcretoDetallesConQr.class)
     public ResponseEntity<DestinatarioCajaActualizadaDto> asignarDestinatarioACaja(@PathVariable Long id, @PathVariable Long idDestinataro) {
