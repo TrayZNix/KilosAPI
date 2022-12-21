@@ -2,6 +2,7 @@ package com.grupocinco.kilosapi.dto.kilosDisponibles;
 
 import com.grupocinco.kilosapi.dto.destinatario.DestinatarioDto;
 import com.grupocinco.kilosapi.model.Aportacion;
+import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
 import lombok.*;
 
@@ -21,7 +22,6 @@ public class KilosDisponiblesDto {
 
     private Double cantidadDisponible;
 
-    private List<Aportacion> listAportacionDto;
 
     public static KilosDisponiblesDto of(KilosDisponibles k){
         return KilosDisponiblesDto.builder()

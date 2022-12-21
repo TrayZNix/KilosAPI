@@ -18,6 +18,7 @@ public class KilosDisponiblesService extends BaseServiceImpl<KilosDisponibles, L
     public KilosDisponibles add(KilosDisponibles t) {
         return repo.save(t);
     }
+
     public List<DetalleAportacion> findDetalleAportacionByTipoAlimentoId(TipoAlimento t){
         return repo.findDetalleAportacionByTipoAlimentoId(t);
     }
@@ -27,5 +28,9 @@ public class KilosDisponiblesService extends BaseServiceImpl<KilosDisponibles, L
 
     public void setKilosDisponiblesToTipoRelacionado(TipoAlimento t, Double d){
         repository.setKilosDisponiblesToTipoRelacionado(t, d);
+    }
+
+    public Double getCantidadDisponible(TipoAlimento ali){
+        return repo.getCantidadKilosByDetalleAportacion(ali);
     }
 }

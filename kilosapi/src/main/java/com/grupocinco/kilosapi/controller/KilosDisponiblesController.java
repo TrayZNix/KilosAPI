@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.controller;
 
 
+import com.grupocinco.kilosapi.dto.kilosDisponibles.KilosDispUnAlimentoDto;
 import com.grupocinco.kilosapi.dto.kilosDisponibles.KilosDisponiblesDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
@@ -109,7 +110,7 @@ public class KilosDisponiblesController {
                     content = {@Content})
     })
     @GetMapping("/{id}")
-    public ResponseEntity<List<KilosDisponiblesDto>> getListaKilosUnAlimento(@PathVariable Long id){
+    public ResponseEntity<List<KilosDispUnAlimentoDto>> getListaKilosUnAlimento(@PathVariable Long id){
 
         Optional<TipoAlimento> optionalTipoAli = tipoAlimentoRepo.findById(id);
 
@@ -118,14 +119,19 @@ public class KilosDisponiblesController {
 
             List<DetalleAportacion> listaDetallesAportacion = kilosDispService.findDetalleAportacionByTipoAlimentoId(tipoAlimento);
 
-            List<Aportacion> listaAportacion = new ArrayList<>();
-            listaDetallesAportacion.forEach(d -> listaAportacion.add(d.getAportacion()));
+            List<KilosDispUnAlimentoDto> listaDto = new ArrayList<KilosDispUnAlimentoDto>();
 
-            List<KilosDisponiblesDto> listaDto = new ArrayList<KilosDisponiblesDto>();
+            listaDetallesAportacion.forEach(detalle -> {
+                listaDto.add(KilosDispUnAlimentoDto.builder()
+                        .idAportación(detalle.getAportacion().getId())
+                        .detalleAportacion(detalle)
+                        .cantidadDisponible(kilosDispService.getCantidadDisponible(detalle.getTipoAlimento()))
+                        .build());
+            });
 
-            listaAportacion.forEach(aportacion -> );
+            System.out.println(listaDto.toString());
 
-            return ResponseEntity.status(HttpStatus.OK).body(listaAportacion);
+            return ResponseEntity.ok(listaDto);
 
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -1,5 +1,6 @@
 package com.grupocinco.kilosapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,12 +17,14 @@ public class DetalleAportacion {
     @EmbeddedId
     private DetalleAportacionId detalleAportacionId;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_TIPOALIMENTO"))
     private TipoAlimento tipoAlimento;
 
     private Double cantidad_en_kgs;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "aportacion_id", foreignKey = @ForeignKey(name = "FK_DETALLEAPORTACION_APORTACION")) //TODO Esto hay que cogerlo con pizas, porque hay que preguntar a luismi
     private Aportacion aportacion;
 
