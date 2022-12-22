@@ -8,7 +8,6 @@ import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
 import com.grupocinco.kilosapi.model.TipoAlimento;
-import com.grupocinco.kilosapi.repository.TipoAlimentoRepository;
 
 
 import com.grupocinco.kilosapi.service.AportacionService;
@@ -41,7 +40,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequiredArgsConstructor
@@ -269,7 +267,7 @@ public class AportacionController {
     public ResponseEntity<Aportacion> deleteAportacionId(@Parameter(name = "Id de la aportación", description = "Id de la aportación a eliminar") @PathVariable Long id) {
         if(aportacionService.existsById(id))
             aportacionService.deleteById(id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
 
@@ -371,6 +369,7 @@ public class AportacionController {
             for (Aportacion a : data) result.add(AportacionDto.of(a));
             return ResponseEntity.ok(result);
         }
+
 
     }
 

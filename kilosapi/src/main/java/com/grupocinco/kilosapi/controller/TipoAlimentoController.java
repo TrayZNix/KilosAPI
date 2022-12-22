@@ -3,6 +3,7 @@ package com.grupocinco.kilosapi.controller;
 import com.grupocinco.kilosapi.dto.tipoAlimento.TipoAlimentoDto;
 import com.grupocinco.kilosapi.model.KilosDisponibles;
 import com.grupocinco.kilosapi.model.TipoAlimento;
+import com.grupocinco.kilosapi.service.AportacionService;
 import com.grupocinco.kilosapi.service.KilosDisponiblesService;
 import com.grupocinco.kilosapi.service.TieneService;
 import com.grupocinco.kilosapi.service.TipoAlimentoService;
@@ -36,6 +37,8 @@ public class TipoAlimentoController {
 
     @Autowired
     private TieneService serviceT;
+    @Autowired
+    private AportacionService serviceA;
 
     //================================================
     //GET LISTA TIPO ALIMENTO
@@ -243,7 +246,7 @@ public class TipoAlimentoController {
         if (serviceTA.existsById(id)) {
             TipoAlimento t = serviceTA.findById(id).get();
             serviceT.deleteTipoAlimento(t);
-
+            serviceA.removeTipoAlimento(t);
             serviceTA.deleteById(id);
         }
 
