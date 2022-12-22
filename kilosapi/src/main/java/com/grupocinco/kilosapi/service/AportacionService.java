@@ -5,6 +5,7 @@ import com.grupocinco.kilosapi.dto.clase.ClaseInfoAportacionDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.Clase;
 
+import com.grupocinco.kilosapi.model.TipoAlimento;
 import com.grupocinco.kilosapi.repository.AportacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,5 +48,9 @@ public class AportacionService {
     }
     public Aportacion add(Aportacion a) {
         return aportacionRepository.save(a);
+    }
+
+    public void removeTipoAlimento(TipoAlimento t){
+        aportacionRepository.deleteTipoAlimento(t);
     }
 }

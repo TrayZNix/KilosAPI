@@ -1,6 +1,7 @@
 package com.grupocinco.kilosapi.dto.aportacion;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.grupocinco.kilosapi.dto.detalleAportacion.DetalleAportacionInfDto;
 import com.grupocinco.kilosapi.model.Aportacion;
 import com.grupocinco.kilosapi.model.DetalleAportacion;
 import com.grupocinco.kilosapi.dto.view.AportacionViews;
@@ -33,19 +34,22 @@ public class AportacionDto {
     private String nombreAlimento;
 
     @JsonView({AportacionViews.AportacionById.class})
-    List<DetalleAportacionDto> detalleAportaciones;
+    List<DetalleAportacionInfDto> detalleAportaciones;
 
 
     public static AportacionDto of(Aportacion a) {
         double kgTotales = 0.0;
-        List<DetalleAportacionDto> detList = new ArrayList<DetalleAportacionDto>();
+        List<DetalleAportacionInfDto> detList = new ArrayList<DetalleAportacionInfDto>();
 
         for (DetalleAportacion det : a.getDetalles()) {
+
             kgTotales += det.getCantidad_en_kgs();
 
-            detList.add(new DetalleAportacionDto(
+            detList.add(new DetalleAportacionInfDto(
                     det.getDetalleAportacionId().getNumLinea(),
+                    det.getTipoAlimento().getNombre(),
                     det.getCantidad_en_kgs()));
+
         }
 
 
